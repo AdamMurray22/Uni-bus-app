@@ -38,6 +38,30 @@ class OpenLayersMap
     return _webViewController;
   }
 
+  toggleU1Markers(bool visible)
+  {
+    String jsObject = "{visible: $visible}";
+    _webViewController.runJavaScript("toggleShowU1Markers($jsObject)");
+  }
+
+  toggleU2Markers(bool visible)
+  {
+    String jsObject = "{visible: $visible}";
+    _webViewController.runJavaScript("toggleShowU2Markers($jsObject)");
+  }
+
+  toggleUniBuildingMarkers(bool visible)
+  {
+    String jsObject = "{visible: $visible}";
+    _webViewController.runJavaScript("toggleShowUniBuildings($jsObject)");
+  }
+
+  toggleLandmarkMarkers(bool visible)
+  {
+    String jsObject = "{visible: $visible}";
+    _webViewController.runJavaScript("toggleShowLandmarks($jsObject)");
+  }
+
   // Creates the webview controller
   WebViewController _createWebViewController()
   {
@@ -89,7 +113,7 @@ class OpenLayersMap
   {
     for(BusStop busStop in mapData.getBusStops())
     {
-      _addBusStopMarker(busStop.id, busStop.long, busStop.lat);
+      _addU1BusStopMarker(busStop.id, busStop.long, busStop.lat);
     }
     for(Feature uniBuilding in mapData.getUniBuildings())
     {
@@ -101,11 +125,18 @@ class OpenLayersMap
     }
   }
 
-  // Adds the bus stops.
-  _addBusStopMarker(String id, double long, double lat)
+  // Adds the U1 bus stops.
+  _addU1BusStopMarker(String id, double long, double lat)
   {
     String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addBusStopMarker($jsObject)");
+    _webViewController.runJavaScript("addU1BusStopMarker($jsObject)");
+  }
+
+  // Adds the U2 bus stops.
+  _addU2BusStopMarker(String id, double long, double lat)
+  {
+    String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
+    _webViewController.runJavaScript("addU2BusStopMarker($jsObject)");
   }
 
   // Adds the uni buildings.

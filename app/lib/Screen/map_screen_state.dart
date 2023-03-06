@@ -91,6 +91,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u1ValueCheck = value!;
                     });
+                    _map.toggleU1Markers(value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -115,6 +116,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u2ValueCheck = value!;
                     });
+                    _map.toggleU2Markers(value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -139,6 +141,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _uniBuildingValueCheck = value!;
                     });
+                    _map.toggleUniBuildingMarkers(value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -163,6 +166,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _landmarkValueCheck = value!;
                     });
+                    _map.toggleLandmarkMarkers(value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,

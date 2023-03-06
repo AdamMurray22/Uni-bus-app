@@ -50,8 +50,8 @@
         Layers
     */
 
-    // This layer shows the bus stop markers
-    var BusStopMarkersLayer = new ol.layer.Vector({
+    // This layer shows the U1 bus stop markers
+    var U1BusStopMarkersLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -61,8 +61,22 @@
             }),
         }),
     });
-    BusStopMarkersLayer.isMarkerLayer = true;
-    map.addLayer(BusStopMarkersLayer);
+    U1BusStopMarkersLayer.isMarkerLayer = true;
+    map.addLayer(U1BusStopMarkersLayer);
+
+    // This layer shows the U2 bus stop markers
+    var U2BusStopMarkersLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.15, 0.15],
+                src: "BusStopMarker.png",
+            }),
+        }),
+    });
+    U2BusStopMarkersLayer.isMarkerLayer = true;
+    map.addLayer(U2BusStopMarkersLayer);
 
     // This layer shows the uni building markers
     var UniBuildingMarkersLayer = new ol.layer.Vector({
@@ -128,10 +142,16 @@
         Adds the markers
     */
 
-    function addBusStopMarker(markedFeature) {
+    function addU1BusStopMarker(markedFeature) {
         var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
         marker.setId(markedFeature.id);
-        BusStopMarkersLayer.getSource().addFeature(marker);
+        U1BusStopMarkersLayer.getSource().addFeature(marker);
+    }
+
+    function addU2BusStopMarker(markedFeature) {
+        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
+        marker.setId(markedFeature.id);
+        U2BusStopMarkersLayer.getSource().addFeature(marker);
     }
 
     function addUniBuildingMarker(markedFeature) {
@@ -145,6 +165,28 @@
         marker.setId(markedFeature.id);
         LandmarkMarkersLayer.getSource().addFeature(marker);
     }
+
+    /*
+        Toggles the visibility of the markers
+    */
+
+    function toggleShowU1Markers(visible) {
+        U1BusStopMarkersLayer.setVisible(visible.visible);
+    }
+
+    function toggleShowU2Markers(visible) {
+        U2BusStopMarkersLayer.setVisible(visible.visible);
+    }
+
+    function toggleShowUniBuildings(visible) {
+        UniBuildingMarkersLayer.setVisible(visible.visible);
+    }
+
+    function toggleShowLandmarks(visible) {
+        LandmarkMarkersLayer.setVisible(visible.visible);
+    }
+
+    // Adds the user icon
 
     function addUserIcon(userPosition) {
         var icon = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([userPosition.longitude, userPosition.latitude])));
