@@ -38,24 +38,28 @@ class OpenLayersMap
     return _webViewController;
   }
 
+  /// Toggles the visibility of the U1 bus stop markers on the map.
   toggleU1Markers(bool visible)
   {
     String jsObject = "{visible: $visible}";
     _webViewController.runJavaScript("toggleShowU1Markers($jsObject)");
   }
 
+  /// Toggles the visibility of the U2 bus stop markers on the map.
   toggleU2Markers(bool visible)
   {
     String jsObject = "{visible: $visible}";
     _webViewController.runJavaScript("toggleShowU2Markers($jsObject)");
   }
 
+  /// Toggles the visibility of the uni building markers on the map.
   toggleUniBuildingMarkers(bool visible)
   {
     String jsObject = "{visible: $visible}";
     _webViewController.runJavaScript("toggleShowUniBuildings($jsObject)");
   }
 
+  /// Toggles the visibility of the landmark markers on the map.
   toggleLandmarkMarkers(bool visible)
   {
     String jsObject = "{visible: $visible}";
