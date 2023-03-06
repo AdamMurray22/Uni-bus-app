@@ -1,0 +1,175 @@
+<html lang = "en">
+<head>
+
+    <meta charset = "UTF-8">
+    <title>Map</title>
+
+    <!-- OpenLayers v7.2.2 (https://openlayers.org/) -->
+    <script src = "ol/dist/ol.js"></script>
+    <script src = "ol/Map.js"></script>
+    <script src = "ol/View.js"></script>
+    <script src = "ol/layer/Tile.js"></script>
+    <script src = "ol/source/OSM.js"></script>
+    <link rel = "stylesheet" href = "ol/ol.css">
+
+    <script src="https://unpkg.com/elm-pep"></script>
+
+    <!-- Ensures the map takes up the full amount of space. -->
+    <link rel = "stylesheet" href = "map.css">
+</head>
+
+<body>
+    <div id="js-map" class="map"></div>
+</body>
+
+<script id="core-behaviour">
+
+    /*
+     Map
+    */
+
+    const map = new ol.Map({
+        view: new ol.View({
+            center: new ol.proj.fromLonLat([-1.0894829, 50.7918624]),
+            zoom: 15,
+        }),
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM(),
+            }),
+        ],
+        target: 'js-map',
+    });
+
+</script>
+
+
+<script id="markerBehaviour">
+
+    /*
+        Layers
+    */
+
+    // This layer shows the bus stop markers
+    var BusStopMarkersLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.15, 0.15],
+                src: "BusStopMarker.png",
+            }),
+        }),
+    });
+    BusStopMarkersLayer.isMarkerLayer = true;
+    map.addLayer(BusStopMarkersLayer);
+
+    // This layer shows the uni building markers
+    var UniBuildingMarkersLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.15, 0.15],
+                src: "UniBuildingMarker.png",
+            }),
+        }),
+    });
+    UniBuildingMarkersLayer.isMarkerLayer = true;
+    map.addLayer(UniBuildingMarkersLayer);
+
+    // This layer shows the landmark markers
+    var LandmarkMarkersLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.15, 0.15],
+                src: "LandmarkMarker.png",
+            }),
+        }),
+    });
+    LandmarkMarkersLayer.isMarkerLayer = true;
+    map.addLayer(LandmarkMarkersLayer);
+
+    // This layer shows the Users location
+    var UserLocationLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.15, 0.15],
+                src: "UserIcon.png",
+            }),
+        }),
+    });
+    UserLocationLayer.isMarkerLayer = false;
+    map.addLayer(UserLocationLayer);
+
+
+    /*
+        Detects if a marker has been clicked
+    */
+
+    map.on("click", function(e) {
+
+        var markerFound = false;
+        map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
+            if (layer.isMarkerLayer && markerFound == false)
+            {
+                markerClicked(feature);
+                markerFound = true;
+            }
+        })
+    });
+
+
+    /*
+        Adds the markers
+    */
+
+    function addBusStopMarker(markedFeature) {
+        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
+        marker.setId(markedFeature.id);
+        BusStopMarkersLayer.getSource().addFeature(marker);
+    }
+
+    function addUniBuildingMarker(markedFeature) {
+        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
+        marker.setId(markedFeature.id);
+        UniBuildingMarkersLayer.getSource().addFeature(marker);
+    }
+
+    function addLandmarkMarker(markedFeature) {
+        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
+        marker.setId(markedFeature.id);
+        LandmarkMarkersLayer.getSource().addFeature(marker);
+    }
+
+    function addUserIcon(userPosition) {
+        var icon = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([userPosition.longitude, userPosition.latitude])));
+        icon.setId(userPosition.id);
+        UserLocationLayer.getSource().addFeature(icon);
+    }
+
+    // Removes the users icon
+
+    function removeUserIcon(userPosition) {
+        var source = UserLocationLayer.getSource();
+        source.removeFeature(source.getFeatureById(userPosition.id));
+    }
+
+    // Updates the location of the users icon
+
+    function updateUserIcon(userPosition) {
+        removeUserIcon(userPosition);
+        addUserIcon(userPosition);
+    }
+
+    // Marker interaction
+
+    function markerClicked(marker){
+        MarkerClickedDart.postMessage(marker.getId());
+    }
+</script>
+</html>
