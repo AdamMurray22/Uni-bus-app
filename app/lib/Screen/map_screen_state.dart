@@ -31,24 +31,25 @@ class MapScreenState extends State<MainScreen> {
         elevation: 4,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: const Color(0xff3a57e8),
+        backgroundColor: const Color(0xff009a96),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
         ),
         title: const Text(
-          "AppBar",
+          "Uni Bus",
           style: TextStyle(
             fontWeight: FontWeight.w400,
             fontStyle: FontStyle.normal,
-            fontSize: 14,
+            fontSize: 20,
             color: Color(0xff000000),
           ),
         ),
-        leading: const Icon(
-          Icons.arrow_back,
-          color: Color(0xff212435),
-          size: 24,
-        ),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.access_time, color: Color(0xff212435), size: 30),
+              onPressed: () {},
+          ),
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
