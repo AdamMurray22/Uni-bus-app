@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app/Map/user_icon_enum.dart';
+import 'package:app/Map/map_data_id_enum.dart';
 import 'package:app/MapData/map_data_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -39,31 +39,10 @@ class OpenLayersMap
   }
 
   /// Toggles the visibility of the U1 bus stop markers on the map.
-  toggleU1Markers(bool visible)
+  toggleMarkers(MapDataId layerId, bool visible)
   {
-    String jsObject = "{visible: $visible}";
-    _webViewController.runJavaScript("toggleShowU1Markers($jsObject)");
-  }
-
-  /// Toggles the visibility of the U2 bus stop markers on the map.
-  toggleU2Markers(bool visible)
-  {
-    String jsObject = "{visible: $visible}";
-    _webViewController.runJavaScript("toggleShowU2Markers($jsObject)");
-  }
-
-  /// Toggles the visibility of the uni building markers on the map.
-  toggleUniBuildingMarkers(bool visible)
-  {
-    String jsObject = "{visible: $visible}";
-    _webViewController.runJavaScript("toggleShowUniBuildings($jsObject)");
-  }
-
-  /// Toggles the visibility of the landmark markers on the map.
-  toggleLandmarkMarkers(bool visible)
-  {
-    String jsObject = "{visible: $visible}";
-    _webViewController.runJavaScript("toggleShowLandmarks($jsObject)");
+    String jsObject = "{layerId: '${layerId.id}', visible: $visible}";
+    _webViewController.runJavaScript("toggleShowMarkers($jsObject)");
   }
 
   // Creates the webview controller
@@ -83,6 +62,7 @@ class OpenLayersMap
           },
           onPageStarted: (String url) {},
           onPageFinished: (String url) {
+            _assignLayerIds();
             // When the page finishes loading it sets the data to be loaded into the map.
             MapDataLoader.getDataLoader().onDataLoaded((mapData)
             {
@@ -112,48 +92,34 @@ class OpenLayersMap
     }
   }
 
+  _assignLayerIds()
+  {
+    String jsObject = "{U1: '${MapDataId.u1.id}', U2: '${MapDataId.u2.id}', UniBuilding: '${MapDataId.uniBuilding.id}', Landmark: '${MapDataId.landmark.id}', UserLocation: '${MapDataId.userLocation.id}'}";
+    _webViewController.runJavaScript("mapIdsToLayers($jsObject)");
+  }
+
   // Adds the markers to the map.
   _addMarkers(MapData mapData)
   {
     for(BusStop busStop in mapData.getBusStops())
     {
-      _addU1BusStopMarker(busStop.id, busStop.long, busStop.lat);
+      _addMarker(MapDataId.u1, busStop.id, busStop.long, busStop.lat);
     }
     for(Feature uniBuilding in mapData.getUniBuildings())
     {
-      _addUniBuildingMarker(uniBuilding.id, uniBuilding.long, uniBuilding.lat);
+      _addMarker(MapDataId.uniBuilding, uniBuilding.id, uniBuilding.long, uniBuilding.lat);
     }
     for(Feature landmark in mapData.getLandmarks())
     {
-      _addLandmarkMarker(landmark.id, landmark.long, landmark.lat);
+      _addMarker(MapDataId.landmark, landmark.id, landmark.long, landmark.lat);
     }
   }
 
   // Adds the U1 bus stops.
-  _addU1BusStopMarker(String id, double long, double lat)
+  _addMarker(MapDataId layerId, String id, double long, double lat)
   {
-    String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addU1BusStopMarker($jsObject)");
-  }
-
-  // Adds the U2 bus stops.
-  _addU2BusStopMarker(String id, double long, double lat)
-  {
-    String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addU2BusStopMarker($jsObject)");
-  }
-
-  // Adds the uni buildings.
-  _addUniBuildingMarker(String id, double long, double lat)
-  {
-    String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addUniBuildingMarker($jsObject)");
-  }
-  // Adds the landmarks.
-  _addLandmarkMarker(String id, double long, double lat)
-  {
-    String jsObject = "{id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addLandmarkMarker($jsObject)");
+    String jsObject = "{layerId: '${layerId.id}', id: '$id', longitude: $long, latitude: $lat}";
+    _webViewController.runJavaScript("addMarker($jsObject)");
   }
 
   // This is called when a marker on the map gets clicked.
@@ -176,13 +142,11 @@ class OpenLayersMap
     if (await handler.hasPermission())
     {
       LocationData currentLocation = await location.getLocation();
-      String jsObject = "{id: '${UserIcon.id.name}', longitude: ${currentLocation.longitude}, latitude: ${currentLocation.latitude}}";
-      _webViewController.runJavaScript("addUserIcon($jsObject)");
+      _addMarker(MapDataId.userLocation, MapDataId.userLocation.id, currentLocation.longitude!, currentLocation.latitude!);
     }
 
     location.onLocationChanged.listen((LocationData currentLocation) {
-      String jsObject = "{id: '${UserIcon.id.name}', longitude: ${currentLocation.longitude}, latitude: ${currentLocation.latitude}}";
-      _webViewController.runJavaScript("updateUserIcon($jsObject)");
+      _addMarker(MapDataId.userLocation, MapDataId.userLocation.id, currentLocation.longitude!, currentLocation.latitude!);
     });
   }
 }

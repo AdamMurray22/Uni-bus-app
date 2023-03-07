@@ -237,7 +237,7 @@ function setLayerMapProperty(layer, map) {
  */
 class Map extends BaseObject {
   /**
-   * @param {MapOptions} [options] Map options.
+   * @param {(*|i_|uc)[][]} [options] Map options.
    */
   constructor(options) {
     super();

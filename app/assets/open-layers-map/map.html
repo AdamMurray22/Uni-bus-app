@@ -22,7 +22,7 @@
     <div id="js-map" class="map"></div>
 </body>
 
-<script id="core-behaviour">
+<script id="create-map">
 
     /*
      Map
@@ -107,7 +107,7 @@
     map.addLayer(LandmarkMarkersLayer);
 
     // This layer shows the Users location
-    var UserLocationLayer = new ol.layer.Vector({
+    const UserLocationLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -120,6 +120,18 @@
     UserLocationLayer.isMarkerLayer = false;
     map.addLayer(UserLocationLayer);
 
+    // Creates a hash map to map the given id's to the layers
+    var IDLayersMap = new Map();
+
+    // Maps the given id's to the layers
+    function mapIdsToLayers(layerIds) {
+        IDLayersMap.set(layerIds.U1, U1BusStopMarkersLayer);
+        IDLayersMap.set(layerIds.U2, U2BusStopMarkersLayer);
+        IDLayersMap.set(layerIds.UniBuilding, UniBuildingMarkersLayer);
+        IDLayersMap.set(layerIds.Landmark, LandmarkMarkersLayer);
+        IDLayersMap.set(layerIds.UserLocation, UserLocationLayer);
+    }
+
 
     /*
         Detects if a marker has been clicked
@@ -127,7 +139,7 @@
 
     map.on("click", function(e) {
 
-        var markerFound = false;
+        let markerFound = false;
         map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
             if (layer.isMarkerLayer && markerFound == false)
             {
@@ -142,56 +154,21 @@
         Adds the markers
     */
 
-    function addU1BusStopMarker(markedFeature) {
-        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
-        marker.setId(markedFeature.id);
-        U1BusStopMarkersLayer.getSource().addFeature(marker);
-    }
+    function addMarker(markedFeature) {
+        const layer = IDLayersMap.get(markedFeature.layerId);
 
-    function addU2BusStopMarker(markedFeature) {
-        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
+        const marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
         marker.setId(markedFeature.id);
-        U2BusStopMarkersLayer.getSource().addFeature(marker);
-    }
-
-    function addUniBuildingMarker(markedFeature) {
-        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
-        marker.setId(markedFeature.id);
-        UniBuildingMarkersLayer.getSource().addFeature(marker);
-    }
-
-    function addLandmarkMarker(markedFeature) {
-        var marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
-        marker.setId(markedFeature.id);
-        LandmarkMarkersLayer.getSource().addFeature(marker);
+        layer.getSource().addFeature(marker);
     }
 
     /*
         Toggles the visibility of the markers
     */
 
-    function toggleShowU1Markers(visible) {
-        U1BusStopMarkersLayer.setVisible(visible.visible);
-    }
-
-    function toggleShowU2Markers(visible) {
-        U2BusStopMarkersLayer.setVisible(visible.visible);
-    }
-
-    function toggleShowUniBuildings(visible) {
-        UniBuildingMarkersLayer.setVisible(visible.visible);
-    }
-
-    function toggleShowLandmarks(visible) {
-        LandmarkMarkersLayer.setVisible(visible.visible);
-    }
-
-    // Adds the user icon
-
-    function addUserIcon(userPosition) {
-        var icon = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([userPosition.longitude, userPosition.latitude])));
-        icon.setId(userPosition.id);
-        UserLocationLayer.getSource().addFeature(icon);
+    function toggleShowMarkers(visible) {
+        const layer = IDLayersMap.get(visible.layerId);
+        layer.setVisible(visible.visible);
     }
 
     // Removes the users icon

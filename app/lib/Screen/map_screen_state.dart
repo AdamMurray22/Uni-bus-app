@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../Map/map_data_id_enum.dart';
 import 'main_screen.dart';
 import '../Map/open_layers_map.dart';
 
@@ -92,7 +93,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u1ValueCheck = value!;
                     });
-                    _map.toggleU1Markers(value!);
+                    _map.toggleMarkers(MapDataId.u1, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -117,7 +118,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u2ValueCheck = value!;
                     });
-                    _map.toggleU2Markers(value!);
+                    _map.toggleMarkers(MapDataId.u2, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -142,7 +143,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _uniBuildingValueCheck = value!;
                     });
-                    _map.toggleUniBuildingMarkers(value!);
+                    _map.toggleMarkers(MapDataId.uniBuilding, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -167,7 +168,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _landmarkValueCheck = value!;
                     });
-                    _map.toggleLandmarkMarkers(value!);
+                    _map.toggleMarkers(MapDataId.landmark, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
