@@ -15,26 +15,15 @@ class MapData
     _uniBuildings = <Feature>{};
     _landmarks = <Feature>{};
     // TODO: remove this test data
-    _busStops.add(BusStop("Bus stop ID", "Bus stop Name", -1.0832318, 50.7937047));
-    _uniBuildings.add(Feature("Uni building ID", "Uni building Name", -1.0882318, 50.7937047));
-    _landmarks.add(Feature("Landmark ID", "Landmark Name", -1.0932318, 50.7937047));
+    _busStops.add(BusStop("U1-3244", "Bus stop Name", -1.0802318, 50.7937047));
+    _busStops.add(BusStop("U2-2342", "Bus stop Name", -1.0832318, 50.7937047));
+    _uniBuildings.add(Feature("UB-24324", "Uni building Name", -1.0882318, 50.7937047));
+    _landmarks.add(Feature("LM-32434", "Landmark Name", -1.0932318, 50.7937047));
   }
 
-  /// Returns the set of bus stops.
-  Set<BusStop> getBusStops()
+  /// Returns a set of all the features.
+  Set<Feature> getAllFeatures()
   {
-    return _busStops;
-  }
-
-  /// Returns the set of university buildings.
-  Set<Feature> getUniBuildings()
-  {
-    return _uniBuildings;
-  }
-
-  /// Returns the set of landmarks.
-  Set<Feature> getLandmarks()
-  {
-    return _landmarks;
+    return {..._busStops, ..._landmarks, ..._uniBuildings};
   }
 }

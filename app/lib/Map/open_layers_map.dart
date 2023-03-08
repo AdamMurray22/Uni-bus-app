@@ -41,7 +41,7 @@ class OpenLayersMap
   /// Toggles the visibility of the U1 bus stop markers on the map.
   toggleMarkers(MapDataId layerId, bool visible)
   {
-    String jsObject = "{layerId: '${layerId.id}', visible: $visible}";
+    String jsObject = "{layerId: '${layerId.idPrefix}', visible: $visible}";
     _webViewController.runJavaScript("toggleShowMarkers($jsObject)");
   }
 
@@ -94,31 +94,23 @@ class OpenLayersMap
 
   _assignLayerIds()
   {
-    String jsObject = "{U1: '${MapDataId.u1.id}', U2: '${MapDataId.u2.id}', UniBuilding: '${MapDataId.uniBuilding.id}', Landmark: '${MapDataId.landmark.id}', UserLocation: '${MapDataId.userLocation.id}'}";
+    String jsObject = "{U1: '${MapDataId.u1.idPrefix}', U2: '${MapDataId.u2.idPrefix}', UniBuilding: '${MapDataId.uniBuilding.idPrefix}', Landmark: '${MapDataId.landmark.idPrefix}', UserLocation: '${MapDataId.userLocation.idPrefix}'}";
     _webViewController.runJavaScript("mapIdsToLayers($jsObject)");
   }
 
   // Adds the markers to the map.
   _addMarkers(MapData mapData)
   {
-    for(BusStop busStop in mapData.getBusStops())
+    for(Feature feature in mapData.getAllFeatures())
     {
-      _addMarker(MapDataId.u1, busStop.id, busStop.long, busStop.lat);
-    }
-    for(Feature uniBuilding in mapData.getUniBuildings())
-    {
-      _addMarker(MapDataId.uniBuilding, uniBuilding.id, uniBuilding.long, uniBuilding.lat);
-    }
-    for(Feature landmark in mapData.getLandmarks())
-    {
-      _addMarker(MapDataId.landmark, landmark.id, landmark.long, landmark.lat);
+      _addMarker(feature.typeId, feature.id, feature.long, feature.lat);
     }
   }
 
   // Adds the U1 bus stops.
   _addMarker(MapDataId layerId, String id, double long, double lat)
   {
-    String jsObject = "{layerId: '${layerId.id}', id: '$id', longitude: $long, latitude: $lat}";
+    String jsObject = "{layerId: '${layerId.idPrefix}', id: '$id', longitude: $long, latitude: $lat}";
     _webViewController.runJavaScript("addMarker($jsObject)");
   }
 
@@ -142,11 +134,11 @@ class OpenLayersMap
     if (await handler.hasPermission())
     {
       LocationData currentLocation = await location.getLocation();
-      _addMarker(MapDataId.userLocation, MapDataId.userLocation.id, currentLocation.longitude!, currentLocation.latitude!);
+      _addMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix, currentLocation.longitude!, currentLocation.latitude!);
     }
 
     location.onLocationChanged.listen((LocationData currentLocation) {
-      _addMarker(MapDataId.userLocation, MapDataId.userLocation.id, currentLocation.longitude!, currentLocation.latitude!);
+      _addMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix, currentLocation.longitude!, currentLocation.latitude!);
     });
   }
 }
