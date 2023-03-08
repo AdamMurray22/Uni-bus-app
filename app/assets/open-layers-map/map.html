@@ -1,25 +1,25 @@
-<html lang = "en">
+<html lang="en">
 <head>
 
-    <meta charset = "UTF-8">
+    <meta charset="UTF-8">
     <title>Map</title>
 
     <!-- OpenLayers v7.2.2 (https://openlayers.org/) -->
-    <script src = "ol/dist/ol.js"></script>
-    <script src = "ol/Map.js"></script>
-    <script src = "ol/View.js"></script>
-    <script src = "ol/layer/Tile.js"></script>
-    <script src = "ol/source/OSM.js"></script>
-    <link rel = "stylesheet" href = "ol/ol.css">
+    <script src="ol/dist/ol.js"></script>
+    <script src="ol/Map.js"></script>
+    <script src="ol/View.js"></script>
+    <script src="ol/layer/Tile.js"></script>
+    <script src="ol/source/OSM.js"></script>
+    <link rel="stylesheet" href="ol/ol.css">
 
     <script src="https://unpkg.com/elm-pep"></script>
 
     <!-- Ensures the map takes up the full amount of space. -->
-    <link rel = "stylesheet" href = "map.css">
+    <link rel="stylesheet" href="map.css">
 </head>
 
 <body>
-    <div id="js-map" class="map"></div>
+<div id="js-map" class="map"></div>
 </body>
 
 <script id="create-map">
@@ -137,12 +137,11 @@
         Detects if a marker has been clicked
     */
 
-    map.on("click", function(e) {
+    map.on("click", function (e) {
 
         let markerFound = false;
         map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-            if (layer.isMarkerLayer && markerFound == false)
-            {
+            if (layer.isMarkerLayer && markerFound == false) {
                 markerClicked(feature);
                 markerFound = true;
             }
@@ -187,7 +186,7 @@
 
     // Marker interaction
 
-    function markerClicked(marker){
+    function markerClicked(marker) {
         MarkerClickedDart.postMessage(marker.getId());
     }
 </script>
