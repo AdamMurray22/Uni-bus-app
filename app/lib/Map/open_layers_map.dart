@@ -12,8 +12,6 @@ import '../Permissions/location_permissions_handler.dart';
 /// Encapsulates the map created through open layers and the map.html file so
 /// that the rest of the dart code can interact with the ma easily.
 class OpenLayersMap extends WebViewController {
-  //late final WebViewController _webViewController;
-
   // The function to be run whenever a marker is clicked.
   Function(String)? _markerClickedFunction;
 
