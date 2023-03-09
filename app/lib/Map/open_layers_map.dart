@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:app/Map/map_data_id_enum.dart';
 import 'package:app/MapData/map_data_loader.dart';
-import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -12,15 +11,16 @@ import '../Permissions/location_permissions_handler.dart';
 
 /// Encapsulates the map created through open layers and the map.html file so
 /// that the rest of the dart code can interact with the ma easily.
-class OpenLayersMap {
-  late final WebViewController _webViewController;
+class OpenLayersMap extends WebViewController {
+  //late final WebViewController _webViewController;
 
   // The function to be run whenever a marker is clicked.
   Function(String)? _markerClickedFunction;
 
   /// The constructor creating the webview controller and loading the map.
-  OpenLayersMap() {
-    _webViewController = _createWebViewController();
+  OpenLayersMap() : super() {
+    //_webViewController =
+    _createWebViewController();
     _loadMap();
   }
 
@@ -29,58 +29,53 @@ class OpenLayersMap {
     _markerClickedFunction = markerClicked;
   }
 
-  /// Returns the webview controller.
-  WebViewController getController() {
-    return _webViewController;
-  }
-
   /// Toggles the visibility of the U1 bus stop markers on the map.
   toggleMarkers(MapDataId layerId, bool visible) {
     String jsObject = "{layerId: '${layerId.idPrefix}', visible: $visible}";
-    _webViewController.runJavaScript("toggleShowMarkers($jsObject)");
+    runJavaScript("toggleShowMarkers($jsObject)");
   }
 
-  // Creates the webview controller
-  WebViewController _createWebViewController() {
-    return WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      // Creates the channel for javascript to call a dart method
-      ..addJavaScriptChannel("MarkerClickedDart",
-          onMessageReceived: (JavaScriptMessage markerIdMessage) {
-        _markerClicked(markerIdMessage.message);
-      })
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {
-            _assignLayerIds();
-            // When the page finishes loading it sets the data to be loaded into the map.
-            MapDataLoader.getDataLoader().onDataLoaded((mapData) {
-              _addMarkers(mapData);
-            });
-            _addUserLocationIcon();
-          },
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            return NavigationDecision.navigate;
-          },
-        ),
-      );
+  /// Sets up the controller for our map.
+  _createWebViewController() {
+    setJavaScriptMode(JavaScriptMode.unrestricted);
+    // Creates the channel for javascript to call a dart method
+    addJavaScriptChannel("MarkerClickedDart",
+        onMessageReceived: (JavaScriptMessage markerIdMessage) {
+          _markerClicked(markerIdMessage.message);
+        });
+    // Sets the Navigation Delegate that adds the map data to the map once it
+    // has loaded
+    setNavigationDelegate(
+      NavigationDelegate(
+        onProgress: (int progress) {
+          // Update loading bar.
+        },
+        onPageStarted: (String url) {},
+        onPageFinished: (String url) {
+          _assignLayerIds();
+          // When the page finishes loading it sets the data to be loaded into the map.
+          MapDataLoader.getDataLoader().onDataLoaded((mapData) {
+            _addMarkers(mapData);
+          });
+          _addUserLocationIcon();
+        },
+        onWebResourceError: (WebResourceError error) {},
+        onNavigationRequest: (NavigationRequest request) {
+          return NavigationDecision.navigate;
+        },
+      ),
+    );
   }
 
   // Loads map.html from the respective platforms location.
   _loadMap() {
     String relativePath = "assets/open-layers-map/map.html";
     if (Platform.isAndroid) {
-      _webViewController.loadFile(
+      loadFile(
           "file:///android_asset/flutter_assets/$relativePath"); // Android file path
     } else if (Platform.isIOS) {
       // TODO: Add the absolute path for ios
-      _webViewController.loadFile("$relativePath"); // IOS file path
+      loadFile("$relativePath"); // IOS file path
     }
   }
 
@@ -92,7 +87,7 @@ class OpenLayersMap {
     String userLocation = MapDataId.userLocation.idPrefix;
     String jsObject =
         "{U1: '$u1', U2: '$u2', UniBuilding: '$uniBuilding', Landmark: '$landmark', UserLocation: '$userLocation'}";
-    _webViewController.runJavaScript("mapIdsToLayers($jsObject)");
+    runJavaScript("mapIdsToLayers($jsObject)");
   }
 
   // Adds the markers to the map.
@@ -106,7 +101,7 @@ class OpenLayersMap {
   _addMarker(MapDataId layerId, String id, double long, double lat) {
     String jsObject =
         "{layerId: '${layerId.idPrefix}', id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavaScript("addMarker($jsObject)");
+    runJavaScript("addMarker($jsObject)");
   }
 
   // This is called when a marker on the map gets clicked.

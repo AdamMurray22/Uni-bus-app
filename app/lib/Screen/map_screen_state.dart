@@ -8,7 +8,7 @@ import '../Map/open_layers_map.dart';
 /// This class contains the GUI structure for the screen that contains the map.
 class MapScreenState extends State<MainScreen> {
   // The instance of our map
-  late final OpenLayersMap _map;
+  late final OpenLayersMap _mapController;
 
   bool _u1ValueCheck = true;
   bool _u2ValueCheck = true;
@@ -17,13 +17,13 @@ class MapScreenState extends State<MainScreen> {
 
   /// Constructor for MapScreenState creates the map.
   MapScreenState() {
-    _map = OpenLayersMap();
+    _mapController = OpenLayersMap();
   }
 
   /// Builds the GUI and places the map inside.
   @override
   Widget build(BuildContext context) {
-    _map.onMarkerClicked((markerId) {
+    _mapController.onMarkerClicked((markerId) {
       // TODO: Add implementation for what happens when a marker is clicked
     });
     return Scaffold(
@@ -68,7 +68,7 @@ class MapScreenState extends State<MainScreen> {
                 borderRadius: BorderRadius.zero,
                 border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
               ),
-              child: WebViewWidget(controller: _map.getController()) // Map
+              child: WebViewWidget(controller: _mapController) // Map
               ),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -93,7 +93,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u1ValueCheck = value!;
                     });
-                    _map.toggleMarkers(MapDataId.u1, value!);
+                    _mapController.toggleMarkers(MapDataId.u1, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -118,7 +118,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _u2ValueCheck = value!;
                     });
-                    _map.toggleMarkers(MapDataId.u2, value!);
+                    _mapController.toggleMarkers(MapDataId.u2, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -143,7 +143,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _uniBuildingValueCheck = value!;
                     });
-                    _map.toggleMarkers(MapDataId.uniBuilding, value!);
+                    _mapController.toggleMarkers(MapDataId.uniBuilding, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -168,7 +168,7 @@ class MapScreenState extends State<MainScreen> {
                     setState(() {
                       _landmarkValueCheck = value!;
                     });
-                    _map.toggleMarkers(MapDataId.landmark, value!);
+                    _mapController.toggleMarkers(MapDataId.landmark, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
