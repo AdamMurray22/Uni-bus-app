@@ -1,3 +1,7 @@
+import 'package:app/MapData/bus_stop.dart';
+import 'package:app/MapData/feature.dart';
+
+import '../Database/database_loader.dart';
 import 'map_data.dart';
 
 /// This loads the information from the backend and allows the frontend to
@@ -21,10 +25,11 @@ class MapDataLoader
   /// This loads the information and if
   /// onDataLoaded() has been called it runs the
   /// function given to onDataLoaded().
-  load()
+  load() async
   {
-    // TODO: remove test and implement the load function
-    _data = MapData();
+    DatabaseLoader loader = DatabaseLoader.getDataBaseLoader();
+    Set<Feature> mapFeatures = await loader.load();
+    _data = MapData(mapFeatures);
 
 
     _loadingFinished = true;

@@ -111,31 +111,6 @@ class MainScreenState extends State<MainScreen> {
                   value: _u1ValueCheck,
                 ),
                 const Text(
-                  "U2",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                ),
-                Checkbox(
-                  onChanged: (value) {
-                    setState(() {
-                      _u2ValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.u2, value!);
-                  },
-                  activeColor: Color(0xff3a57e8),
-                  autofocus: false,
-                  checkColor: Color(0xffffffff),
-                  hoverColor: Color(0x42000000),
-                  splashRadius: 20,
-                  value: _u2ValueCheck,
-                ),
-                const Text(
                   "Uni building",
                   textAlign: TextAlign.start,
                   overflow: TextOverflow.clip,

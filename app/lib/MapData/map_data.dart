@@ -1,29 +1,26 @@
+import '../Map/map_data_id_enum.dart';
 import 'bus_stop.dart';
 import 'feature.dart';
 
 /// Holds all the information that is retrieved from the backend.
 class MapData
 {
-  late final Set<BusStop> _busStops;
-  late final Set<Feature> _uniBuildings;
-  late final Set<Feature> _landmarks;
+  late final Map<String, Feature> _features;
 
-  /// The constructor creating the sets of features.
-  MapData()
+  /// The constructor creating the Map of features.
+  MapData(Set<Feature> features)
   {
-    _busStops = <BusStop>{};
-    _uniBuildings = <Feature>{};
-    _landmarks = <Feature>{};
-    // TODO: remove this test data
-    _busStops.add(BusStop("U1-3244", "Bus stop Name", -1.0802318, 50.7937047));
-    _busStops.add(BusStop("U2-2342", "Bus stop Name", -1.0832318, 50.7937047));
-    _uniBuildings.add(Feature("UB-24324", "Uni building Name", -1.0882318, 50.7937047));
-    _landmarks.add(Feature("LM-32434", "Landmark Name", -1.0932318, 50.7937047));
+    _features = {};
+
+    for (Feature feature in features)
+    {
+      _features[feature.id] = feature;
+    }
   }
 
   /// Returns a set of all the features.
-  Set<Feature> getAllFeatures()
+  Iterable<Feature> getAllFeatures()
   {
-    return {..._busStops, ..._landmarks, ..._uniBuildings};
+    return _features.values;
   }
 }

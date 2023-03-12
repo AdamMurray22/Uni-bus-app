@@ -64,20 +64,6 @@
     U1BusStopMarkersLayer.isMarkerLayer = true;
     map.addLayer(U1BusStopMarkersLayer);
 
-    // This layer shows the U2 bus stop markers
-    var U2BusStopMarkersLayer = new ol.layer.Vector({
-        source: new ol.source.Vector(),
-        style: new ol.style.Style({
-            image: new ol.style.Icon({
-                anchor: [0.5, 1],
-                scale: [0.15, 0.15],
-                src: "U2BusStopMarker.png",
-            }),
-        }),
-    });
-    U2BusStopMarkersLayer.isMarkerLayer = true;
-    map.addLayer(U2BusStopMarkersLayer);
-
     // This layer shows the uni building markers
     var UniBuildingMarkersLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
@@ -126,7 +112,6 @@
     // Maps the given id's to the layers
     function mapIdsToLayers(layerIds) {
         IDLayersMap.set(layerIds.U1, U1BusStopMarkersLayer);
-        IDLayersMap.set(layerIds.U2, U2BusStopMarkersLayer);
         IDLayersMap.set(layerIds.UniBuilding, UniBuildingMarkersLayer);
         IDLayersMap.set(layerIds.Landmark, LandmarkMarkersLayer);
         IDLayersMap.set(layerIds.UserLocation, UserLocationLayer);

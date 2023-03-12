@@ -79,12 +79,11 @@ class OpenLayersMap extends WebViewController {
 
   _assignLayerIds() {
     String u1 = MapDataId.u1.idPrefix;
-    String u2 = MapDataId.u2.idPrefix;
     String uniBuilding = MapDataId.uniBuilding.idPrefix;
     String landmark = MapDataId.landmark.idPrefix;
     String userLocation = MapDataId.userLocation.idPrefix;
     String jsObject =
-        "{U1: '$u1', U2: '$u2', UniBuilding: '$uniBuilding', Landmark: '$landmark', UserLocation: '$userLocation'}";
+        "{U1: '$u1', UniBuilding: '$uniBuilding', Landmark: '$landmark', UserLocation: '$userLocation'}";
     runJavaScript("mapIdsToLayers($jsObject)");
   }
 
