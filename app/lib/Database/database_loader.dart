@@ -1,14 +1,16 @@
 import 'dart:io';
 
+import 'package:app/MapData/bus_time.dart';
 import 'package:app/MapData/feature.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tuple/tuple.dart';
 
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Set<Feature>? _features;
+  Tuple2<Set<Feature>, Map<String, List<BusTime>>>? _data;
 
   DatabaseLoader._();
 
@@ -21,14 +23,14 @@ class DatabaseLoader {
 
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
-  Future<Set<Feature>> load() async
+  Future<Tuple2<Set<Feature>, Map<String, List<BusTime>>>> load() async
   {
-    _features ??= await _loadDatabase();
-    return _features!;
+    _data ??= await _loadDatabase();
+    return _data!;
   }
 
   // Loads the database and returns a List of Features.
-  Future<Set<Feature>> _loadDatabase() async
+   Future<Tuple2<Set<Feature>, Map<String, List<BusTime>>>> _loadDatabase() async
   {
     var databasesPath = await getDatabasesPath();
     var path = join(databasesPath, _relativePath);
@@ -46,19 +48,33 @@ class DatabaseLoader {
     var db = await openDatabase(path, readOnly: true);
 
     // Gets the Features table.
-    List<Map<String, Object?>> list =
-    await db.rawQuery('SELECT * FROM Feature');
+    List<Map<String, Object?>> featuresList =
+      await db.rawQuery('SELECT * FROM Feature');
 
-    // Copy's the Feature's table into a list of Features objects.
+    List<Map<String, Object?>> busTimesList =
+      await db.rawQuery('SELECT * FROM Bus_Times');
+
+    await db.close();
+
+    // Copy's the Feature's table into a set of Features objects.
     Set<Feature> features = {};
-    for (Map map in list) {
+    for (Map map in featuresList) {
       features.add(Feature(map["feature_id"], map["feature_name"],
           map["longitude"], map["latitude"]));
     }
 
-    await db.close();
+    // Copy's the Bus Time's table into a map from bus stop id's to BusTime objects.
+    Map<String, List<BusTime>> times = {};
+    for (Map map in busTimesList) {
+      if (times[map["bus_stop_id"]] == null)
+      {
+        times[map["bus_stop_id"]] = [];
+      }
+      times[map["bus_stop_id"]]!.add(BusTime(map["time"]));
+    }
 
-    return features;
+    _data = Tuple2(features, times);
+    return _data!;
   }
 
   // This finds the database in the assets folder and copy's it to a location

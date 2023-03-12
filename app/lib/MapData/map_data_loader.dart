@@ -1,7 +1,9 @@
 import 'package:app/MapData/bus_stop.dart';
 import 'package:app/MapData/feature.dart';
+import 'package:tuple/tuple.dart';
 
 import '../Database/database_loader.dart';
+import 'bus_time.dart';
 import 'map_data.dart';
 
 /// This loads the information from the backend and allows the frontend to
@@ -28,8 +30,8 @@ class MapDataLoader
   load() async
   {
     DatabaseLoader loader = DatabaseLoader.getDataBaseLoader();
-    Set<Feature> mapFeatures = await loader.load();
-    _data = MapData(mapFeatures);
+    Tuple2<Set<Feature>, Map<String, List<BusTime>>> mapData = await loader.load();
+    _data = MapData(mapData);
 
 
     _loadingFinished = true;
