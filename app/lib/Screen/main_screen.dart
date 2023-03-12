@@ -19,9 +19,9 @@ class MainScreenState extends State<MainScreen> {
   late final OpenLayersMap _mapController;
 
   bool _u1ValueCheck = true;
-  bool _u2ValueCheck = true;
   bool _uniBuildingValueCheck = true;
   bool _landmarkValueCheck = true;
+  int _selectedIndexBottomNavBar = 0;
 
   /// Constructor for MapScreenState creates the map.
   MainScreenState() {
@@ -53,12 +53,6 @@ class MainScreenState extends State<MainScreen> {
             color: Color(0xff000000),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.access_time, color: Color(0xff212435), size: 30),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -164,6 +158,29 @@ class MainScreenState extends State<MainScreen> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.access_time),
+            label: 'Timetable',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.info_outline),
+            label: 'About',
+          ),
+        ],
+        currentIndex: _selectedIndexBottomNavBar,
+        selectedItemColor: Colors.amber[800],
+        onTap: (index) {
+          setState(() {
+            _selectedIndexBottomNavBar = index;
+          });
+        },
       ),
     );
   }
