@@ -2,7 +2,6 @@ import 'package:app/MapData/bus_stop.dart';
 import 'package:flutter/material.dart';
 
 import '../MapData/bus_time.dart';
-import '../MapData/feature.dart';
 import '../MapData/map_data_loader.dart';
 
 class TimetableScreen extends StatefulWidget {
@@ -25,7 +24,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
           times.add(DropdownMenuItem(value: busStop.name, child: Text(busStop.name),));
           for (BusTime time in busStop.times)
           {
-            times.add(DropdownMenuItem(value: time.time, child: Text(time.time),));
+            times.add(DropdownMenuItem(value: time.toDisplayString(), child: Text(time.toDisplayString()),));
           }
           dropDownButtons.add(DropdownButton(
             value: busStop.name,

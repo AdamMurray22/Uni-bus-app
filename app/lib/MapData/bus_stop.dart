@@ -16,4 +16,23 @@ class BusStop extends Feature
       return ComparatorValue.same;
     });
   }
+
+  /// Returns the bus stop in a format to be displayed on screen.
+  @override
+  List<String> toDisplay()
+  {
+    List<String> displayList = super.toDisplay();
+    int i = 0;
+    for (BusTime time in times)
+    {
+      if (time.later())
+      {
+        if (i <= 20) {
+          displayList.add(time.toDisplayString());
+          i++;
+        }
+      }
+    }
+    return displayList;
+  }
 }

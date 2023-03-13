@@ -16,8 +16,11 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late final OpenLayersMap _mapController;
-  final List<DropDownValueModel> dropDownList = [];
+  final List<DropDownValueModel> _dropDownList = [];
+  final List<Text> _featureInfo = [];
 
+  List<String> _infoText = [];
+  bool _featureInfoVisible = false;
   bool _u1ValueCheck = true;
   bool _uniBuildingValueCheck = true;
   bool _landmarkValueCheck = true;
@@ -27,9 +30,9 @@ class _MapScreenState extends State<MapScreen> {
     _mapController = OpenLayersMap();
     MapDataLoader.getDataLoader().onDataLoaded((mapData) {
       setState(() {
-        for (Feature feature in mapData.getAllFeatures())
-        {
-          dropDownList.add(DropDownValueModel(name: feature.name, value: feature.id));
+        for (Feature feature in mapData.getAllFeatures()) {
+          _dropDownList
+              .add(DropDownValueModel(name: feature.name, value: feature.id));
         }
       });
     });
@@ -39,7 +42,30 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     _mapController.onMarkerClicked((markerId) {
-      // TODO: Add implementation for what happens when a marker is clicked
+      setState(() {
+        _featureInfo.clear();
+        _featureInfoVisible = true;
+        MapDataLoader.getDataLoader().onDataLoaded((mapData) {
+          Feature? feature = mapData.getFeaturesMap()[markerId];
+          if (feature == null) {
+            return;
+          }
+          _infoText = feature.toDisplay();
+          for (String info in _infoText) {
+            _featureInfo.add(Text(
+              info,
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.clip,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                fontSize: 14,
+                color: Color(0xff000000),
+              ),
+            ));
+          }
+        });
+      });
     });
 
     return Scaffold(
@@ -53,10 +79,10 @@ class _MapScreenState extends State<MapScreen> {
             controller: SingleValueDropDownController(),
             clearOption: true,
             enableSearch: true,
-            textFieldDecoration: const InputDecoration(
-                hintText: "Enter location here"),
-            searchDecoration: const InputDecoration(
-                hintText: "Enter location here"),
+            textFieldDecoration:
+                const InputDecoration(hintText: "Enter location here"),
+            searchDecoration:
+                const InputDecoration(hintText: "Enter location here"),
             validator: (value) {
               if (value == null) {
                 return "Required field";
@@ -65,22 +91,67 @@ class _MapScreenState extends State<MapScreen> {
               }
             },
             dropDownItemCount: 5,
-            dropDownList: dropDownList,
+            dropDownList: _dropDownList,
             onChanged: (value) {},
           ),
-          Container(
-              margin: const EdgeInsets.all(0),
-              padding: const EdgeInsets.all(0),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.7059,
-              decoration: BoxDecoration(
-                color: const Color(0x1f000000),
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.zero,
-                border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
+          Stack(children: [
+            Container(
+                margin: const EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.7059,
+                decoration: BoxDecoration(
+                  color: const Color(0x1f000000),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.zero,
+                  border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
+                ),
+                child: WebViewWidget(controller: _mapController)),
+            Visibility(
+              visible: _featureInfoVisible, // not visible if set false
+              child: Container(
+                margin: const EdgeInsets.all(0),
+                padding: const EdgeInsets.all(0),
+                width: MediaQuery.of(context).size.width * 0.4,
+                height: MediaQuery.of(context).size.height * 0.7059,
+                decoration: BoxDecoration(
+                  color: const Color(0xff999999),
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.zero,
+                  border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
+                ),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close),
+                          alignment: Alignment.topRight,
+                          onPressed: () {
+                            setState(() {
+                              _featureInfoVisible = false;
+                              _featureInfo.clear();
+                            });
+                          },
+                        ),
+                      ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: _featureInfo,
+                          ),
+                        ),
+                      ),
+                    ]),
               ),
-              child: WebViewWidget(controller: _mapController) // Map
-              ),
+            ),
+          ]),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(

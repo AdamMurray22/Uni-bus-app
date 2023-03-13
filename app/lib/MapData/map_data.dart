@@ -36,6 +36,12 @@ class MapData
     return {..._otherFeatures.values, ..._busStops.values};
   }
 
+  /// Returns an Iterable of all the features.
+  Map<String, Feature> getFeaturesMap()
+  {
+    return {..._otherFeatures, ..._busStops};
+  }
+
   /// Returns an Iterable of all  the bus stops.
   Iterable<BusStop> getAllBusStops()
   {

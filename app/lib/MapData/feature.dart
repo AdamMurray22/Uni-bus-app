@@ -14,4 +14,10 @@ class Feature
   {
     typeId = MapDataId.getMapDataIdEnumFromId(id);
   }
+
+  /// Returns the feature in a format to be displayed on screen.
+  List<String> toDisplay()
+  {
+    return [name];
+  }
 }
