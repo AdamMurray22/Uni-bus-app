@@ -14,7 +14,7 @@ class MapDataLoader
   late MapData _data;
   bool _loadingFinished = false;
 
-  Function(MapData)? _dataLoaded;
+  List<Function(MapData)> _dataLoadedFunctions = [];
 
   MapDataLoader._();
 
@@ -35,18 +35,17 @@ class MapDataLoader
 
 
     _loadingFinished = true;
-    if (_dataLoaded == null)
+    for (Function(MapData) dataLoadedFunction in _dataLoadedFunctions)
     {
-        return;
+      dataLoadedFunction(_data);
     }
-    _dataLoaded!(_data);
   }
 
   /// Sets the function to be called once the information has finished being
   /// loaded, if it has already finished being loaded then it runs the function.
   onDataLoaded(Function(MapData) dataLoaded)
   {
-    _dataLoaded = dataLoaded;
+    _dataLoadedFunctions.add(dataLoaded);
     if (_loadingFinished)
     {
       dataLoaded(_data);

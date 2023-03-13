@@ -1,3 +1,6 @@
+import 'package:app/MapData/feature.dart';
+import 'package:app/MapData/map_data_loader.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,13 +16,24 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late final OpenLayersMap _mapController;
+  final List<DropDownValueModel> dropDownList = [];
 
   bool _u1ValueCheck = true;
   bool _uniBuildingValueCheck = true;
   bool _landmarkValueCheck = true;
 
-  _MapScreenState() {
+  @override
+  void initState() {
     _mapController = OpenLayersMap();
+    MapDataLoader.getDataLoader().onDataLoaded((mapData) {
+      setState(() {
+        for (Feature feature in mapData.getAllFeatures())
+        {
+          dropDownList.add(DropDownValueModel(name: feature.name, value: feature.id));
+        }
+      });
+    });
+    super.initState();
   }
 
   @override
@@ -29,16 +43,36 @@ class _MapScreenState extends State<MapScreen> {
     });
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
+          DropDownTextField(
+            controller: SingleValueDropDownController(),
+            clearOption: true,
+            enableSearch: true,
+            textFieldDecoration: const InputDecoration(
+                hintText: "Enter location here"),
+            searchDecoration: const InputDecoration(
+                hintText: "Enter location here"),
+            validator: (value) {
+              if (value == null) {
+                return "Required field";
+              } else {
+                return null;
+              }
+            },
+            dropDownItemCount: 5,
+            dropDownList: dropDownList,
+            onChanged: (value) {},
+          ),
           Container(
               margin: const EdgeInsets.all(0),
               padding: const EdgeInsets.all(0),
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.759,
+              height: MediaQuery.of(context).size.height * 0.7059,
               decoration: BoxDecoration(
                 color: const Color(0x1f000000),
                 shape: BoxShape.rectangle,
