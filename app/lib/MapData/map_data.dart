@@ -22,7 +22,7 @@ class MapData
     {
       if (MapDataId.getMapDataIdEnumFromId(feature.id) == MapDataId.u1)
       {
-        _busStops[feature.id] = BusStop(feature.id, feature.name, feature.long, feature.lat, busTimes[feature.id]!);
+        _busStops[feature.id] = BusStop(feature.id, feature.name, feature.long, feature.lat, busTimes[feature.id]??[]);
       }
       else {
         _otherFeatures[feature.id] = feature;
