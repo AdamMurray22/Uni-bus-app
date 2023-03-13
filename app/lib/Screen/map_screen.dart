@@ -18,6 +18,7 @@ class _MapScreenState extends State<MapScreen> {
   late final OpenLayersMap _mapController;
   final List<DropDownValueModel> _dropDownList = [];
   final List<Text> _featureInfo = [];
+  String _featureInfoTitle = "";
 
   List<String> _infoText = [];
   bool _featureInfoVisible = false;
@@ -43,6 +44,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     _mapController.onMarkerClicked((markerId) {
       setState(() {
+        _featureInfoTitle = "";
         _featureInfo.clear();
         _featureInfoVisible = true;
         MapDataLoader.getDataLoader().onDataLoaded((mapData) {
@@ -51,6 +53,8 @@ class _MapScreenState extends State<MapScreen> {
             return;
           }
           _infoText = feature.toDisplay();
+          _featureInfoTitle = _infoText[0];
+          _infoText.removeAt(0);
           for (String info in _infoText) {
             _featureInfo.add(Text(
               info,
@@ -131,6 +135,7 @@ class _MapScreenState extends State<MapScreen> {
                           onPressed: () {
                             setState(() {
                               _featureInfoVisible = false;
+                              _featureInfoTitle = "";
                               _featureInfo.clear();
                             });
                           },
@@ -141,11 +146,31 @@ class _MapScreenState extends State<MapScreen> {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: _featureInfo,
-                          ),
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: Text(
+                                    _featureInfoTitle,
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.clip,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 14,
+                                      color: Color(0xff000000),
+                                    ),
+                                  ),
+                                ),
+                                Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: _featureInfo),
+                              ]),
                         ),
                       ),
                     ]),
