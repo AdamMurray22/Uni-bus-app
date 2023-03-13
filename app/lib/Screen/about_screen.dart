@@ -82,7 +82,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 ),
                 TextSpan(
                   text: 'Open Data Commons Open Database License.',
-                  style: TextStyle(color: Colors.blue),
+                  style: const TextStyle(color: Colors.blue),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () { launchUrl(Uri(
                         scheme: 'https',
