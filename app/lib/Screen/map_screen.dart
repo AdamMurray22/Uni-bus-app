@@ -24,7 +24,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     _mapController.onMarkerClicked((markerId) {
       // TODO: Add implementation for what happens when a marker is clicked
     });

@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   late final Widget _timetableScreen;
   late final Widget _aboutScreen;
 
-  final Map<int, Widget> screenMap = {};
+  final List<Widget> screenList = [];
   int _selectedIndexBottomNavBar = 0;
 
   _MainScreenState()
@@ -27,9 +27,9 @@ class _MainScreenState extends State<MainScreen> {
     _timetableScreen = const TimetableScreen();
     _aboutScreen = const AboutScreen();
 
-    screenMap[0] = _mapScreen;
-    screenMap[1] = _timetableScreen;
-    screenMap[2] = _aboutScreen;
+    screenList.add(_mapScreen);
+    screenList.add(_timetableScreen);
+    screenList.add(_aboutScreen);
   }
 
   /// Builds the GUI and places the map inside.
@@ -66,7 +66,10 @@ class _MainScreenState extends State<MainScreen> {
           borderRadius: BorderRadius.zero,
           border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
         ),
-        child: screenMap[_selectedIndexBottomNavBar],
+        child: IndexedStack(
+          index: _selectedIndexBottomNavBar,
+          children: screenList
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
