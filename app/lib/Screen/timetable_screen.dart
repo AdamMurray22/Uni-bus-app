@@ -13,7 +13,7 @@ class TimetableScreen extends StatefulWidget {
 }
 
 class _TimetableScreenState extends State<TimetableScreen> {
-  List<DropdownButton> dropDownButtons = [];
+  List<DropdownButton<String>> dropDownButtons = [];
 
   @override
   void initState() {
@@ -30,6 +30,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
           dropDownButtons.add(DropdownButton(
             value: busStop.name,
             items: times,
+            menuMaxHeight: 500,
             onChanged: (value) {  },
             elevation: 8,
             isExpanded: true,
