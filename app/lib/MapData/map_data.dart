@@ -8,27 +8,37 @@ import 'feature.dart';
 /// Holds all the information that is retrieved from the backend.
 class MapData
 {
-  late final Map<String, Feature> _features;
+  late final Map<String, BusStop> _busStops;
+  late final Map<String, Feature> _otherFeatures;
 
   /// The constructor creating the Map of features.
   MapData(Tuple2<Set<Feature>, Map<String, List<BusTime>>> mapData)
   {
     Set<Feature> features = mapData.item1;
     Map<String, List<BusTime>> busTimes = mapData.item2;
-    _features = {};
+    _busStops = {};
+    _otherFeatures = {};
     for (Feature feature in features)
     {
       if (MapDataId.getMapDataIdEnumFromId(feature.id) == MapDataId.u1)
       {
-        feature = BusStop(feature.id, feature.name, feature.long, feature.lat, busTimes[feature.id]!);
+        _busStops[feature.id] = BusStop(feature.id, feature.name, feature.long, feature.lat, busTimes[feature.id]!);
       }
-      _features[feature.id] = feature;
+      else {
+        _otherFeatures[feature.id] = feature;
+      }
     }
   }
 
-  /// Returns a set of all the features.
+  /// Returns an Iterable of all the features.
   Iterable<Feature> getAllFeatures()
   {
-    return _features.values;
+    return {..._otherFeatures.values, ..._busStops.values};
+  }
+
+  /// Returns an Iterable of all  the bus stops.
+  Iterable<BusStop> getAllBusStops()
+  {
+    return _busStops.values;
   }
 }
