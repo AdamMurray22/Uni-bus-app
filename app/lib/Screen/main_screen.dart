@@ -1,39 +1,40 @@
+import 'package:app/Screen/map_screen.dart';
+import 'package:app/Screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:webview_flutter/webview_flutter.dart';
-
-import '../Map/map_data_id_enum.dart';
-import '../Map/open_layers_map.dart';
+import 'about_screen.dart';
 
 /// This holds the screen for the application.
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  State<MainScreen> createState() => MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-/// This class contains the GUI structure for the app.
-class MainScreenState extends State<MainScreen> {
-  // The instance of our map
-  late final OpenLayersMap _mapController;
+// This class contains the GUI structure for the app.
+class _MainScreenState extends State<MainScreen> {
+  late final Widget _mapScreen;
+  late final Widget _timetableScreen;
+  late final Widget _aboutScreen;
 
-  bool _u1ValueCheck = true;
-  bool _uniBuildingValueCheck = true;
-  bool _landmarkValueCheck = true;
+  final Map<int, Widget> screenMap = {};
   int _selectedIndexBottomNavBar = 0;
 
-  /// Constructor for MapScreenState creates the map.
-  MainScreenState() {
-    _mapController = OpenLayersMap();
+  _MainScreenState()
+  {
+    _mapScreen = const MapScreen();
+    _timetableScreen = const TimetableScreen();
+    _aboutScreen = const AboutScreen();
+
+    screenMap[0] = _mapScreen;
+    screenMap[1] = _timetableScreen;
+    screenMap[2] = _aboutScreen;
   }
 
   /// Builds the GUI and places the map inside.
   @override
   Widget build(BuildContext context) {
-    _mapController.onMarkerClicked((markerId) {
-      // TODO: Add implementation for what happens when a marker is clicked
-    });
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -54,110 +55,18 @@ class MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-              margin: const EdgeInsets.all(0),
-              padding: const EdgeInsets.all(0),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.74,
-              decoration: BoxDecoration(
-                color: const Color(0x1f000000),
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.zero,
-                border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
-              ),
-              child: WebViewWidget(controller: _mapController) // Map
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                const Text(
-                  "U1",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                ),
-                Checkbox(
-                  onChanged: (value) {
-                    setState(() {
-                      _u1ValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.u1, value!);
-                  },
-                  activeColor: Color(0xff3a57e8),
-                  autofocus: false,
-                  checkColor: Color(0xffffffff),
-                  hoverColor: Color(0x42000000),
-                  splashRadius: 20,
-                  value: _u1ValueCheck,
-                ),
-                const Text(
-                  "Uni building",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                ),
-                Checkbox(
-                  onChanged: (value) {
-                    setState(() {
-                      _uniBuildingValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.uniBuilding, value!);
-                  },
-                  activeColor: Color(0xff3a57e8),
-                  autofocus: false,
-                  checkColor: Color(0xffffffff),
-                  hoverColor: Color(0x42000000),
-                  splashRadius: 20,
-                  value: _uniBuildingValueCheck,
-                ),
-                const Text(
-                  "Landmarks",
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 14,
-                    color: Color(0xff000000),
-                  ),
-                ),
-                Checkbox(
-                  onChanged: (value) {
-                    setState(() {
-                      _landmarkValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.landmark, value!);
-                  },
-                  activeColor: Color(0xff3a57e8),
-                  autofocus: false,
-                  checkColor: Color(0xffffffff),
-                  hoverColor: Color(0x42000000),
-                  splashRadius: 20,
-                  value: _landmarkValueCheck,
-                ),
-              ],
-            ),
-          ),
-        ],
+      body: Container(
+        margin: const EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: const Color(0x1f000000),
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.zero,
+          border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
+        ),
+        child: screenMap[_selectedIndexBottomNavBar],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
