@@ -75,6 +75,10 @@ class _MapScreenState extends State<MapScreen> {
             dropDownItemCount: 5,
             dropDownList: _dropDownList,
             onChanged: (value) {
+              if (value == "")
+              {
+                return;
+              }
               setState(() {
                 _showMapFeatureInfoPanel(value.value);
               });
