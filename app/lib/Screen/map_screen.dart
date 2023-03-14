@@ -19,6 +19,7 @@ class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
 
   late final OpenLayersMap _mapController;
+  final SingleValueDropDownController _dropDownController = SingleValueDropDownController();
   final List<DropDownValueModel> _dropDownList = [];
   final List<Text> _featureInfo = [];
   String _featureInfoTitle = "";
@@ -59,7 +60,7 @@ class _MapScreenState extends State<MapScreen> {
         mainAxisSize: MainAxisSize.max,
         children: [
           DropDownTextField(
-            controller: SingleValueDropDownController(),
+            controller: _dropDownController,
             clearOption: true,
             enableSearch: true,
             textFieldDecoration: const InputDecoration(hintText: "Search"),
@@ -77,6 +78,9 @@ class _MapScreenState extends State<MapScreen> {
             onChanged: (value) {
               if (value == "")
               {
+                setState(() {
+                  _featureInfoVisible = false;
+                });
                 return;
               }
               setState(() {
