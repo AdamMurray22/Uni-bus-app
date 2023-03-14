@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app/Map/map_data_id_enum.dart';
 import 'package:app/MapData/map_data_loader.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
+import 'package:path/path.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../MapData/feature.dart';
@@ -70,6 +73,7 @@ class OpenLayersMap extends WebViewController {
             _addMarkers(mapData);
           });
           _addUserLocationIcon();
+          _loadBusRouteGeoJson();
         },
         onWebResourceError: (WebResourceError error) {},
         onNavigationRequest: (NavigationRequest request) {
@@ -140,5 +144,13 @@ class OpenLayersMap extends WebViewController {
       _addMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
           currentLocation.longitude!, currentLocation.latitude!);
     });
+  }
+
+  //Displays the bus route on the map.
+  _loadBusRouteGeoJson() async {
+    String busRouteJson = await rootBundle.loadString(join("assets", "open-layers-map/Bus_Route.geojson"));
+    String jsObject =
+        "{busRoute: `$busRouteJson`}";
+    runJavaScript("drawBusRouteLines($jsObject)");
   }
 }

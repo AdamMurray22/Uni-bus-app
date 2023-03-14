@@ -72,6 +72,7 @@ flutter:
     - assets/open-layers-map/ol/dist/
     - assets/open-layers-map/ol/layer/
     - assets/open-layers-map/ol/source/
+    - assets/open-layers-map/ol/format/
     - assets/open-layers-map/ol/
     - assets/open-layers-map/
 

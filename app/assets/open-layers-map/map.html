@@ -10,6 +10,7 @@
     <script src="ol/View.js"></script>
     <script src="ol/layer/Tile.js"></script>
     <script src="ol/source/OSM.js"></script>
+    <script src="ol/format/Feature.js"></script>
     <link rel="stylesheet" href="ol/ol.css">
 
     <script src="https://unpkg.com/elm-pep"></script>
@@ -30,8 +31,8 @@
 
     const map = new ol.Map({
         view: new ol.View({
-            center: new ol.proj.fromLonLat([0, 0]),
-            zoom: 0,
+            center: new ol.proj.fromLonLat([1, 1]),
+            zoom: 1,
         }),
         layers: [
             new ol.layer.Tile({
@@ -49,7 +50,7 @@
 </script>
 
 
-<script id="markerBehaviour">
+<script id="markerFunctionality">
 
     /*
         Layers
@@ -179,5 +180,37 @@
     function markerClicked(marker) {
         MarkerClickedDart.postMessage(marker.getId());
     }
+
+    function drawBusRouteLines(geoJson) {
+        // This layer shows drawn bus route
+        const defaultStyle = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: [0, 0, 255, 0.25],
+            }),
+            stroke: new ol.style.Stroke({
+                color: [0, 0, 255, 0.75],
+                width: 2,
+            }),
+        });
+
+        const geoJsonData = new ol.source.Vector({
+            features: new ol.format.GeoJSON().readFeatures(JSON.parse(geoJson.busRoute)),
+            format: new ol.format.GeoJSON(),
+        });
+
+        const busRouteLayer = new ol.layer.VectorImage({
+            source: geoJsonData,
+            style: defaultStyle,
+        });
+
+        map.addLayer(busRouteLayer);
+    }
+</script>
+<script id="drawingFunctionality">
+
+    function toggleShowDrawnLines(visible) {
+        busRouteLayer.setVisible(visible.visible);
+    }
+
 </script>
 </html>
