@@ -19,7 +19,7 @@ class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
 
   late final OpenLayersMap _mapController;
-  final SingleValueDropDownController _dropDownController = SingleValueDropDownController();
+  late final SingleValueDropDownController _dropDownController;
   final List<DropDownValueModel> _dropDownList = [];
   final List<Text> _featureInfo = [];
   String _featureInfoTitle = "";
@@ -33,6 +33,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   initState() {
     _mapController = OpenLayersMap();
+    _dropDownController = SingleValueDropDownController();
     _dataLoader.onDataLoaded((mapData) {
       setState(() {
         for (Feature feature in mapData.getAllFeatures()) {
