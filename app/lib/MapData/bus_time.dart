@@ -4,46 +4,40 @@ class BusTime
   late final String _time;
   late final int _hour;
   late final int _minute;
+  late final int _totalMins;
 
   /// The constructor assigning the time
   BusTime(String time)
   {
     _time = time;
     _hour = int.parse(time.substring(0, 2));
+    _hour == 0 ? _hour = 24 : _hour;
     _minute = int.parse(time.substring(3, 5));
+    _totalMins = _minute + (_hour * 60);
   }
 
   /// Returns whether the BusTime is later in the day than the current time.
   bool later()
   {
     int currentHour = DateTime.now().hour;
+    currentHour == 0 ? currentHour = 24 : currentHour;
     int currentMinute = DateTime.now().minute;
-    if (currentHour <= _hour)
-    {
-      if (currentHour < _hour)
-      {
-        return true;
-      }
-      return currentMinute <= _minute;
-    }
-    return false;
+    int currentTotalMins = currentMinute + (currentHour * 60);
+    return currentTotalMins <= _totalMins;
   }
 
   /// Returns the time as a String.
   String toDisplayString()
   {
     int currentHour = DateTime.now().hour;
+    currentHour == 0 ? currentHour = 24 : currentHour;
     int currentMinute = DateTime.now().minute;
-    int hourDiff = _hour - currentHour;
-    if (hourDiff == 0 || hourDiff == 1)
+    int currentTotalMins = currentMinute + (currentHour * 60);
+    String displayString = _time;
+    if (_totalMins - currentTotalMins >= 0 && _totalMins - currentTotalMins <= 45)
     {
-      hourDiff = hourDiff * 60;
-      int tempMin = _minute + hourDiff;
-        if ((tempMin - currentMinute) <= 45)
-        {
-          return "$_time (${(_minute - currentMinute) % 60}mins)";
-        }
+      displayString = "$displayString (${_totalMins - currentTotalMins}mins)";
     }
-    return _time;
+    return displayString;
   }
 }
