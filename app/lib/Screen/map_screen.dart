@@ -77,8 +77,7 @@ class _MapScreenState extends State<MapScreen> {
             dropDownItemCount: 5,
             dropDownList: _dropDownList,
             onChanged: (value) {
-              if (value == "")
-              {
+              if (value == "") {
                 setState(() {
                   _featureInfoVisible = false;
                 });
