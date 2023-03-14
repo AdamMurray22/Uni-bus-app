@@ -1,4 +1,4 @@
-/// Defines the ids for the map layers
+/// Defines the ids for the map layers.
 enum MapDataId
 {
   u1("U1-"),

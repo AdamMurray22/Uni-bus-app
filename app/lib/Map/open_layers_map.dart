@@ -8,6 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../MapData/feature.dart';
 import '../MapData/map_data.dart';
 import '../Permissions/location_permissions_handler.dart';
+import 'map_centre_enum.dart';
 
 /// Encapsulates the map created through open layers and the map.html file so
 /// that the rest of the dart code can interact with the ma easily.
@@ -17,7 +18,6 @@ class OpenLayersMap extends WebViewController {
 
   /// The constructor creating the webview controller and loading the map.
   OpenLayersMap() : super() {
-    //_webViewController =
     _createWebViewController();
     _loadMap();
   }
@@ -33,7 +33,20 @@ class OpenLayersMap extends WebViewController {
     runJavaScript("toggleShowMarkers($jsObject)");
   }
 
-  /// Sets up the controller for our map.
+  /// Centres and zooms the map around the given marker.
+  setMapCentreZoom(Feature marker)
+  {
+    _setMapCentreZoom(marker.lat, marker.long, MapCentreEnum.markerClickedZoom.value);
+  }
+
+  /// Centres and zooms the map around the given lat, long and zoom.
+  _setMapCentreZoom(double lat, double long, double zoom)
+  {
+    String jsObject = "{lat: $lat, long: $long, zoom: $zoom}";
+    runJavaScript("setCentreZoom($jsObject)");
+  }
+
+  // Sets up the controller for our map.
   _createWebViewController() {
     setJavaScriptMode(JavaScriptMode.unrestricted);
     // Creates the channel for javascript to call a dart method
@@ -50,6 +63,7 @@ class OpenLayersMap extends WebViewController {
         },
         onPageStarted: (String url) {},
         onPageFinished: (String url) {
+          _setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value, MapCentreEnum.initZoom.value);
           _assignLayerIds();
           // When the page finishes loading it sets the data to be loaded into the map.
           MapDataLoader.getDataLoader().onDataLoaded((mapData) {

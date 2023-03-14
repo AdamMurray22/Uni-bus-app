@@ -14,7 +14,7 @@ class MapDataLoader
   late MapData _data;
   bool _loadingFinished = false;
 
-  List<Function(MapData)> _dataLoadedFunctions = [];
+  final List<Function(MapData)> _dataLoadedFunctions = [];
 
   MapDataLoader._();
 
@@ -50,5 +50,17 @@ class MapDataLoader
     {
       dataLoaded(_data);
     }
+  }
+
+  /// Returns whether the loading has finished.
+  bool loadingFinished()
+  {
+    return _loadingFinished;
+  }
+
+  /// Returns the map data. Only to be used once the data has already been loaded.
+  MapData getMapData()
+  {
+    return _data;
   }
 }

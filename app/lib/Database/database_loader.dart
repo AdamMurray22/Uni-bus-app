@@ -32,11 +32,11 @@ class DatabaseLoader {
   // Loads the database and returns a List of Features.
    Future<Tuple2<Set<Feature>, Map<String, List<BusTime>>>> _loadDatabase() async
   {
-    var databasesPath = await getDatabasesPath();
-    var path = join(databasesPath, _relativePath);
+    String databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, _relativePath);
 
     // Check if the database exists in getDatabasesPath().
-    var exists = await databaseExists(path);
+    bool exists = await databaseExists(path);
 
     // If it has not yet been written from the assets folder to the more
     // efficient location to find at getDatabasesPath().
@@ -44,8 +44,11 @@ class DatabaseLoader {
       _writesDatabase(path);
     }
 
+    // Used to reload the database from assets when its updated manually
+    //_reloadDatabaseFromAssets(path);
+
     // Open the database.
-    var db = await openDatabase(path, readOnly: true);
+    Database db = await openDatabase(path);//, readOnly: true);
 
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =
@@ -94,5 +97,12 @@ class DatabaseLoader {
 
     // Write and flush the bytes written
     await File(path).writeAsBytes(bytes, flush: true);
+  }
+
+  // Used to reload the database from assets when its updated manually
+  _reloadDatabaseFromAssets(String path)
+  {
+    deleteDatabase(path);
+    _writesDatabase(path);
   }
 }

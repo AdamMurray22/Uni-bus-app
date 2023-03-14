@@ -21,8 +21,10 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> screenList = [];
   int _selectedIndexBottomNavBar = 0;
 
-  _MainScreenState()
+  @override
+  initState()
   {
+    super.initState();
     _mapScreen = const MapScreen();
     _timetableScreen = const TimetableScreen();
     _aboutScreen = const AboutScreen();

@@ -6,6 +6,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Map/map_data_id_enum.dart';
 import '../Map/open_layers_map.dart';
+import '../MapData/map_data.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -27,7 +28,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _landmarkValueCheck = true;
 
   @override
-  void initState() {
+  initState() {
     _mapController = OpenLayersMap();
     MapDataLoader.getDataLoader().onDataLoaded((mapData) {
       setState(() {
@@ -44,31 +45,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     _mapController.onMarkerClicked((markerId) {
       setState(() {
-        _featureInfoTitle = "";
-        _featureInfo.clear();
-        _featureInfoVisible = true;
-        MapDataLoader.getDataLoader().onDataLoaded((mapData) {
-          Feature? feature = mapData.getFeaturesMap()[markerId];
-          if (feature == null) {
-            return;
-          }
-          _infoText = feature.toDisplay();
-          _featureInfoTitle = _infoText[0];
-          _infoText.removeAt(0);
-          for (String info in _infoText) {
-            _featureInfo.add(Text(
-              info,
-              textAlign: TextAlign.start,
-              overflow: TextOverflow.clip,
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                fontSize: 14,
-                color: Color(0xff000000),
-              ),
-            ));
-          }
-        });
+        _showMapFeatureInfoPanel(markerId);
       });
     });
 
@@ -83,8 +60,7 @@ class _MapScreenState extends State<MapScreen> {
             controller: SingleValueDropDownController(),
             clearOption: true,
             enableSearch: true,
-            textFieldDecoration:
-                const InputDecoration(hintText: "Enter location here"),
+            textFieldDecoration: const InputDecoration(hintText: "Search"),
             searchDecoration:
                 const InputDecoration(hintText: "Enter location here"),
             validator: (value) {
@@ -96,7 +72,13 @@ class _MapScreenState extends State<MapScreen> {
             },
             dropDownItemCount: 5,
             dropDownList: _dropDownList,
-            onChanged: (value) {},
+            onChanged: (value) {
+              setState(() {
+                _showMapFeatureInfoPanel(value.value);
+              });
+              _mapController.setMapCentreZoom(
+                  _getMapData().getFeaturesMap()[value.value]!);
+            },
           ),
           Stack(children: [
             Container(
@@ -151,7 +133,8 @@ class _MapScreenState extends State<MapScreen> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                   child: Text(
                                     _featureInfoTitle,
                                     textAlign: TextAlign.start,
@@ -265,5 +248,38 @@ class _MapScreenState extends State<MapScreen> {
         ],
       ),
     );
+  }
+
+  // Displays the info panel.
+  _showMapFeatureInfoPanel(String markerId) {
+    _featureInfoTitle = "";
+    _featureInfo.clear();
+    _featureInfoVisible = true;
+    MapData mapData = _getMapData();
+    Feature? feature = mapData.getFeaturesMap()[markerId];
+    if (feature == null) {
+      return;
+    }
+    _infoText = feature.toDisplay();
+    _featureInfoTitle = _infoText[0];
+    _infoText.removeAt(0);
+    for (String info in _infoText) {
+      _featureInfo.add(Text(
+        info,
+        textAlign: TextAlign.start,
+        overflow: TextOverflow.clip,
+        style: const TextStyle(
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          fontSize: 14,
+          color: Color(0xff000000),
+        ),
+      ));
+    }
+  }
+
+  // Returns the MapData
+  MapData _getMapData() {
+    return MapDataLoader.getDataLoader().getMapData();
   }
 }

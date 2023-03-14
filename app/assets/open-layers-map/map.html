@@ -30,8 +30,8 @@
 
     const map = new ol.Map({
         view: new ol.View({
-            center: new ol.proj.fromLonLat([-1.0809215, 50.790123]),
-            zoom: 14.5,
+            center: new ol.proj.fromLonLat([0, 0]),
+            zoom: 0,
         }),
         layers: [
             new ol.layer.Tile({
@@ -40,6 +40,11 @@
         ],
         target: 'js-map',
     });
+
+    function setCentreZoom(value) {
+        map.getView().setZoom(value.zoom);
+        map.getView().setCenter(ol.proj.fromLonLat([value.long, value.lat]));
+    }
 
 </script>
 
