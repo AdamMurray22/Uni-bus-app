@@ -19,25 +19,27 @@ class BusTime
   /// Returns whether the BusTime is later in the day than the current time.
   bool later()
   {
-    int currentHour = DateTime.now().hour;
-    currentHour == 0 ? currentHour = 24 : currentHour;
-    int currentMinute = DateTime.now().minute;
-    int currentTotalMins = currentMinute + (currentHour * 60);
-    return currentTotalMins <= _totalMins;
+    return _getCurrentTimeInMins() <= _totalMins;
   }
 
   /// Returns the time as a String.
   String toDisplayString()
   {
-    int currentHour = DateTime.now().hour;
-    currentHour == 0 ? currentHour = 24 : currentHour;
-    int currentMinute = DateTime.now().minute;
-    int currentTotalMins = currentMinute + (currentHour * 60);
     String displayString = _time;
+    int currentTotalMins = _getCurrentTimeInMins();
     if (_totalMins - currentTotalMins >= 0 && _totalMins - currentTotalMins <= 45)
     {
       displayString = "$displayString (${_totalMins - currentTotalMins}mins)";
     }
     return displayString;
+  }
+
+  // Returns the current time of day in minutes.
+  int _getCurrentTimeInMins()
+  {
+    int currentHour = DateTime.now().hour;
+    if (currentHour == 0) currentHour = 24;
+    int currentMinute = DateTime.now().minute;
+    return currentMinute + (currentHour * 60);
   }
 }
