@@ -16,6 +16,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
+
   late final OpenLayersMap _mapController;
   final List<DropDownValueModel> _dropDownList = [];
   final List<Text> _featureInfo = [];
@@ -30,7 +32,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   initState() {
     _mapController = OpenLayersMap();
-    MapDataLoader.getDataLoader().onDataLoaded((mapData) {
+    _dataLoader.onDataLoaded((mapData) {
       setState(() {
         for (Feature feature in mapData.getAllFeatures()) {
           _dropDownList
@@ -142,7 +144,7 @@ class _MapScreenState extends State<MapScreen> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontStyle: FontStyle.normal,
-                                      fontSize: 14,
+                                      fontSize: 20,
                                       color: Color(0xff000000),
                                     ),
                                   ),
@@ -193,7 +195,7 @@ class _MapScreenState extends State<MapScreen> {
                   value: _u1ValueCheck,
                 ),
                 const Text(
-                  "Uni building",
+                  "Uni buildings",
                   textAlign: TextAlign.start,
                   overflow: TextOverflow.clip,
                   style: TextStyle(
@@ -271,7 +273,7 @@ class _MapScreenState extends State<MapScreen> {
         style: const TextStyle(
           fontWeight: FontWeight.w400,
           fontStyle: FontStyle.normal,
-          fontSize: 14,
+          fontSize: 17,
           color: Color(0xff000000),
         ),
       ));
@@ -280,6 +282,6 @@ class _MapScreenState extends State<MapScreen> {
 
   // Returns the MapData
   MapData _getMapData() {
-    return MapDataLoader.getDataLoader().getMapData();
+    return _dataLoader.getMapData();
   }
 }
