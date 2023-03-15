@@ -33,7 +33,7 @@ class OpenLayersMap extends WebViewController {
   /// Toggles the visibility of the U1 bus stop markers on the map.
   toggleMarkers(MapDataId layerId, bool visible) {
     String jsObject = "{layerId: '${layerId.idPrefix}', visible: $visible}";
-    runJavaScript("toggleShowMarkers($jsObject)");
+    runJavaScript("toggleShowLayers($jsObject)");
   }
 
   /// Centres and zooms the map around the given marker.
