@@ -1,5 +1,6 @@
 import 'package:app/MapData/feature.dart';
 import 'package:app/MapData/map_data_loader.dart';
+import 'package:app/Sorts/comparator.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../Map/map_data_id_enum.dart';
 import '../Map/open_layers_map.dart';
 import '../MapData/map_data.dart';
+import '../Sorts/heap_sort.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -39,6 +41,43 @@ class _MapScreenState extends State<MapScreen> {
         for (Feature feature in mapData.getAllFeatures()) {
           _dropDownList
               .add(DropDownValueModel(name: feature.name, value: feature.id));
+        }
+      });
+      // Sorts the drop down list to show the uni buildings, then the bus stops,
+      // then the landmarks. With all three groups sorted alphabetically.
+      HeapSort.sort(_dropDownList, (DropDownValueModel model1, DropDownValueModel model2)
+      {
+        int assignIntFromMapDataId(MapDataId id) {
+          if (id == MapDataId.uniBuilding)
+          {
+            return 0;
+          }
+          else if (id == MapDataId.u1)
+          {
+            return 1;
+          }
+          else
+          {
+            return 2;
+          }
+        }
+
+        MapDataId model1Id = MapDataId.getMapDataIdEnumFromId(model1.value);
+        MapDataId model2Id = MapDataId.getMapDataIdEnumFromId(model1.value);
+        int idValue1 = assignIntFromMapDataId(model1Id);
+        int idValue2 = assignIntFromMapDataId(model2Id);
+
+        if (idValue1 == idValue2)
+        {
+          return Comparator.alphabeticalComparator(model1.name, model2.name);
+        }
+        else if (idValue1 < idValue2)
+        {
+          return Comparator.before;
+        }
+        else
+        {
+          return Comparator.after;
         }
       });
     });
