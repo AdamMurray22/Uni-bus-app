@@ -48,7 +48,7 @@ class DatabaseLoader {
     //_reloadDatabaseFromAssets(path);
 
     // Open the database.
-    Database db = await openDatabase(path);//, readOnly: true);
+    Database db = await openDatabase(path, readOnly: true);
 
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =

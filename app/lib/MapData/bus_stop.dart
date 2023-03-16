@@ -1,4 +1,4 @@
-import 'package:app/Sorts/comparator.dart';
+import 'package:app/Sorts/comparator_value.dart';
 import 'package:app/Sorts/heap_sort.dart';
 
 import 'bus_time.dart';
@@ -13,7 +13,7 @@ class BusStop extends Feature
   {
     times = HeapSort.sort(busTimes, (BusTime time1, BusTime time2)
     {
-      return ComparatorValue.same;
+      return time1.getTimeAsMins() <= time2.getTimeAsMins() ? ComparatorValue.before : ComparatorValue.after;
     });
   }
 

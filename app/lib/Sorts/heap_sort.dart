@@ -1,4 +1,4 @@
-import 'comparator.dart';
+import 'comparator_value.dart';
 
 /// Performs a heap sort.
 class HeapSort

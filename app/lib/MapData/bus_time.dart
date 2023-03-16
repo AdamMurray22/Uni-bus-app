@@ -34,6 +34,13 @@ class BusTime
     return displayString;
   }
 
+  /// Returns the time of this BusTime in minutes.
+  /// Times before 1am are given as if their hour is 24 instead of 0.
+  int getTimeAsMins()
+  {
+    return _totalMins;
+  }
+
   // Returns the current time of day in minutes.
   int _getCurrentTimeInMins()
   {
