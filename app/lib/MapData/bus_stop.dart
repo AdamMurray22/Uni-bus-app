@@ -11,10 +11,11 @@ class BusStop extends Feature
   /// The constructor assigning the id, name, longitude and latitude.
   BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> busTimes)
   {
-    times = HeapSort.sort(busTimes, (BusTime time1, BusTime time2)
+    HeapSort<BusTime> sortBusTimes = HeapSort<BusTime>((BusTime time1, BusTime time2)
     {
       return time1.getTimeAsMins() <= time2.getTimeAsMins() ? Comparator.before : Comparator.after;
     });
+    times = sortBusTimes.sort(busTimes);
   }
 
   /// Returns the bus stop in a format to be displayed on screen.

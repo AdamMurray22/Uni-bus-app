@@ -19,10 +19,11 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
+  late final HeapSort<DropDownValueModel> _dropDownSort;
 
   late final OpenLayersMap _mapController;
   late final SingleValueDropDownController _dropDownController;
-  final List<DropDownValueModel> _dropDownList = [];
+  late List<DropDownValueModel> _dropDownList = [];
   final List<Text> _featureInfo = [];
   String _featureInfoTitle = "";
 
@@ -31,6 +32,35 @@ class _MapScreenState extends State<MapScreen> {
   bool _u1ValueCheck = true;
   bool _uniBuildingValueCheck = true;
   bool _landmarkValueCheck = true;
+
+  _MapScreenState() {
+    // Sorts the drop down list to show the uni buildings, then the bus stops,
+    // then the landmarks. With all three groups sorted alphabetically.
+    _dropDownSort = HeapSort<DropDownValueModel>(
+        (DropDownValueModel model1, DropDownValueModel model2) {
+      int assignIntFromMapDataId(MapDataId id) {
+        if (id == MapDataId.uniBuilding) {
+          return 0;
+        } else if (id == MapDataId.u1) {
+          return 1;
+        } else {
+          return 2;
+        }
+      }
+
+      MapDataId model1Id = MapDataId.getMapDataIdEnumFromId(model1.value);
+      MapDataId model2Id = MapDataId.getMapDataIdEnumFromId(model2.value);
+      int idValue1 = assignIntFromMapDataId(model1Id);
+      int idValue2 = assignIntFromMapDataId(model2Id);
+      if (idValue1 == idValue2) {
+        return Comparator.alphabeticalComparator(model1.name, model2.name);
+      } else if (idValue1 < idValue2) {
+        return Comparator.before;
+      } else {
+        return Comparator.after;
+      }
+    });
+  }
 
   @override
   initState() {
@@ -42,43 +72,7 @@ class _MapScreenState extends State<MapScreen> {
           _dropDownList
               .add(DropDownValueModel(name: feature.name, value: feature.id));
         }
-      });
-      // Sorts the drop down list to show the uni buildings, then the bus stops,
-      // then the landmarks. With all three groups sorted alphabetically.
-      HeapSort.sort(_dropDownList, (DropDownValueModel model1, DropDownValueModel model2)
-      {
-        int assignIntFromMapDataId(MapDataId id) {
-          if (id == MapDataId.uniBuilding)
-          {
-            return 0;
-          }
-          else if (id == MapDataId.u1)
-          {
-            return 1;
-          }
-          else
-          {
-            return 2;
-          }
-        }
-
-        MapDataId model1Id = MapDataId.getMapDataIdEnumFromId(model1.value);
-        MapDataId model2Id = MapDataId.getMapDataIdEnumFromId(model1.value);
-        int idValue1 = assignIntFromMapDataId(model1Id);
-        int idValue2 = assignIntFromMapDataId(model2Id);
-
-        if (idValue1 == idValue2)
-        {
-          return Comparator.alphabeticalComparator(model1.name, model2.name);
-        }
-        else if (idValue1 < idValue2)
-        {
-          return Comparator.before;
-        }
-        else
-        {
-          return Comparator.after;
-        }
+        _dropDownList = _dropDownSort.sort(_dropDownList);
       });
     });
     super.initState();
