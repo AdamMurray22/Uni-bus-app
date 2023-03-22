@@ -107,15 +107,32 @@
     UserLocationLayer.isMarkerLayer = false;
     map.addLayer(UserLocationLayer);
 
+    // Enum to identify the type of layer
+    const layerEnum = {
+        markerLayer: 'markerLayer',
+        geoJsonLayer: 'geoJsonLayer'
+    };
+
     // Creates a hash map to map the given id's to the layers
     let IDLayersMap = new Map();
 
     // Maps the given id's to the layers
     function mapIdsToLayers(layerIds) {
-        IDLayersMap.set(layerIds.U1, [U1BusStopMarkersLayer]);
-        IDLayersMap.set(layerIds.UniBuilding, [UniBuildingMarkersLayer, busRouteLayer]);
-        IDLayersMap.set(layerIds.Landmark, [LandmarkMarkersLayer]);
-        IDLayersMap.set(layerIds.UserLocation, [UserLocationLayer]);
+        const U1Map = new Map();
+        const UniBuildingMap = new Map();
+        const LandmarkMap = new Map();
+        const UserLocationMap = new Map();
+
+        U1Map.set(layerEnum.markerLayer, U1BusStopMarkersLayer);
+        U1Map.set(layerEnum.geoJsonLayer, busRouteLayer);
+        UniBuildingMap.set(layerEnum.markerLayer, UniBuildingMarkersLayer);
+        LandmarkMap.set(layerEnum.markerLayer, LandmarkMarkersLayer);
+        UserLocationMap.set(layerEnum.markerLayer, UserLocationLayer);
+
+        IDLayersMap.set(layerIds.U1, U1Map);
+        IDLayersMap.set(layerIds.UniBuilding, UniBuildingMap);
+        IDLayersMap.set(layerIds.Landmark, LandmarkMap);
+        IDLayersMap.set(layerIds.UserLocation, UserLocationMap);
     }
 
 
@@ -140,7 +157,7 @@
     */
 
     function addMarker(markedFeature) {
-        const layer = IDLayersMap.get(markedFeature.layerId)[0];
+        const layer = IDLayersMap.get(markedFeature.layerId).get(layerEnum.markerLayer);
 
         const marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
         marker.setId(markedFeature.id);
@@ -152,7 +169,7 @@
     */
 
     function toggleShowLayers(visible) {
-        const layers = IDLayersMap.get(visible.layerId);
+        const layers = Array.from(IDLayersMap.get(visible.layerId).values());
         layers.forEach(function (layer) {
             layer.setVisible(visible.visible);
         })
@@ -186,9 +203,6 @@
             format: new ol.format.GeoJSON(),
         }),
         style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: [0, 0, 255, 0.25],
-            }),
             stroke: new ol.style.Stroke({
                 color: [0, 0, 255, 0.75],
                 width: 2,
@@ -199,6 +213,7 @@
     map.addLayer(busRouteLayer);
 
     function drawBusRouteLines(geoJson) {
+        busRouteLayer.getSource().addFeature(new ol.Feature(new ol.geom.Circle([-1.0960, 50.7958], 1e6)));
         busRouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(JSON.parse(geoJson.busRoute)));
     }
 </script>
