@@ -15,7 +15,7 @@
 </head>
 
 <body>
-<div id="js-map" class="map"></div>
+<div id="map" class="map"></div>
 </body>
 
 <script id="create-map">
@@ -34,7 +34,7 @@
                 source: new ol.source.OSM(),
             }),
         ],
-        target: 'js-map',
+        target: 'map',
     });
 
     function setCentreZoom(value) {
