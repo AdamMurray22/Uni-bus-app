@@ -12,7 +12,9 @@ import '../Sorts/heap_sort.dart';
 import '../wrapper/bool_wrapper.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({required this.onShowTimeTableButtonPressed, super.key});
+
+  final VoidCallback onShowTimeTableButtonPressed;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -30,6 +32,8 @@ class _MapScreenState extends State<MapScreen> {
   String _featureInfoTitle = "";
 
   List<String> _infoText = [];
+  late final MaterialButton _seeFullTimeTableButton;
+  MaterialButton? _seeFullTimeTableButtonHolder;
   bool _featureInfoVisible = false;
   final BoolWrapper _u1ValueCheck = BoolWrapper(true);
   final BoolWrapper _uniBuildingValueCheck = BoolWrapper(true);
@@ -55,12 +59,11 @@ class _MapScreenState extends State<MapScreen> {
       int idValue1 = assignIntFromMapDataId(model1Id);
       int idValue2 = assignIntFromMapDataId(model2Id);
       if (idValue1 == idValue2) {
-        return Comparator.alphabeticalComparator().call(model1.name, model2.name);
-      }
-      else if (idValue1 < idValue2) {
+        return Comparator.alphabeticalComparator()
+            .call(model1.name, model2.name);
+      } else if (idValue1 < idValue2) {
         return Comparator.before;
-      }
-      else {
+      } else {
         return Comparator.after;
       }
     });
@@ -82,6 +85,32 @@ class _MapScreenState extends State<MapScreen> {
         _dropDownList = _dropDownSort.sort(_dropDownList);
       });
     });
+    _seeFullTimeTableButton = MaterialButton(
+      onPressed: () {
+          widget.onShowTimeTableButtonPressed();
+      },
+      color: const Color(0xffffffff),
+      elevation: 0,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.zero,
+        side:
+        BorderSide(color: Color(0xff808080), width: 1),
+      ),
+      padding: const EdgeInsets.symmetric(
+          horizontal: 16, vertical: 8),
+      textColor: const Color(0xff000000),
+      height: 40,
+      minWidth: 140,
+      child: const Text(
+        textAlign: TextAlign.center,
+        "See full timetable here",
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+    );
     super.initState();
   }
 
@@ -126,8 +155,7 @@ class _MapScreenState extends State<MapScreen> {
               MapDataId valueId = MapDataId.getMapDataIdEnumFromId(value.value);
               setState(() {
                 _showMapFeatureInfoPanel(value.value);
-                if (!valueCheckMap[valueId]!.value)
-                {
+                if (!valueCheckMap[valueId]!.value) {
                   _mapCheckBoxChange(valueId, true);
                 }
               });
@@ -161,57 +189,65 @@ class _MapScreenState extends State<MapScreen> {
                   borderRadius: BorderRadius.zero,
                   border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
                 ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        trailing: IconButton(
-                          icon: const Icon(Icons.close),
-                          alignment: Alignment.topRight,
-                          onPressed: () {
-                            setState(() {
-                              _featureInfoVisible = false;
-                              _featureInfoTitle = "";
-                              _featureInfo.clear();
-                            });
-                          },
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                  child: Text(
-                                    _featureInfoTitle,
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.clip,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 20,
-                                      color: Color(0xff000000),
+                child: Stack(
+                  children: [
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          ListTile(
+                            trailing: IconButton(
+                              icon: const Icon(Icons.close),
+                              alignment: Alignment.topRight,
+                              onPressed: () {
+                                setState(() {
+                                  _featureInfoVisible = false;
+                                  _featureInfoTitle = "";
+                                  _featureInfo.clear();
+                                });
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 5, 10),
+                                    child: Text(
+                                      _featureInfoTitle,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.clip,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 20,
+                                        color: Color(0xff000000),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: _featureInfo),
-                              ]),
-                        ),
+                                  Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: _featureInfo),
+                                ]),
+                          ),
+                        ]),
+                    Positioned(
+                      child: Align(
+                        alignment: FractionalOffset.bottomCenter,
+                        child: _seeFullTimeTableButtonHolder,
                       ),
-                    ]),
+                    )
+                  ],
+                ),
               ),
             ),
           ]),
@@ -326,11 +362,11 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ));
     }
+    _seeFullTimeTableButtonHolder = MapDataId.getMapDataIdEnumFromId(markerId) == MapDataId.u1 ? _seeFullTimeTableButton : null;
   }
 
   // Toggles the checkbox and markers for that checkbox.
-  _mapCheckBoxChange(MapDataId id, bool value)
-  {
+  _mapCheckBoxChange(MapDataId id, bool value) {
     setState(() {
       valueCheckMap[id]?.value = value;
     });

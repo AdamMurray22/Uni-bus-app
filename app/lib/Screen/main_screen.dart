@@ -22,10 +22,16 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndexBottomNavBar = 0;
 
   @override
-  initState()
-  {
+  initState() {
     super.initState();
-    _mapScreen = const MapScreen();
+    _mapScreen = MapScreen(
+      onShowTimeTableButtonPressed: () {
+        setState(() {
+          _selectedIndexBottomNavBar = 1;
+
+        });
+      },
+    );
     _timetableScreen = const TimetableScreen();
     _aboutScreen = const AboutScreen();
 
@@ -70,9 +76,7 @@ class _MainScreenState extends State<MainScreen> {
           border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
         ),
         child: IndexedStack(
-          index: _selectedIndexBottomNavBar,
-          children: screenList
-        ),
+            index: _selectedIndexBottomNavBar, children: screenList),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
