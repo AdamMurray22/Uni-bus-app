@@ -49,7 +49,7 @@ class DatabaseLoader {
     }
 
     // Used to reload the database from assets when its updated manually
-    await _reloadDatabaseFromAssets(path);
+    //await _reloadDatabaseFromAssets(path);
 
     // Open the database.
     Database db = await openDatabase(path, readOnly: true);
