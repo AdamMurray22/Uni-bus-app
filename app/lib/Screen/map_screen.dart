@@ -9,6 +9,7 @@ import '../Map/map_data_id_enum.dart';
 import '../Map/open_layers_map.dart';
 import '../MapData/map_data.dart';
 import '../Sorts/heap_sort.dart';
+import '../wrapper/bool_wrapper.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -24,14 +25,15 @@ class _MapScreenState extends State<MapScreen> {
   late final OpenLayersMap _mapController;
   late final SingleValueDropDownController _dropDownController;
   late List<DropDownValueModel> _dropDownList = [];
+  final Map<MapDataId, BoolWrapper> valueCheckMap = {};
   final List<Text> _featureInfo = [];
   String _featureInfoTitle = "";
 
   List<String> _infoText = [];
   bool _featureInfoVisible = false;
-  bool _u1ValueCheck = true;
-  bool _uniBuildingValueCheck = true;
-  bool _landmarkValueCheck = true;
+  final BoolWrapper _u1ValueCheck = BoolWrapper(true);
+  final BoolWrapper _uniBuildingValueCheck = BoolWrapper(true);
+  final BoolWrapper _landmarkValueCheck = BoolWrapper(true);
 
   _MapScreenState() {
     // Sorts the drop down list to show the uni buildings, then the bus stops,
@@ -66,6 +68,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   initState() {
+    valueCheckMap[MapDataId.u1] = _u1ValueCheck;
+    valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
+    valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
     _mapController = OpenLayersMap();
     _dropDownController = SingleValueDropDownController();
     _dataLoader.onDataLoaded((mapData) {
@@ -118,8 +123,13 @@ class _MapScreenState extends State<MapScreen> {
                 });
                 return;
               }
+              MapDataId valueId = MapDataId.getMapDataIdEnumFromId(value.value);
               setState(() {
                 _showMapFeatureInfoPanel(value.value);
+                if (!valueCheckMap[valueId]!.value)
+                {
+                  _mapCheckBoxChange(valueId, true);
+                }
               });
               _mapController.setMapCentreZoom(
                   _getMapData().getFeaturesMap()[value.value]!);
@@ -225,17 +235,14 @@ class _MapScreenState extends State<MapScreen> {
                 ),
                 Checkbox(
                   onChanged: (value) {
-                    setState(() {
-                      _u1ValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.u1, value!);
+                    _mapCheckBoxChange(MapDataId.u1, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
                   checkColor: Color(0xffffffff),
                   hoverColor: Color(0x42000000),
                   splashRadius: 20,
-                  value: _u1ValueCheck,
+                  value: _u1ValueCheck.value,
                 ),
                 const Text(
                   "Uni buildings",
@@ -250,17 +257,14 @@ class _MapScreenState extends State<MapScreen> {
                 ),
                 Checkbox(
                   onChanged: (value) {
-                    setState(() {
-                      _uniBuildingValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.uniBuilding, value!);
+                    _mapCheckBoxChange(MapDataId.uniBuilding, value!);
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
                   checkColor: Color(0xffffffff),
                   hoverColor: Color(0x42000000),
                   splashRadius: 20,
-                  value: _uniBuildingValueCheck,
+                  value: _uniBuildingValueCheck.value,
                 ),
                 const Text(
                   "Landmarks",
@@ -275,17 +279,18 @@ class _MapScreenState extends State<MapScreen> {
                 ),
                 Checkbox(
                   onChanged: (value) {
-                    setState(() {
+                    _mapCheckBoxChange(MapDataId.landmark, value!);
+                    /*setState(() {
                       _landmarkValueCheck = value!;
                     });
-                    _mapController.toggleMarkers(MapDataId.landmark, value!);
+                    _mapController.toggleMarkers(MapDataId.landmark, value!);*/
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
                   checkColor: Color(0xffffffff),
                   hoverColor: Color(0x42000000),
                   splashRadius: 20,
-                  value: _landmarkValueCheck,
+                  value: _landmarkValueCheck.value,
                 ),
               ],
             ),
@@ -321,6 +326,14 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ));
     }
+  }
+
+  _mapCheckBoxChange(MapDataId id, bool value)
+  {
+    setState(() {
+      valueCheckMap[id]?.value = value;
+    });
+    _mapController.toggleMarkers(id, value);
   }
 
   // Returns the MapData
