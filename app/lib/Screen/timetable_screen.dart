@@ -22,22 +22,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
   void initState() {
     MapDataLoader.getDataLoader().onDataLoaded((mapData) {
       setState(() {
+        // Adds all the bus stops to the timetable.
         for (BusStop busStop in mapData.getAllBusStops())
         {
-          List<DropdownMenuItem<String>> times = [];
-          times.add(DropdownMenuItem(value: busStop.name, child: Text(busStop.name),));
-          for (BusTime time in busStop.getDepartureTimes())
+          if (busStop.getHasSeparateArrDepTimes())
           {
-            times.add(DropdownMenuItem(value: time.toDisplayString(), child: Text(time.toDisplayString()),));
+            _addBusStop("${busStop.name} (Arrivals)", busStop.getArrivalTimes());
+            _addBusStop("${busStop.name} (Departures)", busStop.getDepartureTimes());
           }
-          dropDownButtons.add(DropdownButton(
-            value: busStop.name,
-            items: times,
-            menuMaxHeight: 500,
-            onChanged: (value) {  },
-            elevation: 8,
-            isExpanded: true,
-          ));
+          else
+          {
+            _addBusStop(busStop.name, busStop.getDepartureTimes());
+          }
         }
 
         // Sorts the bus stops so that the stops that the bus gets too first
@@ -103,6 +99,25 @@ class _TimetableScreenState extends State<TimetableScreen> {
             ),
           ),],
       ),
+    ));
+  }
+
+  // Adds a bus stop to the timetable.
+  _addBusStop(String busStopName, Iterable<BusTime> busTimes)
+  {
+    List<DropdownMenuItem<String>> times = [];
+    times.add(DropdownMenuItem(value: busStopName, child: Text(busStopName),));
+    for (BusTime time in busTimes)
+    {
+      times.add(DropdownMenuItem(value: time.toDisplayString(), child: Text(time.toDisplayString()),));
+    }
+    dropDownButtons.add(DropdownButton(
+      value: busStopName,
+      items: times,
+      menuMaxHeight: 500,
+      onChanged: (value) {  },
+      elevation: 8,
+      isExpanded: true,
     ));
   }
 }

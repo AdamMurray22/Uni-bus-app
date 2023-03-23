@@ -70,4 +70,10 @@ class BusStop extends Feature
   {
     return _arrTimes;
   }
+
+  /// Returns whether the bus stop has separate arrival and departure times.
+  bool getHasSeparateArrDepTimes()
+  {
+    return _separateArrDepTimes;
+  }
 }
