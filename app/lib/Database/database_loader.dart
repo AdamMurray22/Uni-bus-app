@@ -86,7 +86,11 @@ class DatabaseLoader {
       {
         arrTimes[map["bus_stop_id"]] = [];
       }
-      arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"]));
+      String? time = map["arrive_time"];
+      if (time != null)
+      {
+        arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"]));
+      }
     }
 
     // Copy's the Bus Time's depart table into a map from bus stop id's to BusTime objects.
