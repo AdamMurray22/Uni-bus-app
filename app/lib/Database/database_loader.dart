@@ -7,10 +7,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tuple/tuple.dart';
 
+import '../MapData/bus_running_date.dart';
+
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple2<Set<Feature>, Map<String, List<BusTime>>>? _data;
+  Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>? _data;
 
   DatabaseLoader._();
 
@@ -23,14 +25,14 @@ class DatabaseLoader {
 
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
-  Future<Tuple2<Set<Feature>, Map<String, List<BusTime>>>> load() async
+  Future<Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>> load() async
   {
     _data ??= await _loadDatabase();
     return _data!;
   }
 
   // Loads the database and returns a List of Features.
-   Future<Tuple2<Set<Feature>, Map<String, List<BusTime>>>> _loadDatabase() async
+   Future<Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>> _loadDatabase() async
   {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _relativePath);
@@ -45,7 +47,7 @@ class DatabaseLoader {
     }
 
     // Used to reload the database from assets when its updated manually
-    //_reloadDatabaseFromAssets(path);
+    //await _reloadDatabaseFromAssets(path);
 
     // Open the database.
     Database db = await openDatabase(path, readOnly: true);
@@ -54,8 +56,13 @@ class DatabaseLoader {
     List<Map<String, Object?>> featuresList =
       await db.rawQuery('SELECT * FROM Feature');
 
+    // Gets the bus times table
     List<Map<String, Object?>> busTimesList =
       await db.rawQuery('SELECT * FROM Bus_Times');
+
+    // Gets the bus running dates table
+    List<Map<String, Object?>> busRunningDatesList =
+      await db.rawQuery('SELECT * FROM Bus_Running_Dates');
 
     await db.close();
 
@@ -76,7 +83,13 @@ class DatabaseLoader {
       times[map["bus_stop_id"]]!.add(BusTime(map["time"]));
     }
 
-    _data = Tuple2(features, times);
+    // Copy's the bus running dates table into a set.
+    Set<BusRunningDate> dates = {};
+    for (Map map in busRunningDatesList) {
+      dates.add(BusRunningDate(map["start_date"], map["end_date"]));
+    }
+
+    _data = Tuple3(features, times, dates);
     return _data!;
   }
 
@@ -100,9 +113,8 @@ class DatabaseLoader {
   }
 
   // Used to reload the database from assets when its updated manually
-  _reloadDatabaseFromAssets(String path)
-  {
+  _reloadDatabaseFromAssets(String path) async {
     deleteDatabase(path);
-    _writesDatabase(path);
+    await _writesDatabase(path);
   }
 }

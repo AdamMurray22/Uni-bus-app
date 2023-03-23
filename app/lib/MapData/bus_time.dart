@@ -5,6 +5,7 @@ class BusTime
   late final int _hour;
   late final int _minute;
   late final int _totalMins;
+  late bool _isBusRunning;
 
   /// The constructor assigning the time
   BusTime(String time)
@@ -25,6 +26,10 @@ class BusTime
   /// Returns the time as a String.
   String toDisplayString()
   {
+    if (!_isBusRunning)
+    {
+      return _time;
+    }
     String displayString = _time;
     int currentTotalMins = _getCurrentTimeInMins();
     if (_totalMins - currentTotalMins >= 0 && _totalMins - currentTotalMins <= 45)
@@ -39,6 +44,12 @@ class BusTime
   int getTimeAsMins()
   {
     return _totalMins;
+  }
+
+  /// Sets whether the buses are running on that day.
+  setIsBusRunning(bool isBusRunning)
+  {
+    _isBusRunning = isBusRunning;
   }
 
   // Returns the current time of day in minutes.

@@ -8,9 +8,15 @@ import 'feature.dart';
 class BusStop extends Feature
 {
   late final List<BusTime> times;
+  final bool _isBusRunning;
+
   /// The constructor assigning the id, name, longitude and latitude.
-  BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> busTimes)
+  BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> busTimes, this._isBusRunning)
   {
+    for (BusTime time in busTimes)
+    {
+      time.setIsBusRunning(_isBusRunning);
+    }
     HeapSort<BusTime> sortBusTimes = HeapSort<BusTime>((BusTime time1, BusTime time2)
     {
       return time1.getTimeAsMins() <= time2.getTimeAsMins() ? Comparator.before : Comparator.after;
@@ -26,7 +32,7 @@ class BusStop extends Feature
     int i = 0;
     for (BusTime time in times)
     {
-      if (time.later())
+      if (!_isBusRunning || time.later())
       {
         if (i <= 20) {
           displayList.add(time.toDisplayString());
