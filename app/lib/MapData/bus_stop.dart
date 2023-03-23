@@ -9,30 +9,30 @@ class BusStop extends Feature
 {
   late final List<BusTime> arrTimes;
   late final List<BusTime> depTimes;
-  late final bool separteArrDepTimes;
+  late final bool separateArrDepTimes;
   final bool _isBusRunning;
 
   /// The constructor assigning the id, name, longitude and latitude.
-  BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> arrBusTimes, Iterable<BusTime>? depBusTimes, this._isBusRunning)
+  BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> arrBusTimes, Iterable<BusTime> depBusTimes, this._isBusRunning)
   {
     if (depBusTimes == null)
     {
-      separteArrDepTimes = false;
+      separateArrDepTimes = false;
     }
     else
     {
-      separteArrDepTimes = true;
+      separateArrDepTimes = true;
     }
     HeapSort<BusTime> sortBusTimes = HeapSort<BusTime>((BusTime time1, BusTime time2)
     {
       return time1.getTimeAsMins() <= time2.getTimeAsMins() ? Comparator.before : Comparator.after;
     });
-    for (BusTime time in {...arrBusTimes, ...?depBusTimes})
+    for (BusTime time in {...arrBusTimes, ...depBusTimes})
     {
       time.setIsBusRunning(_isBusRunning);
     }
     arrTimes = sortBusTimes.sort(arrBusTimes);
-    if (depBusTimes != null)
+    if (depBusTimes.isNotEmpty)
     {
       depTimes = sortBusTimes.sort(depBusTimes);
     }
@@ -48,7 +48,7 @@ class BusStop extends Feature
   {
     List<String> displayList = super.toDisplay();
     int i = 0;
-    for (BusTime time in arrTimes)
+    for (BusTime time in depTimes)
     {
       if (!_isBusRunning || time.later())
       {

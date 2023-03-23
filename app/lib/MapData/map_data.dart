@@ -17,7 +17,7 @@ class MapData
   {
     Set<Feature> features = mapData.item1;
     Map<String, List<BusTime>> busArrTimes = mapData.item2;
-    Map<String, List<BusTime>> busDepTimes = mapData.item2;
+    Map<String, List<BusTime>> busDepTimes = mapData.item3;
     Set<BusRunningDate> busRunningDates = mapData.item4;
     _busStops = {};
     _otherFeatures = {};
