@@ -213,7 +213,7 @@
     map.addLayer(busRouteLayer);
 
     function drawBusRouteLines(geoJson) {
-        busRouteLayer.getSource().addFeature(new ol.Feature(new ol.geom.Circle([-1.0960, 50.7958], 1e6)));
+       // busRouteLayer.getSource().addFeature(new ol.Feature(new ol.geom.Circle([-1.0960, 50.7958], 1e6)));
         busRouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(JSON.parse(geoJson.busRoute)));
     }
 </script>
