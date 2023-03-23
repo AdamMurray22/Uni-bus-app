@@ -328,6 +328,7 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  // Toggles the checkbox and markers for that checkbox.
   _mapCheckBoxChange(MapDataId id, bool value)
   {
     setState(() {
