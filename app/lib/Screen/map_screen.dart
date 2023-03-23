@@ -53,10 +53,12 @@ class _MapScreenState extends State<MapScreen> {
       int idValue1 = assignIntFromMapDataId(model1Id);
       int idValue2 = assignIntFromMapDataId(model2Id);
       if (idValue1 == idValue2) {
-        return Comparator.alphabeticalComparator(model1.name, model2.name);
-      } else if (idValue1 < idValue2) {
+        return Comparator.alphabeticalComparator().call(model1.name, model2.name);
+      }
+      else if (idValue1 < idValue2) {
         return Comparator.before;
-      } else {
+      }
+      else {
         return Comparator.after;
       }
     });
