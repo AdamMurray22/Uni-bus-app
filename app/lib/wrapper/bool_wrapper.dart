@@ -1,3 +1,4 @@
+/// Wrapper for bool.
 class BoolWrapper
 {
   bool value;
