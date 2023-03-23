@@ -12,7 +12,7 @@ import '../MapData/bus_running_date.dart';
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>? _data;
+  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>? _data;
 
   DatabaseLoader._();
 
@@ -25,14 +25,14 @@ class DatabaseLoader {
 
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
-  Future<Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>> load() async
+  Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>> load() async
   {
     _data ??= await _loadDatabase();
     return _data!;
   }
 
   // Loads the database and returns a List of Features.
-   Future<Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>>> _loadDatabase() async
+   Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>> _loadDatabase() async
   {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _relativePath);
@@ -56,7 +56,7 @@ class DatabaseLoader {
     List<Map<String, Object?>> featuresList =
       await db.rawQuery('SELECT * FROM Feature');
 
-    // Gets the bus times table
+    // Gets the bus arrTimes table
     List<Map<String, Object?>> busTimesList =
       await db.rawQuery('SELECT * FROM Bus_Times');
 
@@ -73,14 +73,28 @@ class DatabaseLoader {
           map["longitude"], map["latitude"]));
     }
 
-    // Copy's the Bus Time's table into a map from bus stop id's to BusTime objects.
-    Map<String, List<BusTime>> times = {};
+    // Copy's the Bus Time's arrive table into a map from bus stop id's to BusTime objects.
+    Map<String, List<BusTime>> arrTimes = {};
     for (Map map in busTimesList) {
-      if (times[map["bus_stop_id"]] == null)
+      if (arrTimes[map["bus_stop_id"]] == null)
       {
-        times[map["bus_stop_id"]] = [];
+        arrTimes[map["bus_stop_id"]] = [];
       }
-      times[map["bus_stop_id"]]!.add(BusTime(map["time"]));
+      arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"]));
+    }
+
+    // Copy's the Bus Time's depart table into a map from bus stop id's to BusTime objects.
+    Map<String, List<BusTime>> depTimes = {};
+    for (Map map in busTimesList) {
+      if (depTimes[map["bus_stop_id"]] == null)
+      {
+        depTimes[map["bus_stop_id"]] = [];
+      }
+      String? time = map["depart_time"];
+      if (time != null)
+      {
+        depTimes[map["bus_stop_id"]]!.add(BusTime(map["depart_time"]));
+      }
     }
 
     // Copy's the bus running dates table into a set.
@@ -89,7 +103,7 @@ class DatabaseLoader {
       dates.add(BusRunningDate(map["start_date"], map["end_date"]));
     }
 
-    _data = Tuple3(features, times, dates);
+    _data = Tuple4(features, arrTimes, depTimes, dates);
     return _data!;
   }
 

@@ -31,7 +31,8 @@ class MapDataLoader
   load() async
   {
     DatabaseLoader loader = DatabaseLoader.getDataBaseLoader();
-    Tuple3<Set<Feature>, Map<String, List<BusTime>>, Set<BusRunningDate>> mapData = await loader.load();
+    Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
+        Set<BusRunningDate>> mapData = await loader.load();
     _data = MapData(mapData);
 
     // Sets _loadingFinished to true and runs any functions given to

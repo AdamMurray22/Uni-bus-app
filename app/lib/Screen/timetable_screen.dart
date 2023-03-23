@@ -26,7 +26,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         {
           List<DropdownMenuItem<String>> times = [];
           times.add(DropdownMenuItem(value: busStop.name, child: Text(busStop.name),));
-          for (BusTime time in busStop.times)
+          for (BusTime time in busStop.depTimes)
           {
             times.add(DropdownMenuItem(value: time.toDisplayString(), child: Text(time.toDisplayString()),));
           }
@@ -39,6 +39,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
             isExpanded: true,
           ));
         }
+
         // Sorts the bus stops so that the stops that the bus gets too first
         // appear at the top of the screen.
         HeapSort<DropdownButton<String>> sort = HeapSort<DropdownButton<String>>((item1, item2)
