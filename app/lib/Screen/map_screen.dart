@@ -193,7 +193,7 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           ListTile(
@@ -234,7 +234,7 @@ class _MapScreenState extends State<MapScreen> {
                                   Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.max,
                                       children: _featureInfo),
                                 ]),
@@ -316,10 +316,6 @@ class _MapScreenState extends State<MapScreen> {
                 Checkbox(
                   onChanged: (value) {
                     _mapCheckBoxChange(MapDataId.landmark, value!);
-                    /*setState(() {
-                      _landmarkValueCheck = value!;
-                    });
-                    _mapController.toggleMarkers(MapDataId.landmark, value!);*/
                   },
                   activeColor: Color(0xff3a57e8),
                   autofocus: false,
@@ -346,7 +342,7 @@ class _MapScreenState extends State<MapScreen> {
     if (feature == null) {
       return;
     }
-    _infoText = feature.toDisplay();
+    _infoText = feature.toDisplayInfoScreen();
     _featureInfoTitle = _infoText[0];
     _infoText.removeAt(0);
     for (String info in _infoText) {

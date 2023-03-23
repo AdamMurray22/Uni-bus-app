@@ -26,7 +26,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         {
           List<DropdownMenuItem<String>> times = [];
           times.add(DropdownMenuItem(value: busStop.name, child: Text(busStop.name),));
-          for (BusTime time in busStop.depTimes)
+          for (BusTime time in busStop.getDepartureTimes())
           {
             times.add(DropdownMenuItem(value: time.toDisplayString(), child: Text(time.toDisplayString()),));
           }

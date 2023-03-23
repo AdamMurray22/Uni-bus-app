@@ -7,9 +7,9 @@ import 'feature.dart';
 /// Holds the information for a bus stop.
 class BusStop extends Feature
 {
-  late final List<BusTime> arrTimes;
-  late final List<BusTime> depTimes;
-  late final bool separateArrDepTimes;
+  late final List<BusTime> _arrTimes;
+  late final List<BusTime> _depTimes;
+  late final bool _separateArrDepTimes;
   final bool _isBusRunning;
 
   /// The constructor assigning the id, name, longitude and latitude.
@@ -23,26 +23,30 @@ class BusStop extends Feature
     {
       time.setIsBusRunning(_isBusRunning);
     }
-    arrTimes = sortBusTimes.sort(arrBusTimes);
+    _arrTimes = sortBusTimes.sort(arrBusTimes);
     if (depBusTimes.isNotEmpty)
     {
-      depTimes = sortBusTimes.sort(depBusTimes);
-      separateArrDepTimes = false;
+      _depTimes = sortBusTimes.sort(depBusTimes);
+      _separateArrDepTimes = true;
     }
     else
     {
-      depTimes = arrTimes;
-      separateArrDepTimes = true;
+      _depTimes = _arrTimes;
+      _separateArrDepTimes = false;
     }
   }
 
-  /// Returns the bus stop in a format to be displayed on screen.
+  /// Returns the bus stop in a format to be displayed on the info screen.
   @override
-  List<String> toDisplay()
+  List<String> toDisplayInfoScreen()
   {
-    List<String> displayList = super.toDisplay();
+    List<String> displayList = super.toDisplayInfoScreen();
+    if (_separateArrDepTimes)
+    {
+      displayList.add("Departures:");
+    }
     int i = 0;
-    for (BusTime time in depTimes)
+    for (BusTime time in _depTimes)
     {
       if (!_isBusRunning || time.later())
       {
@@ -53,5 +57,17 @@ class BusStop extends Feature
       }
     }
     return displayList;
+  }
+
+  /// Returns the departure times.
+  List<BusTime> getDepartureTimes()
+  {
+    return _depTimes;
+  }
+
+  /// Returns the arrival times.
+  List<BusTime> getArrivalTimes()
+  {
+    return _arrTimes;
   }
 }

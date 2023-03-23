@@ -16,7 +16,7 @@ class Feature
   }
 
   /// Returns the feature in a format to be displayed on screen.
-  List<String> toDisplay()
+  List<String> toDisplayInfoScreen()
   {
     return [name];
   }
