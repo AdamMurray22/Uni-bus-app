@@ -3,14 +3,14 @@ import 'package:intl/intl.dart';
 import '../Sorts/heap_sort.dart';
 import 'package:app/Sorts/comparator.dart';
 
-class BusRunningDate
+class TermDates
 {
   late final String _startDate;
   late final String _endDate;
 
   /// Constructor requires a start date and end date both in the form:
   /// YYYY/MM/DD.
-  BusRunningDate(String startDate, String endDate)
+  TermDates(String startDate, String endDate)
   {
     _startDate = startDate;
     _endDate = endDate;

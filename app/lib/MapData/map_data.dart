@@ -1,7 +1,8 @@
 import 'package:tuple/tuple.dart';
 
 import '../Map/map_data_id_enum.dart';
-import 'bus_running_date.dart';
+import 'bus_running_dates.dart';
+import 'term_dates.dart';
 import 'bus_stop.dart';
 import 'bus_time.dart';
 import 'feature.dart';
@@ -13,15 +14,15 @@ class MapData
   late final Map<String, Feature> _otherFeatures;
 
   /// The constructor creating the Map of features.
-  MapData(Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>> mapData)
+  MapData(Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates> mapData)
   {
     Set<Feature> features = mapData.item1;
     Map<String, List<BusTime>> busArrTimes = mapData.item2;
     Map<String, List<BusTime>> busDepTimes = mapData.item3;
-    Set<BusRunningDate> busRunningDates = mapData.item4;
+    BusRunningDates busRunningDates = mapData.item4;
     _busStops = {};
     _otherFeatures = {};
-    bool isBusRunning = _isBusRunning(busRunningDates);
+    bool isBusRunning = busRunningDates.isBusRunning();
     for (Feature feature in features)
     {
       if (MapDataId.getMapDataIdEnumFromId(feature.id) == MapDataId.u1)
@@ -50,23 +51,5 @@ class MapData
   Iterable<BusStop> getAllBusStops()
   {
     return _busStops.values;
-  }
-
-  bool _isBusRunning(Iterable<BusRunningDate> busRunningDates)
-  {
-    // Checks if the current day is a week day or weekend.
-    if (DateTime.now().weekday >= 6)
-    {
-      return false;
-    }
-    // Checks if the current day is within one of the bus running dates.
-    for (BusRunningDate date in busRunningDates)
-    {
-      if (date.currentDateValid())
-      {
-        return true;
-      }
-    }
-    return false;
   }
 }

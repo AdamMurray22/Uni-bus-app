@@ -2,17 +2,19 @@ import 'dart:io';
 
 import 'package:app/MapData/bus_time.dart';
 import 'package:app/MapData/feature.dart';
+import 'package:app/MapData/national_holiday.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tuple/tuple.dart';
 
-import '../MapData/bus_running_date.dart';
+import '../MapData/bus_running_dates.dart';
+import '../MapData/term_dates.dart';
 
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>? _data;
+  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>? _data;
 
   DatabaseLoader._();
 
@@ -25,14 +27,14 @@ class DatabaseLoader {
 
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
-  Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>> load() async
+  Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>> load() async
   {
     _data ??= await _loadDatabase();
     return _data!;
   }
 
   // Loads the database and returns a List of Features.
-   Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, Set<BusRunningDate>>> _loadDatabase() async
+   Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>> _loadDatabase() async
   {
     String databasesPath = await getDatabasesPath();
     String path = join(databasesPath, _relativePath);
@@ -47,7 +49,7 @@ class DatabaseLoader {
     }
 
     // Used to reload the database from assets when its updated manually
-    //await _reloadDatabaseFromAssets(path);
+    await _reloadDatabaseFromAssets(path);
 
     // Open the database.
     Database db = await openDatabase(path, readOnly: true);
@@ -60,9 +62,13 @@ class DatabaseLoader {
     List<Map<String, Object?>> busTimesList =
       await db.rawQuery('SELECT * FROM Bus_Times');
 
-    // Gets the bus running dates table
+    // Gets the bus running termDates table
     List<Map<String, Object?>> busRunningDatesList =
-      await db.rawQuery('SELECT * FROM Bus_Running_Dates');
+      await db.rawQuery('SELECT * FROM Term_Dates');
+
+    // Gets the national holidays table
+    List<Map<String, Object?>> nationalHolidaysList =
+    await db.rawQuery('SELECT * FROM National_Holidays');
 
     await db.close();
 
@@ -97,13 +103,21 @@ class DatabaseLoader {
       }
     }
 
-    // Copy's the bus running dates table into a set.
-    Set<BusRunningDate> dates = {};
+    // Copy's the bus running termDates table into a set.
+    Set<TermDates> termDates = {};
     for (Map map in busRunningDatesList) {
-      dates.add(BusRunningDate(map["start_date"], map["end_date"]));
+      termDates.add(TermDates(map["start_date"], map["end_date"]));
     }
 
-    _data = Tuple4(features, arrTimes, depTimes, dates);
+    // Copy's the national holidays table into a set.
+    Set<NationalHoliday> nationalHolidays = {};
+    for (Map map in nationalHolidaysList) {
+      nationalHolidays.add(NationalHoliday(map["date"]));
+    }
+
+    BusRunningDates runningDates = BusRunningDates(termDates, nationalHolidays);
+
+    _data = Tuple4(features, arrTimes, depTimes, runningDates);
     return _data!;
   }
 

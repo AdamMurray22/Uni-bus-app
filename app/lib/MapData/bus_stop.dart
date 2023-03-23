@@ -15,14 +15,6 @@ class BusStop extends Feature
   /// The constructor assigning the id, name, longitude and latitude.
   BusStop(super. id, super.name, super.long, super.lat, Iterable<BusTime> arrBusTimes, Iterable<BusTime> depBusTimes, this._isBusRunning)
   {
-    if (depBusTimes == null)
-    {
-      separateArrDepTimes = false;
-    }
-    else
-    {
-      separateArrDepTimes = true;
-    }
     HeapSort<BusTime> sortBusTimes = HeapSort<BusTime>((BusTime time1, BusTime time2)
     {
       return time1.getTimeAsMins() <= time2.getTimeAsMins() ? Comparator.before : Comparator.after;
@@ -35,10 +27,12 @@ class BusStop extends Feature
     if (depBusTimes.isNotEmpty)
     {
       depTimes = sortBusTimes.sort(depBusTimes);
+      separateArrDepTimes = false;
     }
     else
     {
       depTimes = arrTimes;
+      separateArrDepTimes = true;
     }
   }
 

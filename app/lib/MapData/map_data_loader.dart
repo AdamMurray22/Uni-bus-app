@@ -1,9 +1,8 @@
-import 'package:app/MapData/bus_stop.dart';
 import 'package:app/MapData/feature.dart';
 import 'package:tuple/tuple.dart';
 
 import '../Database/database_loader.dart';
-import 'bus_running_date.dart';
+import 'bus_running_dates.dart';
 import 'bus_time.dart';
 import 'map_data.dart';
 
@@ -32,7 +31,7 @@ class MapDataLoader
   {
     DatabaseLoader loader = DatabaseLoader.getDataBaseLoader();
     Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
-        Set<BusRunningDate>> mapData = await loader.load();
+        BusRunningDates> mapData = await loader.load();
     _data = MapData(mapData);
 
     // Sets _loadingFinished to true and runs any functions given to
