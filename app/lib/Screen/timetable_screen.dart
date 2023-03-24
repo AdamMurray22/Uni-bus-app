@@ -8,6 +8,7 @@ import '../MapData/bus_time.dart';
 import '../MapData/map_data_loader.dart';
 import '../Sorts/heap_sort.dart';
 
+/// The screen that displays the timetable.
 class TimetableScreen extends StatefulWidget {
   const TimetableScreen({super.key});
 
@@ -18,6 +19,31 @@ class TimetableScreen extends StatefulWidget {
 class _TimetableScreenState extends State<TimetableScreen> {
   List<DropdownButton<String>> dropDownButtons = [];
 
+  // Comparator for the drop down buttons to sort by when the first bus gets to each bus stop.
+  Comparator Function(DropdownButton<String> item1, DropdownButton<String> item2) _dropDownButtonsComparator() {
+    return ((DropdownButton<String> item1, DropdownButton<String> item2) {
+      List<DropdownMenuItem<String>> times1 =
+      item1.items as List<DropdownMenuItem<String>>;
+      int hour1 = int.parse(times1[1].value!.substring(0, 2));
+      hour1 == 0 ? hour1 = 24 : hour1;
+      int minute1 = int.parse(times1[1].value!.substring(3, 5));
+      int firstTime1 = minute1 + (hour1 * 60);
+
+      List<DropdownMenuItem<String>> times2 =
+      item2.items as List<DropdownMenuItem<String>>;
+      int hour2 = int.parse(times2[1].value!.substring(0, 2));
+      hour2 == 0 ? hour2 = 24 : hour2;
+      int minute2 = int.parse(times2[1].value!.substring(3, 5));
+      int firstTime2 = minute2 + (hour2 * 60);
+
+      if (firstTime1 <= firstTime2) {
+        return Comparator.before;
+      }
+      return Comparator.after;
+    });
+  }
+
+  // Creates the timetable and sorts the bus stops.
   @override
   void initState() {
     MapDataLoader.getDataLoader().onDataLoaded((mapData) {
@@ -37,26 +63,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         // Sorts the bus stops so that the stops that the bus gets too first
         // appear at the top of the screen.
         HeapSort<DropdownButton<String>> sort =
-            HeapSort<DropdownButton<String>>((item1, item2) {
-          List<DropdownMenuItem<String>> times1 =
-              item1.items as List<DropdownMenuItem<String>>;
-          int hour1 = int.parse(times1[1].value!.substring(0, 2));
-          hour1 == 0 ? hour1 = 24 : hour1;
-          int minute1 = int.parse(times1[1].value!.substring(3, 5));
-          int firstTime1 = minute1 + (hour1 * 60);
-
-          List<DropdownMenuItem<String>> times2 =
-              item2.items as List<DropdownMenuItem<String>>;
-          int hour2 = int.parse(times2[1].value!.substring(0, 2));
-          hour2 == 0 ? hour2 = 24 : hour2;
-          int minute2 = int.parse(times2[1].value!.substring(3, 5));
-          int firstTime2 = minute2 + (hour2 * 60);
-
-          if (firstTime1 <= firstTime2) {
-            return Comparator.before;
-          }
-          return Comparator.after;
-        });
+            HeapSort<DropdownButton<String>>(_dropDownButtonsComparator());
         dropDownButtons = sort.sort(dropDownButtons);
       });
     });

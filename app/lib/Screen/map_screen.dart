@@ -11,6 +11,7 @@ import '../MapData/map_data.dart';
 import '../Sorts/heap_sort.dart';
 import '../wrapper/bool_wrapper.dart';
 
+/// The screen that displays the map.
 class MapScreen extends StatefulWidget {
   const MapScreen({required this.onShowTimeTableButtonPressed, super.key});
 
