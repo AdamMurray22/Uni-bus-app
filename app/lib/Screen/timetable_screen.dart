@@ -74,12 +74,12 @@ class _TimetableScreenState extends State<TimetableScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-        const Padding(
-        padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child:Text(
-              "The bus takes a one-way circular route, stopping at: ",
-              style: TextStyle(color: Colors.black),
-            )),
+            const Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Text(
+                  "The bus takes a one-way circular route, stopping at: ",
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                )),
             ...dropDownButtons,
             RichText(
               text: TextSpan(
@@ -87,7 +87,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   const TextSpan(
                     text:
                         'Buses only run on week days during term time excluding'
-                            ' bank holidays, check the ',
+                        ' bank holidays, check the ',
                     style: TextStyle(color: Colors.black),
                   ),
                   TextSpan(
@@ -100,7 +100,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                             host: 'myport.port.ac.uk',
                             path:
                                 '/life-at-uni/life-on-campus/getting-to-campus'
-                                    '/university-buses'));
+                                '/university-buses'));
                       },
                   ),
                   const TextSpan(
@@ -136,6 +136,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       onChanged: (value) {},
       elevation: 8,
       isExpanded: true,
+      underline: Container(),
     ));
   }
 }
