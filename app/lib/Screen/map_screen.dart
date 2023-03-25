@@ -127,139 +127,142 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
-              child: DropDownTextField(
-                controller: _dropDownController,
-                clearOption: true,
-                enableSearch: true,
-                textFieldDecoration: const InputDecoration(hintText: "Search"),
-                searchDecoration:
-                    const InputDecoration(hintText: "Enter location here"),
-                validator: (value) {
-                  if (value == null) {
-                    return "Required field";
-                  } else {
-                    return null;
-                  }
-                },
-                dropDownItemCount: 5,
-                dropDownList: _dropDownList,
-                onChanged: (value) {
-                  if (value == "") {
-                    setState(() {
-                      _featureInfoVisible = false;
-                    });
-                    return;
-                  }
-                  MapDataId valueId =
-                      MapDataId.getMapDataIdEnumFromId(value.value);
-                  setState(() {
-                    _showMapFeatureInfoPanel(value.value);
-                    if (!valueCheckMap[valueId]!.value) {
-                      _mapCheckBoxChange(valueId, true);
+      body: Stack(children: [
+        Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+                child: DropDownTextField(
+                  controller: _dropDownController,
+                  clearOption: true,
+                  enableSearch: true,
+                  textFieldDecoration:
+                      const InputDecoration(hintText: "Search"),
+                  searchDecoration:
+                      const InputDecoration(hintText: "Enter location here"),
+                  validator: (value) {
+                    if (value == null) {
+                      return "Required field";
+                    } else {
+                      return null;
                     }
-                  });
-                  _mapController.setMapCentreZoom(
-                      _getMapData().getFeaturesMap()[value.value]!);
-                },
-              ),
-            ),
-            Stack(children: [
-              Container(
-                  margin: const EdgeInsets.all(0),
-                  padding: const EdgeInsets.all(0),
-                  width: MediaQuery.of(context).size.width,
-                  height: mapScreenHeight,
-                  decoration: BoxDecoration(
-                    color: const Color(0x1f000000),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.zero,
-                    border:
-                        Border.all(color: const Color(0x4d9e9e9e), width: 1),
-                  ),
-                  child: WebViewWidget(controller: _mapController)),
-              Visibility(
-                visible: _featureInfoVisible, // not visible if set false
-                child: Container(
-                  margin: const EdgeInsets.all(0),
-                  padding: const EdgeInsets.all(0),
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  height: mapScreenHeight,
-                  decoration: BoxDecoration(
-                    color: const Color(0xff999999),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.zero,
-                    border:
-                        Border.all(color: const Color(0x4d9e9e9e), width: 1),
-                  ),
-                  child: Stack(
-                    children: [
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            ListTile(
-                              trailing: IconButton(
-                                icon: const Icon(Icons.close),
-                                alignment: Alignment.topRight,
-                                onPressed: () {
-                                  setState(() {
-                                    _featureInfoVisible = false;
-                                    _featureTitleText.clear();
-                                    _featureInfoText.clear();
-                                  });
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: _featureTitleText),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: _featureInfoText),
-                                  ]),
-                            ),
-                          ]),
-                      Positioned(
-                        child: Align(
-                          alignment: FractionalOffset.bottomCenter,
-                          child: _seeFullTimeTableButtonHolder,
-                        ),
-                      )
-                    ],
-                  ),
+                  },
+                  dropDownItemCount: 5,
+                  dropDownList: _dropDownList,
+                  onChanged: (value) {
+                    if (value == "") {
+                      setState(() {
+                        _featureInfoVisible = false;
+                      });
+                      return;
+                    }
+                    MapDataId valueId =
+                        MapDataId.getMapDataIdEnumFromId(value.value);
+                    setState(() {
+                      _showMapFeatureInfoPanel(value.value);
+                      if (!valueCheckMap[valueId]!.value) {
+                        _mapCheckBoxChange(valueId, true);
+                      }
+                    });
+                    _mapController.setMapCentreZoom(
+                        _getMapData().getFeaturesMap()[value.value]!);
+                  },
                 ),
               ),
+              Stack(children: [
+                Container(
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
+                    width: MediaQuery.of(context).size.width,
+                    height: mapScreenHeight,
+                    decoration: BoxDecoration(
+                      color: const Color(0x1f000000),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                      border:
+                          Border.all(color: const Color(0x4d9e9e9e), width: 1),
+                    ),
+                    child: WebViewWidget(controller: _mapController)),
+                Visibility(
+                  visible: _featureInfoVisible, // not visible if set false
+                  child: Container(
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    height: mapScreenHeight,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff999999),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                      border:
+                          Border.all(color: const Color(0x4d9e9e9e), width: 1),
+                    ),
+                    child: Stack(
+                      children: [
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              ListTile(
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  alignment: Alignment.topRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      _featureInfoVisible = false;
+                                      _featureTitleText.clear();
+                                      _featureInfoText.clear();
+                                    });
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: _featureTitleText),
+                                      Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: _featureInfoText),
+                                    ]),
+                              ),
+                            ]),
+                        Positioned(
+                          child: Align(
+                            alignment: FractionalOffset.bottomCenter,
+                            child: _seeFullTimeTableButtonHolder,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
             ]),
-            Stack(children: [
               Positioned(
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
                   child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child:  Row(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
@@ -335,8 +338,7 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
               ),
-            ]),
-          ]),
+      ]),
     );
   }
 
