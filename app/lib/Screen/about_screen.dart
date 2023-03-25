@@ -10,8 +10,10 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
+
   @override
   Widget build(BuildContext context) {
+    const double fontSize = 18;
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: Padding(
@@ -28,7 +30,7 @@ class _AboutScreenState extends State<AboutScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontStyle: FontStyle.normal,
-                fontSize: 14,
+                fontSize: fontSize,
                 color: Color(0xff000000),
               ),
             ),
@@ -44,7 +46,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'OpenLayers',
-                          style: const TextStyle(color: Colors.blue),
+                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(
@@ -53,11 +55,11 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text: ' which is licenced under the ',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'BSD 2-Clause License.',
-                          style: const TextStyle(color: Colors.blue),
+                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -70,7 +72,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         const TextSpan(
                           text:
                               " OpenLayers provides the Api to display and manipulate the map in this application.",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
@@ -81,7 +83,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'OpenStreetMap',
-                          style: const TextStyle(color: Colors.blue),
+                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -91,11 +93,11 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text: ' which is licenced under the ',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'Open Data Commons Open Database License.',
-                          style: const TextStyle(color: Colors.blue),
+                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -107,7 +109,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         const TextSpan(
                           text:
                               " Open Street Maps provides the data used for the map in this application.",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
