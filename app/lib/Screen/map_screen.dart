@@ -3,6 +3,7 @@ import 'package:app/MapData/map_data_loader.dart';
 import 'package:app/Sorts/comparator.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Map/map_data_id_enum.dart';
@@ -30,10 +31,11 @@ class _MapScreenState extends State<MapScreen> {
   late final SingleValueDropDownController _dropDownController;
   late List<DropDownValueModel> _dropDownList = [];
   final Map<MapDataId, BoolWrapper> valueCheckMap = {};
-  final List<Text> _featureInfo = [];
-  String _featureInfoTitle = "";
+  final List<Widget> _featureTitleText = [];
+  final List<Text> _featureInfoText = [];
 
-  List<String> _infoText = [];
+  List<String> _featureTitleStrings = [];
+  List<String> _infoStrings = [];
   late final MaterialButton _seeFullTimeTableButton;
   MaterialButton? _seeFullTimeTableButtonHolder;
   bool _featureInfoVisible = false;
@@ -41,7 +43,8 @@ class _MapScreenState extends State<MapScreen> {
   final BoolWrapper _uniBuildingValueCheck = BoolWrapper(true);
   final BoolWrapper _landmarkValueCheck = BoolWrapper(true);
 
-  _MapScreenState() {
+  @override
+  initState() {
     // Sorts the drop down list to show the uni buildings, then the bus stops,
     // then the landmarks. With all three groups sorted alphabetically.
     _dropDownSort = HeapSort<DropDownValueModel>(
@@ -69,10 +72,7 @@ class _MapScreenState extends State<MapScreen> {
         return Comparator.after;
       }
     });
-  }
 
-  @override
-  initState() {
     valueCheckMap[MapDataId.u1] = _u1ValueCheck;
     valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
     valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
@@ -95,11 +95,9 @@ class _MapScreenState extends State<MapScreen> {
       elevation: 0,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.zero,
-        side:
-        BorderSide(color: Color(0xff808080), width: 1),
+        side: BorderSide(color: Color(0xff808080), width: 1),
       ),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       textColor: const Color(0xff000000),
       height: 40,
       minWidth: 140,
@@ -205,8 +203,8 @@ class _MapScreenState extends State<MapScreen> {
                               onPressed: () {
                                 setState(() {
                                   _featureInfoVisible = false;
-                                  _featureInfoTitle = "";
-                                  _featureInfo.clear();
+                                  _featureTitleText.clear();
+                                  _featureInfoText.clear();
                                 });
                               },
                             ),
@@ -218,27 +216,18 @@ class _MapScreenState extends State<MapScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 5, 10),
-                                    child: Text(
-                                      _featureInfoTitle,
-                                      textAlign: TextAlign.start,
-                                      overflow: TextOverflow.clip,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        fontSize: 20,
-                                        color: Color(0xff000000),
-                                      ),
-                                    ),
-                                  ),
                                   Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.max,
-                                      children: _featureInfo),
+                                      children: _featureTitleText),
+                                  Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: _featureInfoText),
                                 ]),
                           ),
                         ]),
@@ -336,19 +325,36 @@ class _MapScreenState extends State<MapScreen> {
 
   // Displays the info panel.
   _showMapFeatureInfoPanel(String markerId) {
-    _featureInfoTitle = "";
-    _featureInfo.clear();
+    _featureTitleText.clear();
+    _featureInfoText.clear();
     _featureInfoVisible = true;
     MapData mapData = _getMapData();
     Feature? feature = mapData.getFeaturesMap()[markerId];
     if (feature == null) {
       return;
     }
-    _infoText = feature.toDisplayInfoScreen();
-    _featureInfoTitle = _infoText[0];
-    _infoText.removeAt(0);
-    for (String info in _infoText) {
-      _featureInfo.add(Text(
+    Tuple2<List<String>, List<String>> displayText =
+        feature.toDisplayInfoScreen();
+    _featureTitleStrings = displayText.item1;
+    for (String info in _featureTitleStrings) {
+      _featureTitleText.add(Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+          child: Text(
+            info,
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.clip,
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              fontSize: 18,
+              color: Color(0xff000000),
+            ),
+          )));
+    }
+
+    _infoStrings = displayText.item2;
+    for (String info in _infoStrings) {
+      _featureInfoText.add(Text(
         info,
         textAlign: TextAlign.start,
         overflow: TextOverflow.clip,
@@ -360,7 +366,10 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ));
     }
-    _seeFullTimeTableButtonHolder = MapDataId.getMapDataIdEnumFromId(markerId) == MapDataId.u1 ? _seeFullTimeTableButton : null;
+    _seeFullTimeTableButtonHolder =
+        MapDataId.getMapDataIdEnumFromId(markerId) == MapDataId.u1
+            ? _seeFullTimeTableButton
+            : null;
   }
 
   // Toggles the checkbox and markers for that checkbox.

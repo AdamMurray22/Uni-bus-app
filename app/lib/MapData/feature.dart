@@ -1,3 +1,5 @@
+import 'package:tuple/tuple.dart';
+
 import '../Map/map_data_id_enum.dart';
 
 /// Holds the information for a feature on the map.
@@ -16,8 +18,8 @@ class Feature
   }
 
   /// Returns the feature in a format to be displayed on screen.
-  List<String> toDisplayInfoScreen()
+  Tuple2<List<String>, List<String>> toDisplayInfoScreen()
   {
-    return [name];
+    return Tuple2([name], []);
   }
 }

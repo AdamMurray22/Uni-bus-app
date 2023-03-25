@@ -1,5 +1,6 @@
 import 'package:app/Sorts/comparator.dart';
 import 'package:app/Sorts/heap_sort.dart';
+import 'package:tuple/tuple.dart';
 
 import 'bus_time.dart';
 import 'feature.dart';
@@ -38,12 +39,13 @@ class BusStop extends Feature
 
   /// Returns the bus stop in a format to be displayed on the info screen.
   @override
-  List<String> toDisplayInfoScreen()
+  Tuple2<List<String>, List<String>> toDisplayInfoScreen()
   {
-    List<String> displayList = super.toDisplayInfoScreen();
+    List<String> titleList = super.toDisplayInfoScreen().item1;
+    List<String> displayList = super.toDisplayInfoScreen().item2;
     if (_separateArrDepTimes)
     {
-      displayList.add("Departures:");
+      titleList.add("Departures:");
     }
     int i = 0;
     for (BusTime time in _depTimes)
@@ -56,7 +58,7 @@ class BusStop extends Feature
         }
       }
     }
-    return displayList;
+    return Tuple2(titleList, displayList);
   }
 
   /// Returns the departure times.
