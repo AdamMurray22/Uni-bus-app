@@ -21,6 +21,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
+// The map screen state.
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;

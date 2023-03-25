@@ -1,4 +1,5 @@
 import 'package:app/Screen/map_screen.dart';
+import 'package:app/Screen/route_screen.dart';
 import 'package:app/Screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class MainScreen extends StatefulWidget {
 // This class contains the GUI structure for the app.
 class _MainScreenState extends State<MainScreen> {
   late final Widget _mapScreen;
+  late final Widget _routeScreen;
   late final Widget _timetableScreen;
   late final Widget _aboutScreen;
 
@@ -27,15 +29,17 @@ class _MainScreenState extends State<MainScreen> {
     _mapScreen = MapScreen(
       onShowTimeTableButtonPressed: () {
         setState(() {
-          _selectedIndexBottomNavBar = 1;
+          _selectedIndexBottomNavBar = 2;
 
         });
       },
     );
+    _routeScreen = const RouteScreen();
     _timetableScreen = const TimetableScreen();
     _aboutScreen = const AboutScreen();
 
     screenList.add(_mapScreen);
+    screenList.add(_routeScreen);
     screenList.add(_timetableScreen);
     screenList.add(_aboutScreen);
   }
@@ -80,20 +84,7 @@ class _MainScreenState extends State<MainScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.access_time),
-            label: 'Timetable',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info_outline),
-            label: 'About',
-          ),
-        ],
+        items: _addItemsToBottomNavigationBar(),
         currentIndex: _selectedIndexBottomNavBar,
         selectedItemColor: Colors.amber[800],
         onTap: (index) {
@@ -103,5 +94,27 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
     );
+  }
+
+  List<BottomNavigationBarItem> _addItemsToBottomNavigationBar()
+  {
+    return const <BottomNavigationBarItem>[
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.arrow_upward),
+        label: 'Route',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.access_time),
+        label: 'Timetable',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.info_outline),
+        label: 'About',
+      ),
+    ];
   }
 }
