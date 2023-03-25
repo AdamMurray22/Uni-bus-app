@@ -7,10 +7,10 @@ let layerEnum;
 let IDLayersMap;
 let busRouteLayer;
 
-let createMap = function () {
-    /*
+/*
     Map
-    */
+*/
+let createMap = function () {
 
     map = new ol.Map({
         view: new ol.View({
