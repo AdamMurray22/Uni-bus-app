@@ -1,7 +1,8 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
-import 'map_widget.dart';
+import '../Map/open_layers_map.dart';
 
 /// This holds the route screen.
 class RouteScreen extends StatefulWidget {
@@ -15,11 +16,13 @@ class RouteScreen extends StatefulWidget {
 class _RouteScreenState extends State<RouteScreen> {
   late final SingleValueDropDownController _fromRouteDropDownController;
   late final SingleValueDropDownController _toRouteDropDownController;
+  late final OpenLayersMap _mapController;
 
   @override
   void initState() {
     _fromRouteDropDownController = SingleValueDropDownController();
     _toRouteDropDownController = SingleValueDropDownController();
+    _mapController = OpenLayersMap();
     super.initState();
   }
 
@@ -93,7 +96,7 @@ class _RouteScreenState extends State<RouteScreen> {
                   borderRadius: BorderRadius.zero,
                   border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
                 ),
-                child: MapWidget()),
+                child: WebViewWidget(controller: _mapController)),
           ]),
     );
   }

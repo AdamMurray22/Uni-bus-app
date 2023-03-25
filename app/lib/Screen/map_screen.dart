@@ -4,12 +4,13 @@ import 'package:app/Sorts/comparator.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Map/map_data_id_enum.dart';
+import '../Map/open_layers_map.dart';
 import '../MapData/map_data.dart';
 import '../Sorts/heap_sort.dart';
 import '../wrapper/bool_wrapper.dart';
-import 'map_widget.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
@@ -25,9 +26,8 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;
-  final GlobalKey<MapWidgetState> _mapStateKep = GlobalKey();
 
-  late final MapWidget _mapWidget;
+  late final OpenLayersMap _mapController;
   late final SingleValueDropDownController _dropDownController;
   late List<DropDownValueModel> _dropDownList = [];
   final Map<MapDataId, BoolWrapper> valueCheckMap = {};
@@ -76,15 +76,12 @@ class _MapScreenState extends State<MapScreen> {
     valueCheckMap[MapDataId.u1] = _u1ValueCheck;
     valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
     valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
-    _mapWidget = MapWidget(
-        markerClickedFunction: (String markerId)
-          {
-            setState(() {
-              _showMapFeatureInfoPanel(markerId);
-            });
-          },
-          key: _mapStateKep,
-    );
+    _mapController = OpenLayersMap();
+    _mapController.onMarkerClicked((markerId) {
+      setState(() {
+        _showMapFeatureInfoPanel(markerId);
+      });
+    });
 
     _dropDownController = SingleValueDropDownController();
     _dataLoader.onDataLoaded((mapData) {
@@ -170,7 +167,7 @@ class _MapScreenState extends State<MapScreen> {
                         _mapCheckBoxChange(valueId, true);
                       }
                     });
-                    _mapStateKep.currentState?.setMapCentreZoom(
+                    _mapController.setMapCentreZoom(
                         _getMapData().getFeaturesMap()[value.value]!);
                   },
                 ),
@@ -188,7 +185,7 @@ class _MapScreenState extends State<MapScreen> {
                       border:
                           Border.all(color: const Color(0x4d9e9e9e), width: 1),
                     ),
-                    child: _mapWidget),
+                    child: WebViewWidget(controller: _mapController)),
                 Visibility(
                   visible: _featureInfoVisible, // not visible if set false
                   child: Container(
@@ -260,87 +257,87 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ]),
             ]),
-        Positioned(
-          child: Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  const Text(
-                    "U1",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
+              Positioned(
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const Text(
+                          "U1",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Checkbox(
+                          onChanged: (value) {
+                            _mapCheckBoxChange(MapDataId.u1, value!);
+                          },
+                          activeColor: Color(0xff3a57e8),
+                          autofocus: false,
+                          checkColor: Color(0xffffffff),
+                          hoverColor: Color(0x42000000),
+                          splashRadius: 20,
+                          value: _u1ValueCheck.value,
+                        ),
+                        const Text(
+                          "Uni buildings",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Checkbox(
+                          onChanged: (value) {
+                            _mapCheckBoxChange(MapDataId.uniBuilding, value!);
+                          },
+                          activeColor: Color(0xff3a57e8),
+                          autofocus: false,
+                          checkColor: Color(0xffffffff),
+                          hoverColor: Color(0x42000000),
+                          splashRadius: 20,
+                          value: _uniBuildingValueCheck.value,
+                        ),
+                        const Text(
+                          "Landmarks",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 14,
+                            color: Color(0xff000000),
+                          ),
+                        ),
+                        Checkbox(
+                          onChanged: (value) {
+                            _mapCheckBoxChange(MapDataId.landmark, value!);
+                          },
+                          activeColor: Color(0xff3a57e8),
+                          autofocus: false,
+                          checkColor: Color(0xffffffff),
+                          hoverColor: Color(0x42000000),
+                          splashRadius: 20,
+                          value: _landmarkValueCheck.value,
+                        ),
+                      ],
                     ),
                   ),
-                  Checkbox(
-                    onChanged: (value) {
-                      _mapCheckBoxChange(MapDataId.u1, value!);
-                    },
-                    activeColor: Color(0xff3a57e8),
-                    autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
-                    splashRadius: 20,
-                    value: _u1ValueCheck.value,
-                  ),
-                  const Text(
-                    "Uni buildings",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                  ),
-                  Checkbox(
-                    onChanged: (value) {
-                      _mapCheckBoxChange(MapDataId.uniBuilding, value!);
-                    },
-                    activeColor: Color(0xff3a57e8),
-                    autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
-                    splashRadius: 20,
-                    value: _uniBuildingValueCheck.value,
-                  ),
-                  const Text(
-                    "Landmarks",
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      fontSize: 14,
-                      color: Color(0xff000000),
-                    ),
-                  ),
-                  Checkbox(
-                    onChanged: (value) {
-                      _mapCheckBoxChange(MapDataId.landmark, value!);
-                    },
-                    activeColor: Color(0xff3a57e8),
-                    autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
-                    splashRadius: 20,
-                    value: _landmarkValueCheck.value,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
       ]),
     );
   }
@@ -399,7 +396,7 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       valueCheckMap[id]?.value = value;
     });
-    _mapStateKep.currentState?.toggleMarkers(id, value);
+    _mapController.toggleMarkers(id, value);
   }
 
   // Returns the MapData
