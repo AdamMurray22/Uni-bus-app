@@ -1,7 +1,7 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 
-import 'map_widget.dart';
+import 'route_map_widget.dart';
 
 /// This holds the route screen.
 class RouteScreen extends StatefulWidget {
@@ -93,7 +93,7 @@ class _RouteScreenState extends State<RouteScreen> {
                   borderRadius: BorderRadius.zero,
                   border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
                 ),
-                child: MapWidget()),
+                child: RouteMapWidget()),
           ]),
     );
   }

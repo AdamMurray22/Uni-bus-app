@@ -5,11 +5,11 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-import '../Map/map_data_id_enum.dart';
-import '../MapData/map_data.dart';
-import '../Sorts/heap_sort.dart';
-import '../wrapper/bool_wrapper.dart';
-import 'map_widget.dart';
+import '../../Map/map_data_id_enum.dart';
+import '../../MapData/map_data.dart';
+import '../../Sorts/heap_sort.dart';
+import '../../wrapper/bool_wrapper.dart';
+import 'main_map_widget.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
@@ -25,9 +25,9 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;
-  final GlobalKey<MapWidgetState> _mapStateKep = GlobalKey();
+  final GlobalKey<MainMapWidgetState> _mapStateKep = GlobalKey();
 
-  late final MapWidget _mapWidget;
+  late final MainMapWidget _mapWidget;
   late final SingleValueDropDownController _dropDownController;
   late List<DropDownValueModel> _dropDownList = [];
   final Map<MapDataId, BoolWrapper> valueCheckMap = {};
@@ -76,7 +76,7 @@ class _MapScreenState extends State<MapScreen> {
     valueCheckMap[MapDataId.u1] = _u1ValueCheck;
     valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
     valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
-    _mapWidget = MapWidget(
+    _mapWidget = MainMapWidget(
         markerClickedFunction: (String markerId)
           {
             setState(() {

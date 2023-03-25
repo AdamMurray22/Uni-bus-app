@@ -1,11 +1,11 @@
-import 'package:app/Screen/route_screen.dart';
+import 'package:app/Screen/RouteScreen/route_screen.dart';
 import 'package:app/Screen/timetable_screen.dart';
 import 'package:app/Sorts/heap_sort.dart';
 import 'package:app/Sorts/comparator.dart';
 import 'package:flutter/material.dart';
 
 import 'about_screen.dart';
-import 'map_screen.dart';
+import 'MainMapScreen/map_screen.dart';
 
 /// Defines the different screens for the navigation bar.
 enum NavigationBarItem {

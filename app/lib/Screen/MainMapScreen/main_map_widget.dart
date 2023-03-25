@@ -4,24 +4,24 @@ import 'package:location/location.dart';
 import 'package:path/path.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
-import '../Map/map_centre_enum.dart';
-import '../Map/map_data_id_enum.dart';
-import '../MapData/feature.dart';
-import '../MapData/map_data.dart';
-import '../MapData/map_data_loader.dart';
-import '../Permissions/location_permissions_handler.dart';
+import '../../Map/map_centre_enum.dart';
+import '../../Map/map_data_id_enum.dart';
+import '../../MapData/feature.dart';
+import '../../MapData/map_data.dart';
+import '../../MapData/map_data_loader.dart';
+import '../../Permissions/location_permissions_handler.dart';
 
-class MapWidget extends StatefulWidget {
-  const MapWidget({this.markerClickedFunction, super.key});
+class MainMapWidget extends StatefulWidget {
+  const MainMapWidget({this.markerClickedFunction, super.key});
   // The function to be run whenever a marker is clicked.
   final Function(String)? markerClickedFunction;
 
   @override
-  State<MapWidget> createState() => MapWidgetState();
+  State<MainMapWidget> createState() => MainMapWidgetState();
 }
 
-// The route screen state.
-class MapWidgetState extends State<MapWidget> {
+/// The main map screen state.
+class MainMapWidgetState extends State<MainMapWidget> {
   late final WebViewPlusController _controllerPlus;
   late final WebViewController _controller;
 
@@ -49,7 +49,7 @@ class MapWidgetState extends State<MapWidget> {
                 _markerClicked(markerIdMessage.message);
               }),
         },
-        initialUrl: 'assets/open-layers-map/map.html',
+        initialUrl: 'assets/open-layers-map/main_map.html',
         onWebViewCreated: (controller) async {
           _controllerPlus = controller;
           _controller = _controllerPlus.webViewController;
