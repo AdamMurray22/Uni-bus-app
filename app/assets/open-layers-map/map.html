@@ -17,7 +17,28 @@
 <body>
 <div id="map" class="map"></div>
 <script>
-    createMap();
+    let map = new CreateMap();
+
+    function setCentreZoom(value)
+    {
+        map.setCentreZoom(value);
+    }
+    function mapIdsToLayers(value)
+    {
+        map.mapIdsToLayers(value);
+    }
+    function addMarker(value)
+    {
+        map.addMarker(value);
+    }
+    function drawBusRouteLines(value)
+    {
+        map.drawBusRouteLines(value);
+    }
+    function toggleShowLayers(value)
+    {
+        map.toggleShowLayers(value);
+    }
 </script>
 </body>
 </html>
