@@ -4,6 +4,7 @@ import 'package:app/Screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'about_screen.dart';
+import 'navigation_bar_item.dart';
 
 /// This holds the screen for the application.
 class MainScreen extends StatefulWidget {
@@ -15,33 +16,19 @@ class MainScreen extends StatefulWidget {
 
 // This class contains the GUI structure for the app.
 class _MainScreenState extends State<MainScreen> {
-  late final Widget _mapScreen;
-  late final Widget _routeScreen;
-  late final Widget _timetableScreen;
-  late final Widget _aboutScreen;
-
   final List<Widget> screenList = [];
   int _selectedIndexBottomNavBar = 0;
 
+  ///
   @override
   initState() {
     super.initState();
-    _mapScreen = MapScreen(
-      onShowTimeTableButtonPressed: () {
-        setState(() {
-          _selectedIndexBottomNavBar = 2;
-
-        });
-      },
-    );
-    _routeScreen = const RouteScreen();
-    _timetableScreen = const TimetableScreen();
-    _aboutScreen = const AboutScreen();
-
-    screenList.add(_mapScreen);
-    screenList.add(_routeScreen);
-    screenList.add(_timetableScreen);
-    screenList.add(_aboutScreen);
+    MapScreen.onShowTimeTableButtonPressed = () {
+      setState(() {
+        _selectedIndexBottomNavBar = NavigationBarItem.timetableScreen.position;
+      });
+    };
+    screenList.addAll(NavigationBarItem.getScreensInOrder());
   }
 
   /// Builds the GUI and places the map inside.
@@ -96,25 +83,15 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  List<BottomNavigationBarItem> _addItemsToBottomNavigationBar()
-  {
-    return const <BottomNavigationBarItem>[
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home),
-        label: 'Home',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.arrow_upward),
-        label: 'Route',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.access_time),
-        label: 'Timetable',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.info_outline),
-        label: 'About',
-      ),
-    ];
+  // Returns the navigation bar items in order.
+  List<BottomNavigationBarItem> _addItemsToBottomNavigationBar() {
+    List<BottomNavigationBarItem> navBarItems = [];
+    for (NavigationBarItem item in NavigationBarItem.getValuesInOrder()) {
+      navBarItems.add(BottomNavigationBarItem(
+        icon: item.icon,
+        label: item.label,
+      ));
+    }
+    return navBarItems;
   }
 }

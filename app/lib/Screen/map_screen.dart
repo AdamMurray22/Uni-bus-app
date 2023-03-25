@@ -13,9 +13,9 @@ import '../wrapper/bool_wrapper.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
-  const MapScreen({required this.onShowTimeTableButtonPressed, super.key});
+  const MapScreen({super.key});
 
-  final VoidCallback onShowTimeTableButtonPressed;
+  static late Function() onShowTimeTableButtonPressed;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -89,7 +89,7 @@ class _MapScreenState extends State<MapScreen> {
     });
     _seeFullTimeTableButton = MaterialButton(
       onPressed: () {
-          widget.onShowTimeTableButtonPressed();
+        MapScreen.onShowTimeTableButtonPressed();
       },
       color: const Color(0xffffffff),
       elevation: 0,
