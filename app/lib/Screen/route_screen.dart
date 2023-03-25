@@ -35,55 +35,61 @@ class _RouteScreenState extends State<RouteScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            DropDownTextField(
-              controller: _fromRouteDropDownController,
-              clearOption: true,
-              enableSearch: true,
-              textFieldDecoration: const InputDecoration(hintText: "From"),
-              searchDecoration:
-                  const InputDecoration(hintText: "Enter location here"),
-              validator: (value) {
-                if (value == null) {
-                  return "Required field";
-                } else {
-                  return null;
-                }
-              },
-              dropDownItemCount: 5,
-              dropDownList: [],
-              onChanged: (value) {
-                if (value == "") {
-                  return;
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+              child: DropDownTextField(
+                controller: _fromRouteDropDownController,
+                clearOption: true,
+                enableSearch: true,
+                textFieldDecoration: const InputDecoration(hintText: "From"),
+                searchDecoration:
+                    const InputDecoration(hintText: "Enter location here"),
+                validator: (value) {
+                  if (value == null) {
+                    return "Required field";
+                  } else {
+                    return null;
+                  }
+                },
+                dropDownItemCount: 5,
+                dropDownList: [],
+                onChanged: (value) {
+                  if (value == "") {
+                    return;
+                  }
+                },
+              ),
             ),
-            DropDownTextField(
-              controller: _toRouteDropDownController,
-              clearOption: true,
-              enableSearch: true,
-              textFieldDecoration: const InputDecoration(hintText: "To"),
-              searchDecoration:
-              const InputDecoration(hintText: "Enter location here"),
-              validator: (value) {
-                if (value == null) {
-                  return "Required field";
-                } else {
-                  return null;
-                }
-              },
-              dropDownItemCount: 5,
-              dropDownList: [],
-              onChanged: (value) {
-                if (value == "") {
-                  return;
-                }
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+              child: DropDownTextField(
+                controller: _toRouteDropDownController,
+                clearOption: true,
+                enableSearch: true,
+                textFieldDecoration: const InputDecoration(hintText: "To"),
+                searchDecoration:
+                    const InputDecoration(hintText: "Enter location here"),
+                validator: (value) {
+                  if (value == null) {
+                    return "Required field";
+                  } else {
+                    return null;
+                  }
+                },
+                dropDownItemCount: 5,
+                dropDownList: [],
+                onChanged: (value) {
+                  if (value == "") {
+                    return;
+                  }
+                },
+              ),
             ),
             Container(
                 margin: const EdgeInsets.all(0),
                 padding: const EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.70592,
+                height: MediaQuery.of(context).size.height * 0.69694,
                 decoration: BoxDecoration(
                   color: const Color(0x1f000000),
                   shape: BoxShape.rectangle,
