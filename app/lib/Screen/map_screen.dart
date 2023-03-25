@@ -26,6 +26,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;
+  final double mapScreenHeight = MediaQuery.of(context).size.height * 0.70143;
 
   late final OpenLayersMap _mapController;
   late final SingleValueDropDownController _dropDownController;
@@ -77,6 +78,12 @@ class _MapScreenState extends State<MapScreen> {
     valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
     valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
     _mapController = OpenLayersMap();
+    _mapController.onMarkerClicked((markerId) {
+      setState(() {
+        _showMapFeatureInfoPanel(markerId);
+      });
+    });
+
     _dropDownController = SingleValueDropDownController();
     _dataLoader.onDataLoaded((mapData) {
       setState(() {
@@ -116,12 +123,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _mapController.onMarkerClicked((markerId) {
-      setState(() {
-        _showMapFeatureInfoPanel(markerId);
-      });
-    });
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -172,7 +173,7 @@ class _MapScreenState extends State<MapScreen> {
                 margin: const EdgeInsets.all(0),
                 padding: const EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.70143,
+                height: mapScreenHeight,
                 decoration: BoxDecoration(
                   color: const Color(0x1f000000),
                   shape: BoxShape.rectangle,
@@ -186,7 +187,7 @@ class _MapScreenState extends State<MapScreen> {
                 margin: const EdgeInsets.all(0),
                 padding: const EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width * 0.4,
-                height: MediaQuery.of(context).size.height * 0.7059,
+                height: mapScreenHeight,
                 decoration: BoxDecoration(
                   color: const Color(0xff999999),
                   shape: BoxShape.rectangle,
