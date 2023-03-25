@@ -129,46 +129,50 @@ class _MapScreenState extends State<MapScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          DropDownTextField(
-            controller: _dropDownController,
-            clearOption: true,
-            enableSearch: true,
-            textFieldDecoration: const InputDecoration(hintText: "Search"),
-            searchDecoration:
-                const InputDecoration(hintText: "Enter location here"),
-            validator: (value) {
-              if (value == null) {
-                return "Required field";
-              } else {
-                return null;
-              }
-            },
-            dropDownItemCount: 5,
-            dropDownList: _dropDownList,
-            onChanged: (value) {
-              if (value == "") {
-                setState(() {
-                  _featureInfoVisible = false;
-                });
-                return;
-              }
-              MapDataId valueId = MapDataId.getMapDataIdEnumFromId(value.value);
-              setState(() {
-                _showMapFeatureInfoPanel(value.value);
-                if (!valueCheckMap[valueId]!.value) {
-                  _mapCheckBoxChange(valueId, true);
+          Padding(
+            padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+            child: DropDownTextField(
+              controller: _dropDownController,
+              clearOption: true,
+              enableSearch: true,
+              textFieldDecoration: const InputDecoration(hintText: "Search"),
+              searchDecoration:
+                  const InputDecoration(hintText: "Enter location here"),
+              validator: (value) {
+                if (value == null) {
+                  return "Required field";
+                } else {
+                  return null;
                 }
-              });
-              _mapController.setMapCentreZoom(
-                  _getMapData().getFeaturesMap()[value.value]!);
-            },
+              },
+              dropDownItemCount: 5,
+              dropDownList: _dropDownList,
+              onChanged: (value) {
+                if (value == "") {
+                  setState(() {
+                    _featureInfoVisible = false;
+                  });
+                  return;
+                }
+                MapDataId valueId =
+                    MapDataId.getMapDataIdEnumFromId(value.value);
+                setState(() {
+                  _showMapFeatureInfoPanel(value.value);
+                  if (!valueCheckMap[valueId]!.value) {
+                    _mapCheckBoxChange(valueId, true);
+                  }
+                });
+                _mapController.setMapCentreZoom(
+                    _getMapData().getFeaturesMap()[value.value]!);
+              },
+            ),
           ),
           Stack(children: [
             Container(
                 margin: const EdgeInsets.all(0),
                 padding: const EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.7059,
+                height: MediaQuery.of(context).size.height * 0.70143,
                 decoration: BoxDecoration(
                   color: const Color(0x1f000000),
                   shape: BoxShape.rectangle,
