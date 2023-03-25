@@ -110,16 +110,17 @@
         })
     }
 
-    // Removes the users icon
-    function removeUserIcon(userPosition) {
-        var source = UserLocationLayer.getSource();
-        source.removeFeature(source.getFeatureById(userPosition.id));
+    // Removes the marker
+    function removeMarker(markedFeature) {
+        const layer = IDLayersMap.get(markedFeature.layerId).get(layerEnum.markerLayer);
+        const source = layer.getSource();
+        source.removeFeature(source.getFeatureById(markedFeature.id));
     }
 
-    // Updates the location of the users icon
-    function updateUserIcon(userPosition) {
-        removeUserIcon(userPosition);
-        addUserIcon(userPosition);
+    // Updates the location of a marker
+    function updateMarker(markedFeature) {
+        removeMarker(markedFeature);
+        addMarker(markedFeature);
     }
 
     // Marker interaction

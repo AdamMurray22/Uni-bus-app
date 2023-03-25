@@ -52,7 +52,7 @@ class RouteMapWidgetState extends State<RouteMapWidget> {
           _setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
               MapCentreEnum.initZoom.value);
           _assignLayerIds();
-          //_addUserLocationIcon();
+          _addUserLocationIcon();
         },
         javascriptMode: JavascriptMode.unrestricted,
       ),
@@ -73,12 +73,20 @@ class RouteMapWidgetState extends State<RouteMapWidget> {
     _controller.runJavascript("mapIdsToLayers($jsObject)");
   }
 
-  // Adds the U1 bus stops.
+  // Adds the markers.
   _addMarker(MapDataId layerId, String id, double long, double lat) {
     String jsObject =
         "{layerId: '${layerId
         .idPrefix}', id: '$id', longitude: $long, latitude: $lat}";
     _controller.runJavascript("addMarker($jsObject)");
+  }
+
+  // Updates the position of the marker.
+  _updateMarker(MapDataId layerId, String id, double long, double lat) {
+    String jsObject =
+        "{layerId: '${layerId
+        .idPrefix}', id: '$id', longitude: $long, latitude: $lat}";
+    _controller.runJavascript("updateMarker($jsObject)");
   }
 
   // This is called when a marker on the map gets clicked.
@@ -103,7 +111,7 @@ class RouteMapWidgetState extends State<RouteMapWidget> {
     }
 
     location.onLocationChanged.listen((LocationData currentLocation) {
-      _addMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
+      _updateMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
           currentLocation.longitude!, currentLocation.latitude!);
     });
   }
