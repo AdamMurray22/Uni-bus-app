@@ -1,9 +1,6 @@
 import 'package:app/Screen/map_screen.dart';
-import 'package:app/Screen/route_screen.dart';
-import 'package:app/Screen/timetable_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'about_screen.dart';
 import 'navigation_bar_item.dart';
 
 /// This holds the screen for the application.
@@ -16,19 +13,16 @@ class MainScreen extends StatefulWidget {
 
 // This class contains the GUI structure for the app.
 class _MainScreenState extends State<MainScreen> {
-  final List<Widget> screenList = [];
-  int _selectedIndexBottomNavBar = 0;
 
-  ///
+  /// Creates the screens accessed through the nav bar.
   @override
   initState() {
     super.initState();
     MapScreen.onShowTimeTableButtonPressed = () {
       setState(() {
-        _selectedIndexBottomNavBar = NavigationBarItem.timetableScreen.position;
+        NavigationBarItem.setSelectedIndex(NavigationBarItem.timetableScreen.position);
       });
     };
-    screenList.addAll(NavigationBarItem.getScreensInOrder());
   }
 
   /// Builds the GUI and places the map inside.
@@ -67,16 +61,16 @@ class _MainScreenState extends State<MainScreen> {
           border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
         ),
         child: IndexedStack(
-            index: _selectedIndexBottomNavBar, children: screenList),
+            index: NavigationBarItem.getSelectedIndex(), children: NavigationBarItem.getScreensInOrder()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: _addItemsToBottomNavigationBar(),
-        currentIndex: _selectedIndexBottomNavBar,
+        currentIndex: NavigationBarItem.getSelectedIndex(),
         selectedItemColor: Colors.amber[800],
         onTap: (index) {
           setState(() {
-            _selectedIndexBottomNavBar = index;
+            NavigationBarItem.setSelectedIndex(index);
           });
         },
       ),
