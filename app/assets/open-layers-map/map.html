@@ -37,6 +37,7 @@
         target: 'map',
     });
 
+    // Sets the centre of the map and the zoom
     function setCentreZoom(value) {
         map.getView().setZoom(value.zoom);
         map.getView().setCenter(ol.proj.fromLonLat([value.long, value.lat]));
@@ -44,15 +45,10 @@
 
 </script>
 
-
 <script id="markerFunctionality">
 
-    /*
-        Layers
-    */
-
     // This layer shows the U1 bus stop markers
-    var U1BusStopMarkersLayer = new ol.layer.Vector({
+    const U1BusStopMarkersLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -63,10 +59,9 @@
         }),
     });
     U1BusStopMarkersLayer.isMarkerLayer = true;
-    map.addLayer(U1BusStopMarkersLayer);
 
     // This layer shows the uni building markers
-    var UniBuildingMarkersLayer = new ol.layer.Vector({
+    const UniBuildingMarkersLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -77,10 +72,9 @@
         }),
     });
     UniBuildingMarkersLayer.isMarkerLayer = true;
-    map.addLayer(UniBuildingMarkersLayer);
 
     // This layer shows the landmark markers
-    var LandmarkMarkersLayer = new ol.layer.Vector({
+    const LandmarkMarkersLayer = new ol.layer.Vector({
         source: new ol.source.Vector(),
         style: new ol.style.Style({
             image: new ol.style.Icon({
@@ -91,7 +85,6 @@
         }),
     });
     LandmarkMarkersLayer.isMarkerLayer = true;
-    map.addLayer(LandmarkMarkersLayer);
 
     // This layer shows the Users location
     const UserLocationLayer = new ol.layer.Vector({
@@ -105,7 +98,6 @@
         }),
     });
     UserLocationLayer.isMarkerLayer = false;
-    map.addLayer(UserLocationLayer);
 
     // Enum to identify the type of layer
     const layerEnum = {
@@ -136,12 +128,8 @@
     }
 
 
-    /*
-        Detects if a marker has been clicked
-    */
-
+    // Detects if a marker has been clicked
     map.on("click", function (e) {
-
         let markerFound = false;
         map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
             if (layer.isMarkerLayer && markerFound == false) {
@@ -151,23 +139,15 @@
         })
     });
 
-
-    /*
-        Adds the markers
-    */
-
+    // Adds the markers
     function addMarker(markedFeature) {
         const layer = IDLayersMap.get(markedFeature.layerId).get(layerEnum.markerLayer);
-
         const marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
         marker.setId(markedFeature.id);
         layer.getSource().addFeature(marker);
     }
 
-    /*
-        Toggles the visibility of the markers
-    */
-
+    // Toggles the visibility of the markers
     function toggleShowLayers(visible) {
         const layers = Array.from(IDLayersMap.get(visible.layerId).values());
         layers.forEach(function (layer) {
@@ -176,24 +156,22 @@
     }
 
     // Removes the users icon
-
     function removeUserIcon(userPosition) {
         var source = UserLocationLayer.getSource();
         source.removeFeature(source.getFeatureById(userPosition.id));
     }
 
     // Updates the location of the users icon
-
     function updateUserIcon(userPosition) {
         removeUserIcon(userPosition);
         addUserIcon(userPosition);
     }
 
     // Marker interaction
-
     function markerClicked(marker) {
         MarkerClickedDart.postMessage(marker.getId());
     }
+
 </script>
 <script id="drawingFunctionality">
 
@@ -205,16 +183,30 @@
         style: new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: [0, 0, 255, 0.75],
-                width: 2,
+                width: 8,
             }),
         }),
     });
 
-    map.addLayer(busRouteLayer);
-
+    // Add the given GeoJson to the map
     function drawBusRouteLines(geoJson) {
-       // busRouteLayer.getSource().addFeature(new ol.Feature(new ol.geom.Circle([-1.0960, 50.7958], 1e6)));
-        busRouteLayer.getSource().addFeatures(new ol.format.GeoJSON().readFeatures(JSON.parse(geoJson.busRoute)));
+        busRouteLayer.getSource().addFeatures((new ol.format.GeoJSON({
+            featureProjection: 'EPSG:3857',
+            dataProjection: 'EPSG:4326'})).readFeatures(geoJson.busRoute));
+    }
+</script>
+<script id="addLayers">
+
+    addLayers();
+
+    // Adds the layers to the map
+    function addLayers()
+    {
+        map.addLayer(busRouteLayer);
+        map.addLayer(U1BusStopMarkersLayer);
+        map.addLayer(UniBuildingMarkersLayer);
+        map.addLayer(LandmarkMarkersLayer);
+        map.addLayer(UserLocationLayer);
     }
 </script>
 </html>
