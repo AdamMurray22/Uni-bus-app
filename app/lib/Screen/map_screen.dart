@@ -26,7 +26,6 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;
-  final double mapScreenHeight = MediaQuery.of(context).size.height * 0.70143;
 
   late final OpenLayersMap _mapController;
   late final SingleValueDropDownController _dropDownController;
@@ -123,6 +122,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // The height of the containers in the space of the map and only the map.
+    double mapScreenHeight = MediaQuery.of(context).size.height * 0.70143;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
