@@ -83,7 +83,7 @@ class _RouteScreenState extends State<RouteScreen> {
                 margin: const EdgeInsets.all(0),
                 padding: const EdgeInsets.all(0),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.70143,
+                height: MediaQuery.of(context).size.height * 0.70592,
                 decoration: BoxDecoration(
                   color: const Color(0x1f000000),
                   shape: BoxShape.rectangle,
