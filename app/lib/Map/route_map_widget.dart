@@ -22,14 +22,14 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     onPageFinished = (url) async {
       setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
           MapCentreEnum.initZoom.value);
-      _assignLayerIds();
       addUserLocationIcon();
     };
     super.initState();
   }
 
-  // Assigns an id to each layer to be referenced later.
-  _assignLayerIds() {
+  // Assigns an id to each layer used by this map to be referenced later.
+  @override
+  assignLayerIds() {
     String userLocation = MapDataId.userLocation.idPrefix;
     String route = MapDataId.route.idPrefix;
     String jsObject =

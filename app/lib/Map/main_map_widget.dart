@@ -30,7 +30,6 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
     onPageFinished = (url) async {
       setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
           MapCentreEnum.initZoom.value);
-      _assignLayerIds();
       // When the page finishes loading it sets the data to be loaded into the map.
       MapDataLoader.getDataLoader().onDataLoaded((mapData) {
         _addMarkers(mapData);
@@ -58,7 +57,9 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
         marker.lat, marker.long, MapCentreEnum.markerClickedZoom.value);
   }
 
-  _assignLayerIds() {
+  // Assigns an id to each layer used by this map to be referenced later.
+  @override
+  assignLayerIds() {
     String u1 = MapDataId.u1.idPrefix;
     String uniBuilding = MapDataId.uniBuilding.idPrefix;
     String landmark = MapDataId.landmark.idPrefix;

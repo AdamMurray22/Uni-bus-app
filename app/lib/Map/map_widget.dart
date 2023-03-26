@@ -5,15 +5,12 @@ import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 import '../Permissions/location_permissions_handler.dart';
 import 'map_data_id_enum.dart';
 
-class MapWidget extends StatefulWidget {
+abstract class MapWidget extends StatefulWidget {
   const MapWidget({super.key});
-
-  @override
-  State<MapWidget> createState() => MapWidgetState<MapWidget>();
 }
 
 /// The route screen state.
-class MapWidgetState<E extends StatefulWidget> extends State<E> {
+abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
 
   @protected
   String mapPath = "";
@@ -39,7 +36,11 @@ class MapWidgetState<E extends StatefulWidget> extends State<E> {
         controllerPlus = controller;
         webViewController = controllerPlus.webViewController;
       },
-      onPageFinished: onPageFinished,
+      onPageFinished: (url)
+      {
+        assignLayerIds();
+        onPageFinished!(url);
+      },
       javascriptMode: JavascriptMode.unrestricted,
     );
     super.initState();
@@ -51,6 +52,10 @@ class MapWidgetState<E extends StatefulWidget> extends State<E> {
       body: webView,
     );
   }
+
+  // Assigns an id to each layer used by this map to be referenced later.
+  @protected
+  assignLayerIds();
 
   // Centres and zooms the map around the given lat, long and zoom.
   @protected
