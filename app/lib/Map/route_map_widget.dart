@@ -9,11 +9,11 @@ class RouteMapWidget extends MapWidget {
   final Function(String)? markerClickedFunction;
 
   @override
-  State<MapWidget> createState() => RouteMapWidgetState();
+  State<MapWidget> createState() => _RouteMapWidgetState();
 }
 
 /// The route screen state.
-class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
+class _RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
 
   /// Sets the values for the map set up.
   @override
