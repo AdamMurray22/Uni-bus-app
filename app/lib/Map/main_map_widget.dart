@@ -27,7 +27,7 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
   @override
   void initState() {
     mapPath = 'assets/open-layers-map/main_map.html';
-    onPageFinished = (url) {
+    onPageFinished = (url) async {
       setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
           MapCentreEnum.initZoom.value);
       _assignLayerIds();

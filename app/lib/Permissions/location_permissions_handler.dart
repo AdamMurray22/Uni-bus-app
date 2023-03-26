@@ -1,37 +1,26 @@
 import 'package:location/location.dart';
 
 /// This handles requesting permission to use the users location.
-class LocationPermissionsHandler
-{
+class LocationPermissionsHandler {
   // This instance of itself is to make it a singleton.
   static LocationPermissionsHandler? _handler;
   late Location _location;
   final Set<Function(LocationData)> _onLocationChangedFunctions = {};
 
   // Private constructor to be called only once.
-  LocationPermissionsHandler._()
-  {
+  LocationPermissionsHandler._() {
     _location = Location();
   }
 
   /// Returns the only instance of LocationPermissionsHandler, creates a new
   /// instance if one does not yet exist.
-  static LocationPermissionsHandler getHandler()
-  {
+  static LocationPermissionsHandler getHandler() {
     _handler ??= LocationPermissionsHandler._();
     return _handler!;
   }
 
-  /// Returns the Location object that can be used to get the users current
-  /// location at any time.
-  Location getLocation()
-  {
-    return _location;
-  }
-
   /// Asks the user for permission to get their location.
-  requestLocationPermission() async
-  {
+  requestLocationPermission() async {
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 
@@ -60,9 +49,18 @@ class LocationPermissionsHandler
     return await _location.hasPermission() != PermissionStatus.denied;
   }
 
-  onLocationChanged(Function(LocationData) onChanged)
-  {
+  /// Adds a function to call when location updates are received.
+  onLocationChanged(Function(LocationData) onChanged) async {
     _onLocationChangedFunctions.add(onChanged);
+    if (await hasPermission()) {
+      _location.onLocationChanged.listen((locationData) {
+        onChanged(locationData);
+      });
+    }
+  }
+
+  // Adds all _onLocationChangedFunctions to be called on a location update.
+  _addLocationChanged() {
     _location.onLocationChanged.listen((locationData) {
       for (Function(LocationData) function in _onLocationChangedFunctions) {
         function(locationData);

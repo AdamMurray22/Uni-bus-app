@@ -81,17 +81,9 @@ class MapWidgetState<E extends StatefulWidget> extends State<E> {
   // Adds the users location to the map as a marker and sets for it be updated
   // whenever the user moves.
   @protected
-  addUserLocationIcon() async {
+   addUserLocationIcon() async {
     LocationPermissionsHandler handler =
       LocationPermissionsHandler.getHandler();
-    Location location = handler.getLocation();
-
-    if (await handler.hasPermission()) {
-      LocationData currentLocation = await location.getLocation();
-      addMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
-          currentLocation.longitude!, currentLocation.latitude!);
-    }
-
     handler.onLocationChanged((LocationData currentLocation) {
       updateMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
           currentLocation.longitude!, currentLocation.latitude!);
