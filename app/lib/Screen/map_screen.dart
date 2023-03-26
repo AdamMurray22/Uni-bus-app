@@ -5,11 +5,11 @@ import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../Map/map_data_id_enum.dart';
-import '../../MapData/map_data.dart';
-import '../../Sorts/heap_sort.dart';
-import '../../wrapper/bool_wrapper.dart';
-import 'main_map_widget.dart';
+import '../Map/map_data_id_enum.dart';
+import '../MapData/map_data.dart';
+import '../Sorts/heap_sort.dart';
+import '../wrapper/bool_wrapper.dart';
+import '../Map/main_map_widget.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
@@ -170,7 +170,7 @@ class _MapScreenState extends State<MapScreen> {
                         _mapCheckBoxChange(valueId, true);
                       }
                     });
-                    _mapStateKep.currentState?.setMapCentreZoom(
+                    _mapStateKep.currentState?.setMapCentreAndZoom(
                         _getMapData().getFeaturesMap()[value.value]!);
                   },
                 ),

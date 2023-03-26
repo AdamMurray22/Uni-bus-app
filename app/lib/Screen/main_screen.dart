@@ -1,4 +1,4 @@
-import 'package:app/Screen/MainMapScreen/map_screen.dart';
+import 'package:app/Screen/map_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'navigation_bar_item.dart';

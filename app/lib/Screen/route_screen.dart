@@ -1,7 +1,7 @@
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 
-import 'route_map_widget.dart';
+import '../Map/route_map_widget.dart';
 
 /// This holds the route screen.
 class RouteScreen extends StatefulWidget {
