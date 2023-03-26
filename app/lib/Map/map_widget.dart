@@ -83,7 +83,7 @@ class MapWidgetState<E extends StatefulWidget> extends State<E> {
   @protected
   addUserLocationIcon() async {
     LocationPermissionsHandler handler =
-    LocationPermissionsHandler.getHandler();
+      LocationPermissionsHandler.getHandler();
     Location location = handler.getLocation();
 
     if (await handler.hasPermission()) {
@@ -92,7 +92,7 @@ class MapWidgetState<E extends StatefulWidget> extends State<E> {
           currentLocation.longitude!, currentLocation.latitude!);
     }
 
-    location.onLocationChanged.listen((LocationData currentLocation) {
+    handler.onLocationChanged((LocationData currentLocation) {
       updateMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
           currentLocation.longitude!, currentLocation.latitude!);
     });

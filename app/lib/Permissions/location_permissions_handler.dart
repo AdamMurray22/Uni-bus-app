@@ -6,6 +6,7 @@ class LocationPermissionsHandler
   // This instance of itself is to make it a singleton.
   static LocationPermissionsHandler? _handler;
   late Location _location;
+  final Set<Function(LocationData)> _onLocationChangedFunctions = {};
 
   // Private constructor to be called only once.
   LocationPermissionsHandler._()
@@ -57,5 +58,15 @@ class LocationPermissionsHandler
       return false;
     }
     return await _location.hasPermission() != PermissionStatus.denied;
+  }
+
+  onLocationChanged(Function(LocationData) onChanged)
+  {
+    _onLocationChangedFunctions.add(onChanged);
+    _location.onLocationChanged.listen((locationData) {
+      for (Function(LocationData) function in _onLocationChangedFunctions) {
+        function(locationData);
+      }
+    });
   }
 }

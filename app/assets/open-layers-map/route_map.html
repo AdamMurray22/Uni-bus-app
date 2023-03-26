@@ -91,7 +91,7 @@
         UserLocationMap.set(layerEnum.markerLayer, UserLocationLayer);
 
         IDLayersMap.set(layerIds.UserLocation, UserLocationMap);
-        routeLayer.set(layerIds.Route, RouteMap);
+        IDLayersMap.set(layerIds.Route, RouteMap);
     }
 
     // Adds the markers
@@ -100,14 +100,6 @@
         const marker = new ol.Feature(new ol.geom.Point(ol.proj.fromLonLat([markedFeature.longitude, markedFeature.latitude])));
         marker.setId(markedFeature.id);
         layer.getSource().addFeature(marker);
-    }
-
-    // Toggles the visibility of the markers
-    function toggleShowLayers(visible) {
-        const layers = Array.from(IDLayersMap.get(visible.layerId).values());
-        layers.forEach(function (layer) {
-            layer.setVisible(visible.visible);
-        })
     }
 
     // Removes the marker
@@ -121,6 +113,14 @@
     function updateMarker(markedFeature) {
         removeMarker(markedFeature);
         addMarker(markedFeature);
+    }
+
+    // Toggles the visibility of the markers
+    function toggleShowLayers(visible) {
+        const layers = Array.from(IDLayersMap.get(visible.layerId).values());
+        layers.forEach(function (layer) {
+            layer.setVisible(visible.visible);
+        })
     }
 
     // Marker interaction
