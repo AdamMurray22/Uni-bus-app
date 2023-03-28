@@ -17,7 +17,7 @@ class RouteMapWidget extends MapWidget {
 
 /// The route screen state.
 class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
-
+  /// Creates the route between the given locations.
   createRoute(Location from, Location to) async {
     http.Response response = await _fetchORSMRoute(from, to);
     String responseBody = response.body;
@@ -26,9 +26,10 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     _loadRouteGeoJson(route);
   }
 
+  /// Adds the destination marker.
   addDestinationMarker(Location location)
   {
-    addMarker(MapDataId.destination, MapDataId.destination.idPrefix, location.longitude, location.latitude);
+    updateMarker(MapDataId.destination, MapDataId.destination.idPrefix, location.longitude, location.latitude);
   }
 
   /// Sets the values for the map set up.

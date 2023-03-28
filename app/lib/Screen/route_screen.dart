@@ -191,15 +191,14 @@ class _RouteScreenState extends State<RouteScreen> {
     String fromId = _fromRouteDropDownController.dropDownValue!.value;
     String toId = _toRouteDropDownController.dropDownValue!.value;
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
-    locationHandler.removeOnRouteLocationChanged();
-    _addRoute(fromId, toId);
+    await locationHandler.removeOnRouteLocationChanged();
+    await _addRoute(fromId, toId);
     Feature toLocation = features[toId]!;
     _mapStateKey.currentState?.addDestinationMarker(location.Location(toLocation.long, toLocation.lat));
     if (isUserLocation)
     {
-      locationHandler.onRouteLocationChanged((locationData)
-      {
-        _addRoute(fromId, toId);
+      await locationHandler.onRouteLocationChanged((locationData) async {
+        await _addRoute(fromId, toId);
       });
     }
   }

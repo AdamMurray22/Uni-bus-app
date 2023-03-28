@@ -81,9 +81,12 @@ class LocationPermissionsHandler {
     _locationStream = _location.onLocationChanged.listen(onChanged);
   }
 
-  removeOnRouteLocationChanged()
-  {
-    _locationStream?.cancel();
+  removeOnRouteLocationChanged() async {
+    if (_locationStream == null)
+    {
+      return;
+    }
+    await _locationStream!.cancel();
   }
 
   // Adds all _onLocationChangedFunctions to be called on a location update.
