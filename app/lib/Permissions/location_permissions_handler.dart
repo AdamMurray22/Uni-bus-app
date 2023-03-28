@@ -19,6 +19,20 @@ class LocationPermissionsHandler {
     return _handler!;
   }
 
+  Future<double?> getLongitude() async {
+    LocationData locationData = await _location.getLocation();
+    return locationData.longitude;
+  }
+
+  Future<double?> getLatitude() async {
+    LocationData locationData = await _location.getLocation();
+    return locationData.latitude;
+  }
+
+  Future<LocationData> getLocationData() async {
+    return await _location.getLocation();
+}
+
   /// Asks the user for permission to get their location.
   requestLocationPermission() async {
     bool serviceEnabled;
@@ -53,7 +67,7 @@ class LocationPermissionsHandler {
   onLocationChanged(Function(LocationData) onChanged) async {
     _onLocationChangedFunctions.add(onChanged);
     if (await hasPermission()) {
-      _location.onLocationChanged.listen((locationData) {
+      _location.onLocationChanged.listen((LocationData locationData) {
         onChanged(locationData);
       });
     }

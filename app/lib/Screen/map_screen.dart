@@ -25,7 +25,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapDataLoader _dataLoader = MapDataLoader.getDataLoader();
   late final HeapSort<DropDownValueModel> _dropDownSort;
-  final GlobalKey<MainMapWidgetState> _mapStateKep = GlobalKey();
+  final GlobalKey<MainMapWidgetState> _mapStateKey = GlobalKey();
 
   late final MainMapWidget _mapWidget;
   late final SingleValueDropDownController _dropDownController;
@@ -83,7 +83,7 @@ class _MapScreenState extends State<MapScreen> {
               _showMapFeatureInfoPanel(markerId);
             });
           },
-          key: _mapStateKep,
+          key: _mapStateKey,
     );
 
     _dropDownController = SingleValueDropDownController();
@@ -170,7 +170,7 @@ class _MapScreenState extends State<MapScreen> {
                         _mapCheckBoxChange(valueId, true);
                       }
                     });
-                    _mapStateKep.currentState?.setMapCentreAndZoom(
+                    _mapStateKey.currentState?.setMapCentreAndZoom(
                         _getMapData().getFeaturesMap()[value.value]!);
                   },
                 ),
@@ -399,7 +399,7 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       valueCheckMap[id]?.value = value;
     });
-    _mapStateKep.currentState?.toggleMarkers(id, value);
+    _mapStateKey.currentState?.toggleMarkers(id, value);
   }
 
   // Returns the MapData

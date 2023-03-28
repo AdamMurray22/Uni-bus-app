@@ -53,7 +53,7 @@
             }),
         }),
     });
-    U1BusStopMarkersLayer.isMarkerLayer = true;
+    U1BusStopMarkersLayer.isClickableMarkerLayer = true;
 
     // This layer shows the uni building markers
     UniBuildingMarkersLayer = new ol.layer.Vector({
@@ -66,7 +66,7 @@
             }),
         }),
     });
-    UniBuildingMarkersLayer.isMarkerLayer = true;
+    UniBuildingMarkersLayer.isClickableMarkerLayer = true;
 
     // This layer shows the landmark markers
     LandmarkMarkersLayer = new ol.layer.Vector({
@@ -79,7 +79,7 @@
             }),
         }),
     });
-    LandmarkMarkersLayer.isMarkerLayer = true;
+    LandmarkMarkersLayer.isClickableMarkerLayer = true;
 
     // This layer shows the Users location
     UserLocationLayer = new ol.layer.Vector({
@@ -92,7 +92,7 @@
             }),
         }),
     });
-    UserLocationLayer.isMarkerLayer = false;
+    UserLocationLayer.isClickableMarkerLayer = false;
 
     // Enum to identify the type of layer
     layerEnum = {
@@ -107,7 +107,7 @@
     map.on("click", function (e) {
         let markerFound = false;
         map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
-            if (layer.isMarkerLayer && markerFound == false) {
+            if (layer.isClickableMarkerLayer && markerFound == false) {
                 markerClicked(feature);
                 markerFound = true;
             }

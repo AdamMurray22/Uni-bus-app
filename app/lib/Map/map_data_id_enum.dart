@@ -5,7 +5,8 @@ enum MapDataId
   uniBuilding("UB-"),
   landmark("LM-"),
   userLocation("UL-"),
-  route("RT-");
+  route("RT-"),
+  destination("DN-");
 
   const MapDataId(this.idPrefix);
   final String idPrefix;
