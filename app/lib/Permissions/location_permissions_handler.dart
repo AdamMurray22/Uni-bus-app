@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:location/location.dart';
 
 /// This handles requesting permission to use the users location.
@@ -6,6 +8,7 @@ class LocationPermissionsHandler {
   static LocationPermissionsHandler? _handler;
   late Location _location;
   final Set<Function(LocationData)> _onLocationChangedFunctions = {};
+  StreamSubscription? _locationStream;
 
   // Private constructor to be called only once.
   LocationPermissionsHandler._() {
@@ -71,6 +74,16 @@ class LocationPermissionsHandler {
         onChanged(locationData);
       });
     }
+  }
+
+  /// Adds a function to call when location updates are received.
+  onRouteLocationChanged(Function(LocationData) onChanged) async {
+    _locationStream = _location.onLocationChanged.listen(onChanged);
+  }
+
+  removeOnRouteLocationChanged()
+  {
+    _locationStream?.cancel();
   }
 
   // Adds all _onLocationChangedFunctions to be called on a location update.

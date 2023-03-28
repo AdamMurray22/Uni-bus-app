@@ -186,16 +186,18 @@ class _RouteScreenState extends State<RouteScreen> {
 
   // Gets the chosen start and end for the route and creates it.
   _createRoute() async {
+    LocationPermissionsHandler locationHandler = LocationPermissionsHandler.getHandler();
     Map<String, Feature> features = MapDataLoader.getDataLoader().getMapData().getFeaturesMap();
     String fromId = _fromRouteDropDownController.dropDownValue!.value;
     String toId = _toRouteDropDownController.dropDownValue!.value;
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
+    locationHandler.removeOnRouteLocationChanged();
     _addRoute(fromId, toId);
     Feature toLocation = features[toId]!;
     _mapStateKey.currentState?.addDestinationMarker(location.Location(toLocation.long, toLocation.lat));
     if (isUserLocation)
     {
-      LocationPermissionsHandler.getHandler().onLocationChanged((locationData)
+      locationHandler.onRouteLocationChanged((locationData)
       {
         _addRoute(fromId, toId);
       });
