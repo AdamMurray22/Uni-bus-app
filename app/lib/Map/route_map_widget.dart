@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -18,17 +19,17 @@ class RouteMapWidget extends MapWidget {
 
 /// The route screen state.
 class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
-  Tuple2<Location, Location>? _currentRoute;
+  Tuple2<String, String>? _currentRoute;
 
   /// Sets the current route.
-  setCurrentRoute(Location from, Location to)
+  setCurrentRoute(String fromId, String toId)
   {
-    _currentRoute = Tuple2(from, to);
+    _currentRoute = Tuple2(fromId, toId);
   }
 
   /// Creates the route between the given locations.
-  createRoute(Location from, Location to) async {
-    if (!(_currentRoute?.item1 == from && _currentRoute?.item2 == to))
+  createRoute(Location from, Location to, String fromId, String toId) async {
+    if (!(_currentRoute?.item1 == fromId && _currentRoute?.item2 == toId))
     {
       return;
     }
@@ -75,7 +76,11 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   }
 
   Future<http.Response> _fetchORSMRoute(Location startLocation, Location endLocation) async {
-    String link = 'http://router.project-osrm.org/route/v1/foot/${startLocation.longitude},${startLocation.latitude};${endLocation.longitude},${endLocation.latitude}?overview=full&geometries=geojson';
+    String linkPrefix = 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/';
+    //String linkPrefix = 'http://router.project-osrm.org/route/v1/driving/';
+    String linkLocationData = '${startLocation.longitude},${startLocation.latitude};${endLocation.longitude},${endLocation.latitude}';
+    String linkSuffix = '?overview=full&geometries=geojson';
+    String link = '$linkPrefix$linkLocationData$linkSuffix';
     Uri uri = Uri.parse(link);
     return await http.get(uri);
   }

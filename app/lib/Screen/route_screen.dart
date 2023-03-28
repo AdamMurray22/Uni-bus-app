@@ -195,12 +195,14 @@ class _RouteScreenState extends State<RouteScreen> {
     locationHandler.removeOnRouteLocationChanged();
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    _mapStateKey.currentState?.setCurrentRoute(fromLocation, toLocation);
-    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation);
+    _mapStateKey.currentState?.setCurrentRoute(fromId, toId);
+    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation, fromId, toId);
     _mapStateKey.currentState?.addDestinationMarker(toLocation);
     if (isUserLocation) {
+      String currentFromId = fromId;
+      String currentToId = toId;
       locationHandler.onRouteLocationChanged((locationData) async {
-        await _updateRoute(fromId, toId);
+        await _updateRoute(currentFromId, currentToId);
       });
     }
   }
@@ -208,7 +210,7 @@ class _RouteScreenState extends State<RouteScreen> {
   _updateRoute(String fromId, String toId) async {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation);
+    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation, fromId, toId);
   }
 
   Future<location.Location> _getFromLocation(String fromId) async {
