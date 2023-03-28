@@ -8,11 +8,12 @@ class LocationPermissionsHandler {
   static LocationPermissionsHandler? _handler;
   late Location _location;
   final Set<Function(LocationData)> _onLocationChangedFunctions = {};
-  StreamSubscription? _locationStream;
+  late StreamSubscription _locationStream;
 
   // Private constructor to be called only once.
   LocationPermissionsHandler._() {
     _location = Location();
+    _locationStream = _location.onLocationChanged.listen(null);
   }
 
   /// Returns the only instance of LocationPermissionsHandler, creates a new
@@ -77,16 +78,15 @@ class LocationPermissionsHandler {
   }
 
   /// Adds a function to call when location updates are received.
-  onRouteLocationChanged(Function(LocationData) onChanged) async {
-    _locationStream = _location.onLocationChanged.listen(onChanged);
+  onRouteLocationChanged(Function(LocationData) onChanged) {
+    _locationStream.onData((locationData)
+    {
+      onChanged(locationData);
+    });
   }
 
-  removeOnRouteLocationChanged() async {
-    if (_locationStream == null)
-    {
-      return;
-    }
-    await _locationStream!.cancel();
+  removeOnRouteLocationChanged() {
+    _locationStream.onData(null);
   }
 
   // Adds all _onLocationChangedFunctions to be called on a location update.

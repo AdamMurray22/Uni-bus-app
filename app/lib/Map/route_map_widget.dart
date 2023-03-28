@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tuple/tuple.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import 'map_widget.dart';
@@ -17,8 +18,20 @@ class RouteMapWidget extends MapWidget {
 
 /// The route screen state.
 class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
+  Tuple2<Location, Location>? _currentRoute;
+
+  /// Sets the current route.
+  setCurrentRoute(Location from, Location to)
+  {
+    _currentRoute = Tuple2(from, to);
+  }
+
   /// Creates the route between the given locations.
   createRoute(Location from, Location to) async {
+    if (!(_currentRoute?.item1 == from && _currentRoute?.item2 == to))
+    {
+      return;
+    }
     http.Response response = await _fetchORSMRoute(from, to);
     String responseBody = response.body;
     Map<String, dynamic> jsonResponse = jsonDecode(responseBody);

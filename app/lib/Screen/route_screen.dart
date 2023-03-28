@@ -36,30 +36,30 @@ class _RouteScreenState extends State<RouteScreen> {
     // Sorts the drop down list to show the uni buildings, then the bus stops,
     // then the landmarks. With all three groups sorted alphabetically.
     _dropDownSort = HeapSort<DropDownValueModel>(
-            (DropDownValueModel model1, DropDownValueModel model2) {
-          int assignIntFromMapDataId(MapDataId id) {
-            if (id == MapDataId.uniBuilding) {
-              return 0;
-            } else if (id == MapDataId.u1) {
-              return 1;
-            } else {
-              return 2;
-            }
-          }
+        (DropDownValueModel model1, DropDownValueModel model2) {
+      int assignIntFromMapDataId(MapDataId id) {
+        if (id == MapDataId.uniBuilding) {
+          return 0;
+        } else if (id == MapDataId.u1) {
+          return 1;
+        } else {
+          return 2;
+        }
+      }
 
-          MapDataId model1Id = MapDataId.getMapDataIdEnumFromId(model1.value);
-          MapDataId model2Id = MapDataId.getMapDataIdEnumFromId(model2.value);
-          int idValue1 = assignIntFromMapDataId(model1Id);
-          int idValue2 = assignIntFromMapDataId(model2Id);
-          if (idValue1 == idValue2) {
-            return Comparator.alphabeticalComparator()
-                .call(model1.name, model2.name);
-          } else if (idValue1 < idValue2) {
-            return Comparator.before;
-          } else {
-            return Comparator.after;
-          }
-        });
+      MapDataId model1Id = MapDataId.getMapDataIdEnumFromId(model1.value);
+      MapDataId model2Id = MapDataId.getMapDataIdEnumFromId(model2.value);
+      int idValue1 = assignIntFromMapDataId(model1Id);
+      int idValue2 = assignIntFromMapDataId(model2Id);
+      if (idValue1 == idValue2) {
+        return Comparator.alphabeticalComparator()
+            .call(model1.name, model2.name);
+      } else if (idValue1 < idValue2) {
+        return Comparator.before;
+      } else {
+        return Comparator.after;
+      }
+    });
 
     _fromRouteDropDownController = SingleValueDropDownController();
     _toRouteDropDownController = SingleValueDropDownController();
@@ -71,10 +71,11 @@ class _RouteScreenState extends State<RouteScreen> {
           _toDropDownList
               .add(DropDownValueModel(name: feature.name, value: feature.id));
         }
-        List<DropDownValueModel> fromList = _dropDownSort.sort(_fromDropDownList);
+        List<DropDownValueModel> fromList =
+            _dropDownSort.sort(_fromDropDownList);
         _fromDropDownList.clear();
-        _fromDropDownList
-            .add(DropDownValueModel(name: "Current Location", value: MapDataId.userLocation.idPrefix));
+        _fromDropDownList.add(DropDownValueModel(
+            name: "Current Location", value: MapDataId.userLocation.idPrefix));
         _fromDropDownList.addAll(fromList);
         _toDropDownList = _dropDownSort.sort(_toDropDownList);
       });
@@ -186,44 +187,55 @@ class _RouteScreenState extends State<RouteScreen> {
 
   // Gets the chosen start and end for the route and creates it.
   _createRoute() async {
-    LocationPermissionsHandler locationHandler = LocationPermissionsHandler.getHandler();
-    Map<String, Feature> features = MapDataLoader.getDataLoader().getMapData().getFeaturesMap();
+    LocationPermissionsHandler locationHandler =
+        LocationPermissionsHandler.getHandler();
     String fromId = _fromRouteDropDownController.dropDownValue!.value;
     String toId = _toRouteDropDownController.dropDownValue!.value;
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
-    await locationHandler.removeOnRouteLocationChanged();
-    await _addRoute(fromId, toId);
-    Feature toLocation = features[toId]!;
-    _mapStateKey.currentState?.addDestinationMarker(location.Location(toLocation.long, toLocation.lat));
-    if (isUserLocation)
-    {
-      await locationHandler.onRouteLocationChanged((locationData) async {
-        await _addRoute(fromId, toId);
+    locationHandler.removeOnRouteLocationChanged();
+    location.Location fromLocation = await _getFromLocation(fromId);
+    location.Location toLocation = _getToLocation(toId);
+    _mapStateKey.currentState?.setCurrentRoute(fromLocation, toLocation);
+    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation);
+    _mapStateKey.currentState?.addDestinationMarker(toLocation);
+    if (isUserLocation) {
+      locationHandler.onRouteLocationChanged((locationData) async {
+        await _updateRoute(fromId, toId);
       });
     }
   }
 
-  _addRoute(String fromId, String toId) async {
-    Map<String, Feature> features = MapDataLoader.getDataLoader().getMapData().getFeaturesMap();
-    bool isUserLocation = fromId == MapDataId.userLocation.idPrefix;
+  _updateRoute(String fromId, String toId) async {
+    location.Location fromLocation = await _getFromLocation(fromId);
+    location.Location toLocation = _getToLocation(toId);
+    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation);
+  }
+
+  Future<location.Location> _getFromLocation(String fromId) async {
+    Map<String, Feature> features =
+        MapDataLoader.getDataLoader().getMapData().getFeaturesMap();
+    bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
     location.Location? fromLocation;
-    location.Location? toLocation;
-    if (isUserLocation)
-    {
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandler();
+    if (isUserLocation) {
+      LocationPermissionsHandler handler =
+          LocationPermissionsHandler.getHandler();
       LocationData data = await handler.getLocationData();
-      double? long = data.longitude;
-      double? lat = data.latitude;
-      if (long == null) return;
-      if (lat == null) return;
+      double long = data.longitude!;
+      double lat = data.latitude!;
       fromLocation = location.Location(long, lat);
-    }
-    else {
+    } else {
       Feature feature = features[fromId]!;
       fromLocation = location.Location(feature.long, feature.lat);
     }
+    return fromLocation;
+  }
+
+  location.Location _getToLocation(String toId) {
+    Map<String, Feature> features =
+        MapDataLoader.getDataLoader().getMapData().getFeaturesMap();
+    location.Location? toLocation;
     Feature feature = features[toId]!;
     toLocation = location.Location(feature.long, feature.lat);
-    _mapStateKey.currentState?.createRoute(fromLocation, toLocation);
+    return toLocation;
   }
 }
