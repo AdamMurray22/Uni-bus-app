@@ -17,7 +17,7 @@ class MainMapWidget extends MapWidget {
   final Function(String)? markerClickedFunction;
 
   @override
-  State<MapWidget> createState() => MainMapWidgetState();
+  State<MainMapWidget> createState() => MainMapWidgetState();
 }
 
 /// The main map screen state.

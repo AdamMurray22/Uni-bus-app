@@ -13,8 +13,14 @@ class BusRunningDates
   /// Returns true if the bus is running on the current day, otherwise false.
   bool isBusRunning()
   {
+    return isBusRunningOnDate(DateTime.now());
+  }
+
+  /// Returns true if the bus is running on the given day, otherwise false.
+  bool isBusRunningOnDate(DateTime date)
+  {
     // Checks if the current day is a week day or weekend.
-    if (DateTime.now().weekday >= 6)
+    if (date.weekday >= 6)
     {
       return false;
     }

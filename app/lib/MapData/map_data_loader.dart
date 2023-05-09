@@ -2,6 +2,7 @@ import 'package:app/MapData/feature.dart';
 import 'package:tuple/tuple.dart';
 
 import '../Database/database_loader.dart';
+import '../Exceptions/loading_not_finished_exception.dart';
 import 'bus_running_dates.dart';
 import 'bus_time.dart';
 import 'map_data.dart';
@@ -18,6 +19,7 @@ class MapDataLoader
 
   MapDataLoader._();
 
+  /// Returns the only object of MapDataLoader.
   static MapDataLoader getDataLoader()
   {
     _mapDataLoader ??= MapDataLoader._();
@@ -63,6 +65,10 @@ class MapDataLoader
   /// Returns the map data. Only to be used once the data has already been loaded.
   MapData getMapData()
   {
+    if (_loadingFinished == false)
+    {
+      throw LoadingNotFinishedException("Data has not finished loading yet.");
+    }
     return _data;
   }
 }

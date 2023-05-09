@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +13,7 @@ class RouteMapWidget extends MapWidget {
   const RouteMapWidget({super.key});
 
   @override
-  State<MapWidget> createState() => RouteMapWidgetState();
+  State<RouteMapWidget> createState() => RouteMapWidgetState();
 }
 
 /// The route screen state.
@@ -43,7 +42,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   /// Adds the destination marker.
   addDestinationMarker(Location location)
   {
-    updateMarker(MapDataId.destination, MapDataId.destination.idPrefix, location.longitude, location.latitude);
+    updateMarker(MapDataId.destination, MapDataId.destination.idPrefix, location.getLongitude(), location.getLatitude());
   }
 
   /// Sets the values for the map set up.
@@ -77,8 +76,8 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
 
   Future<http.Response> _fetchORSMRoute(Location startLocation, Location endLocation) async {
     String linkPrefix = 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/';
-    //String linkPrefix = 'http://router.project-osrm.org/route/v1/driving/';
-    String linkLocationData = '${startLocation.longitude},${startLocation.latitude};${endLocation.longitude},${endLocation.latitude}';
+    //String linkPrefix = 'http://router.project-osrm.org/route/v1/driving/'; Alternative server
+    String linkLocationData = '${startLocation.getLongitude()},${startLocation.getLatitude()};${endLocation.getLongitude()},${endLocation.getLatitude()}';
     String linkSuffix = '?overview=full&geometries=geojson';
     String link = '$linkPrefix$linkLocationData$linkSuffix';
     Uri uri = Uri.parse(link);

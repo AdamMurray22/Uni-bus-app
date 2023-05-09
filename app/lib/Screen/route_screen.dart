@@ -192,7 +192,7 @@ class _RouteScreenState extends State<RouteScreen> {
     String fromId = _fromRouteDropDownController.dropDownValue!.value;
     String toId = _toRouteDropDownController.dropDownValue!.value;
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
-    locationHandler.removeOnRouteLocationChanged();
+    await locationHandler.removeOnRouteLocationChanged();
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
     _mapStateKey.currentState?.setCurrentRoute(fromId, toId);
@@ -201,7 +201,7 @@ class _RouteScreenState extends State<RouteScreen> {
     if (isUserLocation) {
       String currentFromId = fromId;
       String currentToId = toId;
-      locationHandler.onRouteLocationChanged((locationData) async {
+      await locationHandler.onRouteLocationChanged((locationData) async {
         await _updateRoute(currentFromId, currentToId);
       });
     }
@@ -221,7 +221,7 @@ class _RouteScreenState extends State<RouteScreen> {
     if (isUserLocation) {
       LocationPermissionsHandler handler =
           LocationPermissionsHandler.getHandler();
-      LocationData data = await handler.getLocationData();
+      LocationData data = (await handler.getLocationData())!;
       double long = data.longitude!;
       double lat = data.latitude!;
       fromLocation = location.Location(long, lat);

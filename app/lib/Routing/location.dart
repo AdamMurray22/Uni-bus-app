@@ -1,9 +1,21 @@
-import 'package:app/MapData/map_data_loader.dart';
-
+/// Holds a routing location.
 class Location
 {
-  final double latitude;
-  final double longitude;
+  final double _latitude;
+  final double _longitude;
 
-  Location(this.longitude, this.latitude);
+  /// Constructor for the Location setting the longitude and latitude.
+  Location(this._longitude, this._latitude);
+
+  /// Returns the latitude.
+  double getLatitude()
+  {
+    return _latitude;
+  }
+
+  /// Returns the longitude.
+  double getLongitude()
+  {
+    return _longitude;
+  }
 }

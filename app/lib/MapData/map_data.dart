@@ -2,7 +2,6 @@ import 'package:tuple/tuple.dart';
 
 import '../Map/map_data_id_enum.dart';
 import 'bus_running_dates.dart';
-import 'term_dates.dart';
 import 'bus_stop.dart';
 import 'bus_time.dart';
 import 'feature.dart';
@@ -36,7 +35,7 @@ class MapData
   }
 
   /// Returns an Iterable of all the features.
-  Iterable<Feature> getAllFeatures()
+  Set<Feature> getAllFeatures()
   {
     return {..._otherFeatures.values, ..._busStops.values};
   }
@@ -48,8 +47,8 @@ class MapData
   }
 
   /// Returns an Iterable of all  the bus stops.
-  Iterable<BusStop> getAllBusStops()
+  Set<BusStop> getAllBusStops()
   {
-    return _busStops.values;
+    return _busStops.values.toSet();
   }
 }

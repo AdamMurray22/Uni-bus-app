@@ -1,3 +1,5 @@
+import '../Exceptions/map_data_id_not_found_exception.dart';
+
 /// Defines the ids for the map layers.
 enum MapDataId
 {
@@ -21,6 +23,6 @@ enum MapDataId
         return mapDataId;
       }
     }
-    throw Exception("Id not found.");
+    throw MapDataIdNotFoundException("Id not found.");
   }
 }

@@ -22,4 +22,14 @@ class Feature
   {
     return Tuple2([name], []);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Feature &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

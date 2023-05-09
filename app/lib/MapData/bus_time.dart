@@ -11,6 +11,12 @@ class BusTime
   BusTime(String time)
   {
     _time = time;
+    if (int.tryParse(time.substring(0, 2)) == null ||
+        int.tryParse(time.substring(3, 5)) == null ||
+        time[2] != ':')
+    {
+      throw ArgumentError("That is not a valid time in the format HH:MM.");
+    }
     _hour = int.parse(time.substring(0, 2));
     _hour == 0 ? _hour = 24 : _hour;
     _minute = int.parse(time.substring(3, 5));
@@ -60,4 +66,14 @@ class BusTime
     int currentMinute = DateTime.now().minute;
     return currentMinute + (currentHour * 60);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is BusTime &&
+              runtimeType == other.runtimeType &&
+              _time == other._time;
+
+  @override
+  int get hashCode => _time.hashCode;
 }

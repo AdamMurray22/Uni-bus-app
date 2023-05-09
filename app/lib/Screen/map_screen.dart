@@ -8,7 +8,7 @@ import 'package:tuple/tuple.dart';
 import '../Map/map_data_id_enum.dart';
 import '../MapData/map_data.dart';
 import '../Sorts/heap_sort.dart';
-import '../wrapper/bool_wrapper.dart';
+import '../Wrapper/bool_wrapper.dart';
 import '../Map/main_map_widget.dart';
 
 /// The screen that displays the map.
@@ -166,7 +166,7 @@ class _MapScreenState extends State<MapScreen> {
                         MapDataId.getMapDataIdEnumFromId(value.value);
                     setState(() {
                       _showMapFeatureInfoPanel(value.value);
-                      if (!valueCheckMap[valueId]!.value) {
+                      if (!valueCheckMap[valueId]!.getValue()) {
                         _mapCheckBoxChange(valueId, true);
                       }
                     });
@@ -290,7 +290,7 @@ class _MapScreenState extends State<MapScreen> {
                     checkColor: Color(0xffffffff),
                     hoverColor: Color(0x42000000),
                     splashRadius: 20,
-                    value: _u1ValueCheck.value,
+                    value: _u1ValueCheck.getValue(),
                   ),
                   const Text(
                     "Uni buildings",
@@ -312,7 +312,7 @@ class _MapScreenState extends State<MapScreen> {
                     checkColor: Color(0xffffffff),
                     hoverColor: Color(0x42000000),
                     splashRadius: 20,
-                    value: _uniBuildingValueCheck.value,
+                    value: _uniBuildingValueCheck.getValue(),
                   ),
                   const Text(
                     "Landmarks",
@@ -334,7 +334,7 @@ class _MapScreenState extends State<MapScreen> {
                     checkColor: Color(0xffffffff),
                     hoverColor: Color(0x42000000),
                     splashRadius: 20,
-                    value: _landmarkValueCheck.value,
+                    value: _landmarkValueCheck.getValue(),
                   ),
                 ],
               ),
@@ -397,7 +397,7 @@ class _MapScreenState extends State<MapScreen> {
   // Toggles the checkbox and markers for that checkbox.
   _mapCheckBoxChange(MapDataId id, bool value) {
     setState(() {
-      valueCheckMap[id]?.value = value;
+      valueCheckMap[id]?.setValue(value);
     });
     _mapStateKey.currentState?.toggleMarkers(id, value);
   }
