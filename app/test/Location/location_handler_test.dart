@@ -1,10 +1,10 @@
-import 'package:app/Permissions/location_permissions_handler.dart';
+import 'package:app/Location/location_handler.dart';
 import 'package:location/location.dart';
 import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'location_permissions_handler_test.mocks.dart';
+import 'location_handler_test.mocks.dart';
 
 @GenerateMocks([Location])
 @GenerateMocks([LocationData])
@@ -12,8 +12,8 @@ void main() {
   group('Location Permissions Handler Tests', () {
 
     test('.getHandler() Returns same handler', () {
-      LocationPermissionsHandler handlerOne = LocationPermissionsHandler.getHandler();
-      LocationPermissionsHandler handlerTwo = LocationPermissionsHandler.getHandler();
+      LocationHandler handlerOne = LocationHandler.getHandler();
+      LocationHandler handlerTwo = LocationHandler.getHandler();
       expect(handlerOne, handlerTwo);
     });
 
@@ -23,7 +23,7 @@ void main() {
       when(location.hasPermission()).thenAnswer((realInvocation) async => PermissionStatus.granted);
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.hasPermission(), true);
     });
 
@@ -33,7 +33,7 @@ void main() {
       when(location.hasPermission()).thenAnswer((realInvocation) async => PermissionStatus.granted);
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => false);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.hasPermission(), false);
     });
 
@@ -43,7 +43,7 @@ void main() {
       when(location.hasPermission()).thenAnswer((realInvocation) async => PermissionStatus.denied);
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.hasPermission(), false);
     });
 
@@ -57,7 +57,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLongitude(), 50);
     });
 
@@ -71,7 +71,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLongitude(), null);
     });
 
@@ -85,7 +85,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLatitude(), 50);
     });
 
@@ -99,7 +99,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLatitude(), null);
     });
 
@@ -111,7 +111,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLocationData(), isA<LocationData>());
     });
 
@@ -123,7 +123,7 @@ void main() {
       when(location.serviceEnabled()).thenAnswer((realInvocation) async => true);
       when(location.getLocation()).thenAnswer((realInvocation) async => locationData);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.getLocationData(), null);
     });
 
@@ -135,7 +135,7 @@ void main() {
       when(location.requestService()).thenAnswer((realInvocation) async => false);
       when(location.requestPermission()).thenAnswer((realInvocation) async => PermissionStatus.denied);
 
-      LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
+      LocationHandler handler = LocationHandler.getHandlerWithLocation(location);
       expect(await handler.requestLocationPermission(), null);
     });
   });

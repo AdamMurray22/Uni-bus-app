@@ -1,4 +1,4 @@
-import 'package:app/Permissions/location_permissions_handler.dart';
+import 'package:app/Location/location_handler.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -187,8 +187,8 @@ class _RouteScreenState extends State<RouteScreen> {
 
   // Gets the chosen start and end for the route and creates it.
   _createRoute() async {
-    LocationPermissionsHandler locationHandler =
-        LocationPermissionsHandler.getHandler();
+    LocationHandler locationHandler =
+        LocationHandler.getHandler();
     String fromId = _fromRouteDropDownController.dropDownValue!.value;
     String toId = _toRouteDropDownController.dropDownValue!.value;
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
@@ -219,8 +219,8 @@ class _RouteScreenState extends State<RouteScreen> {
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
     location.Location? fromLocation;
     if (isUserLocation) {
-      LocationPermissionsHandler handler =
-          LocationPermissionsHandler.getHandler();
+      LocationHandler handler =
+          LocationHandler.getHandler();
       LocationData data = (await handler.getLocationData())!;
       double long = data.longitude!;
       double lat = data.latitude!;

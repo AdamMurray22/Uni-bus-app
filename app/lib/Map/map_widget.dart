@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
-import '../Permissions/location_permissions_handler.dart';
+import '../Location/location_handler.dart';
 import 'map_data_id_enum.dart';
 
 abstract class MapWidget extends StatefulWidget {
@@ -87,8 +87,8 @@ abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
   // whenever the user moves.
   @protected
    addUserLocationIcon() async {
-    LocationPermissionsHandler handler =
-      LocationPermissionsHandler.getHandler();
+    LocationHandler handler =
+      LocationHandler.getHandler();
     handler.onLocationChanged((LocationData currentLocation) {
       updateMarker(MapDataId.userLocation, MapDataId.userLocation.idPrefix,
           currentLocation.longitude!, currentLocation.latitude!);

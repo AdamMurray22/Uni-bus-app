@@ -3,33 +3,33 @@ import 'dart:async';
 import 'package:location/location.dart';
 
 /// This handles requesting permission to use the users location.
-class LocationPermissionsHandler {
+class LocationHandler {
   // This instance of itself is to make it a singleton.
-  static LocationPermissionsHandler? _handler;
+  static LocationHandler? _handler;
   late Location _location;
   final Set<Function(LocationData)> _onLocationChangedFunctions = {};
   late StreamSubscription? _locationStream;
 
   // Private constructor to be called only once.
-  LocationPermissionsHandler._() {
+  LocationHandler._() {
     _location = Location();
   }
 
   // Private constructor for testing.
-  LocationPermissionsHandler._withLocation(Location location) {
+  LocationHandler._withLocation(Location location) {
     _location = location;
   }
 
-  /// Returns the only instance of LocationPermissionsHandler, creates a new
+  /// Returns the only instance of LocationHandler, creates a new
   /// instance if one does not yet exist.
-  static LocationPermissionsHandler getHandler() {
-    _handler ??= LocationPermissionsHandler._();
+  static LocationHandler getHandler() {
+    _handler ??= LocationHandler._();
     return _handler!;
   }
 
-  /// Returns an instance of LocationPermissionsHandler with the given location.
-  static LocationPermissionsHandler getHandlerWithLocation(Location location) {
-    _handler = LocationPermissionsHandler._withLocation(location);
+  /// Returns an instance of LocationHandler with the given location.
+  static LocationHandler getHandlerWithLocation(Location location) {
+    _handler = LocationHandler._withLocation(location);
     return _handler!;
   }
 

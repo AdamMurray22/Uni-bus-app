@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'MapData/map_data_loader.dart';
-import 'Permissions/location_permissions_handler.dart';
+import 'Location/location_handler.dart';
 import 'Screen/main_screen.dart';
 
 /// Target for start of application.
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MapDataLoader.getDataLoader().load();
-    LocationPermissionsHandler.getHandler().requestLocationPermission();
+    LocationHandler.getHandler().requestLocationPermission();
     return const MaterialApp(
         home: MainScreen()
     );
