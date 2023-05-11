@@ -39,11 +39,39 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     _loadRouteGeoJson(route);
   }
 
+  /// Removes the route.
+  endRoute(String? fromId, String? toId) async {
+    webViewController.runJavascript("removeRoute()");
+    _currentRoute = null;
+    if (fromId != null)
+    {
+      String jsObjectFrom =
+          "{layerId: '${MapDataId
+          .destination
+          .idPrefix}', id: '${MapDataId.destination.idPrefix}s'}";
+      webViewController.runJavascript("removeMarker($jsObjectFrom)");
+    }
+    if (toId != null) {
+      String jsObjectTo =
+          "{layerId: '${MapDataId
+          .destination
+          .idPrefix}', id: '${MapDataId.destination.idPrefix}'}";
+      webViewController.runJavascript("removeMarker($jsObjectTo)");
+    }
+  }
+
   /// Adds the destination marker.
   addDestinationMarker(Location location)
   {
     updateMarker(MapDataId.destination, MapDataId.destination.idPrefix, location.getLongitude(), location.getLatitude());
   }
+
+  /// Adds the start marker.
+  addStartMarker(Location location)
+  {
+    updateMarker(MapDataId.destination, "${MapDataId.destination.idPrefix}s", location.getLongitude(), location.getLatitude());
+  }
+
 
   /// Sets the values for the map set up.
   @override

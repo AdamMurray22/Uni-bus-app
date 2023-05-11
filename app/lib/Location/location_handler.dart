@@ -8,7 +8,7 @@ class LocationHandler {
   static LocationHandler? _handler;
   late Location _location;
   final Set<Function(LocationData)> _onLocationChangedFunctions = {};
-  late StreamSubscription? _locationStream;
+  StreamSubscription? _locationStream;
 
   // Private constructor to be called only once.
   LocationHandler._() {
@@ -99,22 +99,37 @@ class LocationHandler {
     }
   }
 
+  DateTime currentTime = DateTime.now();
+
   /// Adds a function to call when location updates are received.
   onRouteLocationChanged(Function(LocationData) onChanged) async {
-    if (_locationStream == null && await hasPermission()) {
+    bool locationStream = await _checkLocationStream();
+    if (await hasPermission()) {
       _locationStream = _location.onLocationChanged.listen(null);
     }
-    _locationStream?.onData((locationData) {
-      onChanged(locationData);
-    });
+    if (locationStream == true) {
+      _locationStream!.onData((locationData) {
+        if (DateTime
+            .now()
+            .millisecondsSinceEpoch - currentTime.millisecondsSinceEpoch < 20) {
+          currentTime = DateTime.now();
+          return;
+        }
+        currentTime = DateTime.now();
+        onChanged(locationData);
+      });
+    }
   }
 
   /// Removes the function being run when the location data updates.
   removeOnRouteLocationChanged() async {
-    if (_locationStream == null && await hasPermission()) {
+    bool locationStream = await _checkLocationStream();
+    if (await hasPermission()) {
       _locationStream = _location.onLocationChanged.listen(null);
     }
-    _locationStream?.onData(null);
+    if (locationStream) {
+      _locationStream!.onData(null);
+    }
   }
 
   // Adds all _onLocationChangedFunctions to be called on a location update.
@@ -124,5 +139,14 @@ class LocationHandler {
         function(locationData);
       }
     });
+  }
+
+  // Checks if the location stream is null.
+  Future<bool> _checkLocationStream() async {
+    if (await hasPermission()) {
+      _locationStream ??= _location.onLocationChanged.listen((event) { });
+      return true;
+    }
+    return _locationStream != null;
   }
 }
