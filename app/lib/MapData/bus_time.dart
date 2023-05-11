@@ -8,6 +8,7 @@ class BusTime
   late bool _isBusRunning;
 
   /// The constructor assigning the time
+  /// Must be in the format HH:MM.
   BusTime(String time)
   {
     _time = time;
@@ -26,18 +27,30 @@ class BusTime
   /// Returns whether the BusTime is later in the day than the current time.
   bool later()
   {
-    return _getCurrentTimeInMins() <= _totalMins;
+    return laterThanGiven(DateTime.now());
+  }
+
+  /// Returns whether the BusTime is later in the day than the given time.
+  bool laterThanGiven(DateTime now)
+  {
+    return _getCurrentTimeInMins(now) <= _totalMins;
   }
 
   /// Returns the time as a String.
   String toDisplayString()
+  {
+    return toDisplayStringWithTime(DateTime.now());
+  }
+
+  /// Returns the time as a String.
+  String toDisplayStringWithTime(DateTime now)
   {
     if (!_isBusRunning)
     {
       return _time;
     }
     String displayString = _time;
-    int currentTotalMins = _getCurrentTimeInMins();
+    int currentTotalMins = _getCurrentTimeInMins(now);
     if (_totalMins - currentTotalMins >= 0 && _totalMins - currentTotalMins <= 45)
     {
       displayString = "$displayString (${_totalMins - currentTotalMins}mins)";
@@ -59,11 +72,11 @@ class BusTime
   }
 
   // Returns the current time of day in minutes.
-  int _getCurrentTimeInMins()
+  int _getCurrentTimeInMins(DateTime now)
   {
-    int currentHour = DateTime.now().hour;
+    int currentHour = now.hour;
     if (currentHour == 0) currentHour = 24;
-    int currentMinute = DateTime.now().minute;
+    int currentMinute = now.minute;
     return currentMinute + (currentHour * 60);
   }
 

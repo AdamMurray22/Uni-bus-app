@@ -31,7 +31,14 @@ class MapDataLoader
   /// function given to onDataLoaded().
   load() async
   {
-    DatabaseLoader loader = DatabaseLoader.getDataBaseLoader();
+    loadFromLoader(DatabaseLoader.getDataBaseLoader());
+  }
+
+  /// This loads the information and if
+  /// onDataLoaded() has been called it runs the
+  /// function given to onDataLoaded().
+  loadFromLoader(DatabaseLoader loader) async
+  {
     Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
         BusRunningDates> mapData = await loader.load();
     _data = MapData(mapData);

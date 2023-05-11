@@ -14,61 +14,48 @@ import '../MapData/term_dates.dart';
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>? _data;
+  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
+      BusRunningDates>? _data;
 
   DatabaseLoader._();
 
   /// Returns the only instance of DatabaseLoader.
-  static DatabaseLoader getDataBaseLoader()
-  {
+  static DatabaseLoader getDataBaseLoader() {
     _databaseLoader ??= DatabaseLoader._();
     return _databaseLoader!;
   }
 
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
-  Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>> load() async
-  {
-    _data ??= await _loadDatabase();
+  Future<
+      Tuple4<Set<Feature>, Map<String, List<BusTime>>,
+          Map<String, List<BusTime>>, BusRunningDates>> load() async {
+    _data ??= await loadDatabase(await _getDatabase());
     return _data!;
   }
 
   // Loads the database and returns a List of Features.
-   Future<Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates>> _loadDatabase() async
-  {
-    String databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, _relativePath);
-
-    // Check if the database exists in getDatabasesPath().
-    bool exists = await databaseExists(path);
-
-    // If it has not yet been written from the assets folder to the more
-    // efficient location to find at getDatabasesPath().
-    if (!exists) {
-      _writesDatabase(path);
-    }
-
-    // Used to reload the database from assets when its updated manually
-    //await _reloadDatabaseFromAssets(path);
-
-    // Open the database.
-    Database db = await openDatabase(path, readOnly: true);
-
+  Future<
+      Tuple4<
+          Set<Feature>,
+          Map<String, List<BusTime>>,
+          Map<String, List<BusTime>>,
+          BusRunningDates>> loadDatabase(Database db) async {
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =
-      await db.rawQuery('SELECT * FROM Feature');
+        await db.rawQuery('SELECT * FROM Feature');
 
     // Gets the bus arrTimes table
     List<Map<String, Object?>> busTimesList =
-      await db.rawQuery('SELECT * FROM Bus_Times');
+        await db.rawQuery('SELECT * FROM Bus_Times');
 
     // Gets the bus running termDates table
     List<Map<String, Object?>> busRunningDatesList =
-      await db.rawQuery('SELECT * FROM Term_Dates');
+        await db.rawQuery('SELECT * FROM Term_Dates');
 
     // Gets the national holidays table
     List<Map<String, Object?>> nationalHolidaysList =
-    await db.rawQuery('SELECT * FROM National_Holidays');
+        await db.rawQuery('SELECT * FROM National_Holidays');
 
     await db.close();
 
@@ -82,13 +69,11 @@ class DatabaseLoader {
     // Copy's the Bus Time's arrive table into a map from bus stop id's to BusTime objects.
     Map<String, List<BusTime>> arrTimes = {};
     for (Map map in busTimesList) {
-      if (arrTimes[map["bus_stop_id"]] == null)
-      {
+      if (arrTimes[map["bus_stop_id"]] == null) {
         arrTimes[map["bus_stop_id"]] = [];
       }
       String? time = map["arrive_time"];
-      if (time != null)
-      {
+      if (time != null) {
         arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"]));
       }
     }
@@ -96,13 +81,11 @@ class DatabaseLoader {
     // Copy's the Bus Time's depart table into a map from bus stop id's to BusTime objects.
     Map<String, List<BusTime>> depTimes = {};
     for (Map map in busTimesList) {
-      if (depTimes[map["bus_stop_id"]] == null)
-      {
+      if (depTimes[map["bus_stop_id"]] == null) {
         depTimes[map["bus_stop_id"]] = [];
       }
       String? time = map["depart_time"];
-      if (time != null)
-      {
+      if (time != null) {
         depTimes[map["bus_stop_id"]]!.add(BusTime(map["depart_time"]));
       }
     }
@@ -125,11 +108,30 @@ class DatabaseLoader {
     return _data!;
   }
 
+  Future<Database> _getDatabase() async {
+    String databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, _relativePath);
+
+    // Check if the database exists in getDatabasesPath().
+    bool exists = await databaseExists(path);
+
+    // If it has not yet been written from the assets folder to the more
+    // efficient location to find at getDatabasesPath().
+    if (!exists) {
+      _writesDatabase(path);
+    }
+
+    // Used to reload the database from assets when its updated manually
+    //await _reloadDatabaseFromAssets(path);
+
+    // Open the database.
+    return await openDatabase(path, readOnly: true);
+  }
+
   // This finds the database in the assets folder and copy's it to a location
   // in getDatabasesPath() to be more efficiently found the next time the app
   // loads up.
-  _writesDatabase(String path) async
-  {
+  _writesDatabase(String path) async {
     // Make sure the parent directory exists
     try {
       await Directory(dirname(path)).create(recursive: true);
@@ -138,7 +140,7 @@ class DatabaseLoader {
     // Copy from asset
     ByteData data = await rootBundle.load(join("assets", _relativePath));
     List<int> bytes =
-    data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     // Write and flush the bytes written
     await File(path).writeAsBytes(bytes, flush: true);

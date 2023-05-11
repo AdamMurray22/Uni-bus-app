@@ -27,12 +27,6 @@ class TermDates
     }
   }
 
-  /// Returns if the current date is between the start and end dates.
-  bool currentDateValid()
-  {
-    return givenDateValid(DateTime.now());
-  }
-
   /// Returns if the given date is between the start and end dates.
   bool givenDateValid(DateTime date)
   {

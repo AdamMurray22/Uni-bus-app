@@ -15,6 +15,11 @@ class LocationPermissionsHandler {
     _location = Location();
   }
 
+  // Private constructor for testing.
+  LocationPermissionsHandler._withLocation(Location location) {
+    _location = location;
+  }
+
   /// Returns the only instance of LocationPermissionsHandler, creates a new
   /// instance if one does not yet exist.
   static LocationPermissionsHandler getHandler() {
@@ -22,11 +27,16 @@ class LocationPermissionsHandler {
     return _handler!;
   }
 
+  /// Returns an instance of LocationPermissionsHandler with the given location.
+  static LocationPermissionsHandler getHandlerWithLocation(Location location) {
+    _handler = LocationPermissionsHandler._withLocation(location);
+    return _handler!;
+  }
+
   /// Returns the longitude of the user, null if not found for any reason.
   Future<double?> getLongitude() async {
-    if (!(await hasPermission()))
-    {
-        return null;
+    if (!(await hasPermission())) {
+      return null;
     }
     LocationData locationData = await _location.getLocation();
     return locationData.longitude;
@@ -34,8 +44,7 @@ class LocationPermissionsHandler {
 
   /// Returns the latitude of the user, null if not found for any reason.
   Future<double?> getLatitude() async {
-    if (!(await hasPermission()))
-    {
+    if (!(await hasPermission())) {
       return null;
     }
     LocationData locationData = await _location.getLocation();
@@ -44,12 +53,11 @@ class LocationPermissionsHandler {
 
   /// Returns the location data for the user.
   Future<LocationData?> getLocationData() async {
-    if (!(await hasPermission()))
-    {
+    if (!(await hasPermission())) {
       return null;
     }
     return await _location.getLocation();
-}
+  }
 
   /// Asks the user for permission to get their location.
   requestLocationPermission() async {
@@ -93,21 +101,18 @@ class LocationPermissionsHandler {
 
   /// Adds a function to call when location updates are received.
   onRouteLocationChanged(Function(LocationData) onChanged) async {
-    if (_locationStream == null && await hasPermission())
-    {
-        _locationStream = _location.onLocationChanged.listen(null);
+    if (_locationStream == null && await hasPermission()) {
+      _locationStream = _location.onLocationChanged.listen(null);
     }
-    _locationStream?.onData((locationData)
-    {
+    _locationStream?.onData((locationData) {
       onChanged(locationData);
     });
   }
 
   /// Removes the function being run when the location data updates.
   removeOnRouteLocationChanged() async {
-    if (_locationStream == null && await hasPermission())
-    {
-    _locationStream = _location.onLocationChanged.listen(null);
+    if (_locationStream == null && await hasPermission()) {
+      _locationStream = _location.onLocationChanged.listen(null);
     }
     _locationStream?.onData(null);
   }

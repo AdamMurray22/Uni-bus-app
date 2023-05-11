@@ -17,17 +17,17 @@ class BusRunningDates
   }
 
   /// Returns true if the bus is running on the given day, otherwise false.
-  bool isBusRunningOnDate(DateTime date)
+  bool isBusRunningOnDate(DateTime today)
   {
     // Checks if the current day is a week day or weekend.
-    if (date.weekday >= 6)
+    if (today.weekday >= 6)
     {
       return false;
     }
     // Checks if the current day is a national holiday.
     for (NationalHoliday holiday in _nationalHolidays)
     {
-      if (holiday.isToday())
+      if (holiday.isToday(today))
       {
         return false;
       }
@@ -35,7 +35,7 @@ class BusRunningDates
     // Checks if the current day is within one of the bus running dates.
     for (TermDates date in _termDates)
     {
-      if (date.currentDateValid())
+      if (date.givenDateValid(today))
       {
         return true;
       }

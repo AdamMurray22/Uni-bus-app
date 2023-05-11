@@ -1,7 +1,11 @@
 import 'package:app/MapData/bus_time.dart';
+import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
+import 'package:mockito/mockito.dart';
 
-void main() {
+import 'bus_time_test.mocks.dart';
+
+@GenerateMocks([DateTime])void main() {
   group('Bus Time Tests', () {
 
     test('BusTime() invalid time', () {
@@ -24,6 +28,99 @@ void main() {
 
     test('getTimeAsMins()', () {
       expect(time.getTimeAsMins(), 932);
+    });
+
+    test('.laterThanGiven() same time returns true', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("15:22");
+
+      expect(time.laterThanGiven(date), true);
+    });
+
+    test('.laterThanGiven() earlier time returns false', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("14:22");
+
+      expect(time.laterThanGiven(date), false);
+    });
+
+    test('.laterThanGiven() later time returns true', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("16:22");
+
+      expect(time.laterThanGiven(date), true);
+    });
+
+    test('.toDisplayStringWithTime() same time returns time returns time and mins till bus time', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("15:22");
+      time.setIsBusRunning(true);
+
+      expect(time.toDisplayStringWithTime(date), "15:22 (0mins)");
+    });
+
+    test('.toDisplayStringWithTime() earlier time returns time', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("14:22");
+      time.setIsBusRunning(true);
+
+      expect(time.toDisplayStringWithTime(date), "14:22");
+    });
+
+    test('.toDisplayStringWithTime() later time returns time', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("16:25");
+      time.setIsBusRunning(true);
+
+      expect(time.toDisplayStringWithTime(date), "16:25");
+    });
+
+    test('.toDisplayStringWithTime() within 45min time returns time and mins till bus time', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("16:01");
+      time.setIsBusRunning(true);
+
+      expect(time.toDisplayStringWithTime(date), "16:01 (39mins)");
+    });
+
+    test('.toDisplayStringWithTime() within 45min time but bus is not running returns time', () async {
+      final date = MockDateTime();
+
+      when(date.hour).thenAnswer((realInvocation) => 15);
+      when(date.minute).thenAnswer((realInvocation) => 22);
+
+      BusTime time = BusTime("16:01");
+      time.setIsBusRunning(false);
+
+      expect(time.toDisplayStringWithTime(date), "16:01");
     });
   });
 }

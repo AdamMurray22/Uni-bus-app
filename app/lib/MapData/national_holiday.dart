@@ -17,10 +17,10 @@ class NationalHoliday
   }
 
   /// Returns if the current date is this national holiday.
-  bool isToday()
+  bool isToday(DateTime today)
   {
     DateFormat formatter = DateFormat('yyyy/MM/dd');
-    String currentDate = formatter.format(DateTime.now());
+    String currentDate = formatter.format(today);
     return _date == currentDate;
   }
 
