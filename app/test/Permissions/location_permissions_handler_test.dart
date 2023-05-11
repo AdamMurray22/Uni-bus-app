@@ -136,7 +136,7 @@ void main() {
       when(location.requestPermission()).thenAnswer((realInvocation) async => PermissionStatus.denied);
 
       LocationPermissionsHandler handler = LocationPermissionsHandler.getHandlerWithLocation(location);
-      expect(await handler.requestLocationPermission(), returnsNormally);
+      expect(await handler.requestLocationPermission(), null);
     });
   });
 }

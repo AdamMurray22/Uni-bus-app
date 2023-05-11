@@ -139,6 +139,7 @@ class _MapScreenState extends State<MapScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
                 child: DropDownTextField(
+                  key: const Key("Main Map Search box"),
                   controller: _dropDownController,
                   clearOption: true,
                   enableSearch: true,
@@ -282,6 +283,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ),
                   Checkbox(
+                    key: const Key("U1 toggle button"),
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.u1, value!);
                     },
@@ -304,6 +306,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ),
                   Checkbox(
+                    key: const Key("Uni building toggle button"),
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.uniBuilding, value!);
                     },
@@ -326,6 +329,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ),
                   Checkbox(
+                    key: const Key("Landmark toggle button"),
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.landmark, value!);
                     },

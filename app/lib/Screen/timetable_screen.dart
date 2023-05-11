@@ -89,6 +89,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 )),
             ...dropDownButtons,
             RichText(
+              key: const Key("Timetable footer"),
               text: TextSpan(
                 children: [
                   const TextSpan(
