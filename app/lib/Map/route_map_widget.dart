@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:app/Routing/routing.openstreetmap.de.dart';
+import 'package:app/Routing/routing_server.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tuple/tuple.dart';
@@ -96,19 +98,16 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     webViewController.runJavascript("mapIdsToLayers($jsObject)");
   }
 
-  //Displays the route on the map.
+  // Displays the route on the map.
   _loadRouteGeoJson(String routeGeometry) {
     String jsObject = "{route: `$routeGeometry`}";
     webViewController.runJavascript("addRoute($jsObject)");
   }
 
+  // Retrieves the Route from the server.
   Future<http.Response> _fetchORSMRoute(Location startLocation, Location endLocation) async {
-    String linkPrefix = 'https://routing.openstreetmap.de/routed-foot/route/v1/foot/';
-    //String linkPrefix = 'http://router.project-osrm.org/route/v1/driving/'; Alternative server
-    String linkLocationData = '${startLocation.getLongitude()},${startLocation.getLatitude()};${endLocation.getLongitude()},${endLocation.getLatitude()}';
-    String linkSuffix = '?overview=full&geometries=geojson';
-    String link = '$linkPrefix$linkLocationData$linkSuffix';
-    Uri uri = Uri.parse(link);
-    return await http.get(uri);
+    RoutingServer routingServer = RoutingOpenstreetmapDe();
+    Uri serverUri = routingServer.getUri(startLocation, endLocation);
+    return await http.get(serverUri);
   }
 }
