@@ -1,6 +1,7 @@
+import 'package:app/Routing/routing.openstreetmap.de.dart';
 import 'package:flutter/material.dart';
-import 'package:app/Routing/router.project-osrm.org.dart';
 import 'package:app/Routing/routing_server.dart';
+import 'package:app/Routing/walking_route.dart';
 
 import '../Routing/location.dart';
 
@@ -11,5 +12,5 @@ abstract class RouteCreator
   RoutingServer routingServer = RoutingOpenstreetmapDe();
 
   /// This creates a route from the start to the end locations.
-  Future<String> createRoute(Location from, Location to);
+  Future<WalkingRoute> createRoute(Location from, Location to);
 }
