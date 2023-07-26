@@ -74,7 +74,7 @@ class DatabaseLoader {
       }
       String? time = map["arrive_time"];
       if (time != null) {
-        arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"]));
+        arrTimes[map["bus_stop_id"]]!.add(BusTime(map["arrive_time"], map["route"]));
       }
     }
 
@@ -86,7 +86,7 @@ class DatabaseLoader {
       }
       String? time = map["depart_time"];
       if (time != null) {
-        depTimes[map["bus_stop_id"]]!.add(BusTime(map["depart_time"]));
+        depTimes[map["bus_stop_id"]]!.add(BusTime(map["depart_time"], map["route"]));
       }
     }
 
