@@ -1,4 +1,5 @@
 import 'package:app/Routing/basic_route_creator.dart';
+import 'package:app/Routing/walking_route.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import '../Routing/route_creator.dart';
@@ -32,8 +33,8 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     {
       return;
     }
-    String route = await routeCreator.createRoute(from, to);
-    _loadRouteGeoJson(route);
+    WalkingRoute route = await routeCreator.createRoute(from, to);
+    _loadRouteGeoJson(route.getGeometry());
   }
 
   /// Removes the route.

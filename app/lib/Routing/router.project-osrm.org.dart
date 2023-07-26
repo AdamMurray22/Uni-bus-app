@@ -3,7 +3,7 @@ import 'package:app/Routing/location.dart';
 
 /// The routing server at the address http://router.project-osrm.org/.
 /// This is only a driving server.
-class RoutingOpenstreetmapDe implements RoutingServer
+class RouterProjectOSRM implements RoutingServer
 {
   @override
   Uri getUri(Location startLocation, Location endLocation)

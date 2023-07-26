@@ -92,7 +92,7 @@ class _RouteScreenState extends State<RouteScreen> {
     );
     _dataLoader.onDataLoaded((mapData) async {
       setState(() {
-        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getBusStopsMap()));
+        //_mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getBusStopsMap()));
       });
     });
     super.initState();
