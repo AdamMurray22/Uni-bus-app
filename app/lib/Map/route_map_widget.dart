@@ -1,10 +1,7 @@
-import 'dart:convert';
-
-import 'package:app/Routing/routing.openstreetmap.de.dart';
-import 'package:app/Routing/routing_server.dart';
+import 'package:app/Routing/basic_route_creator.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:tuple/tuple.dart';
+import '../Routing/route_creator.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import 'map_widget.dart';
@@ -20,6 +17,7 @@ class RouteMapWidget extends MapWidget {
 
 /// The route screen state.
 class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
+  RouteCreator routeCreator = BasicRouteCreator();
   Tuple2<String, String>? _currentRoute;
 
   /// Sets the current route.
@@ -34,10 +32,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     {
       return;
     }
-    http.Response response = await _fetchORSMRoute(from, to);
-    String responseBody = response.body;
-    Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
-    String route = json.encode(jsonResponse['routes'][0]['geometry']);
+    String route = await routeCreator.createRoute(from, to);
     _loadRouteGeoJson(route);
   }
 
@@ -74,6 +69,10 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     updateMarker(MapDataId.destination, "${MapDataId.destination.idPrefix}s", location.getLongitude(), location.getLatitude());
   }
 
+  setRouteCreator(RouteCreator routeCreator)
+  {
+
+  }
 
   /// Sets the values for the map set up.
   @override
@@ -102,12 +101,5 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   _loadRouteGeoJson(String routeGeometry) {
     String jsObject = "{route: `$routeGeometry`}";
     webViewController.runJavascript("addRoute($jsObject)");
-  }
-
-  // Retrieves the Route from the server.
-  Future<http.Response> _fetchORSMRoute(Location startLocation, Location endLocation) async {
-    RoutingServer routingServer = RoutingOpenstreetmapDe();
-    Uri serverUri = routingServer.getUri(startLocation, endLocation);
-    return await http.get(serverUri);
   }
 }

@@ -9,7 +9,7 @@ import 'bus_time_test.mocks.dart';
   group('Bus Time Tests', () {
 
     test('BusTime() invalid time', () {
-      expect(() => BusTime("time"),
+      expect(() => BusTime("time", 1),
         throwsA(
           isA<ArgumentError>().having(
                 (error) => error.message,
@@ -21,10 +21,10 @@ import 'bus_time_test.mocks.dart';
     });
 
     test('BusTime() valid time', () {
-      expect(() => BusTime("15:32"), returnsNormally);
+      expect(() => BusTime("15:32", 1), returnsNormally);
     });
 
-    BusTime time = BusTime("15:32");
+    BusTime time = BusTime("15:32", 1);
 
     test('getTimeAsMins()', () {
       expect(time.getTimeAsMins(), 932);
@@ -36,7 +36,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("15:22");
+      BusTime time = BusTime("15:22", 1);
 
       expect(time.laterThanGiven(date), true);
     });
@@ -47,7 +47,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("14:22");
+      BusTime time = BusTime("14:22", 1);
 
       expect(time.laterThanGiven(date), false);
     });
@@ -58,7 +58,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("16:22");
+      BusTime time = BusTime("16:22", 1);
 
       expect(time.laterThanGiven(date), true);
     });
@@ -69,7 +69,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("15:22");
+      BusTime time = BusTime("15:22", 1);
       time.setIsBusRunning(true);
 
       expect(time.toDisplayStringWithTime(date), "15:22 (0mins)");
@@ -81,7 +81,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("14:22");
+      BusTime time = BusTime("14:22", 1);
       time.setIsBusRunning(true);
 
       expect(time.toDisplayStringWithTime(date), "14:22");
@@ -93,7 +93,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("16:25");
+      BusTime time = BusTime("16:25", 1);
       time.setIsBusRunning(true);
 
       expect(time.toDisplayStringWithTime(date), "16:25");
@@ -105,7 +105,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("16:01");
+      BusTime time = BusTime("16:01", 1);
       time.setIsBusRunning(true);
 
       expect(time.toDisplayStringWithTime(date), "16:01 (39mins)");
@@ -117,7 +117,7 @@ import 'bus_time_test.mocks.dart';
       when(date.hour).thenAnswer((realInvocation) => 15);
       when(date.minute).thenAnswer((realInvocation) => 22);
 
-      BusTime time = BusTime("16:01");
+      BusTime time = BusTime("16:01", 1);
       time.setIsBusRunning(false);
 
       expect(time.toDisplayStringWithTime(date), "16:01");

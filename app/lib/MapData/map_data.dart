@@ -40,7 +40,7 @@ class MapData
     return {..._otherFeatures.values, ..._busStops.values};
   }
 
-  /// Returns an Iterable of all the features.
+  /// Returns a map of all the features id to the features.
   Map<String, Feature> getFeaturesMap()
   {
     return {..._otherFeatures, ..._busStops};
@@ -50,5 +50,11 @@ class MapData
   Set<BusStop> getAllBusStops()
   {
     return _busStops.values.toSet();
+  }
+
+  /// Returns a map of all the features id to the features.
+  Map<String, BusStop> getBusStopsMap()
+  {
+    return _busStops;
   }
 }

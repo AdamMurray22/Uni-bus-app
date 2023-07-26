@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app/Location/location_handler.dart';
+import 'package:app/Routing/advanced_route_creator.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -87,8 +88,13 @@ class _RouteScreenState extends State<RouteScreen> {
     });
 
     _mapWidget = RouteMapWidget(
-      key: _mapStateKey,
+        key: _mapStateKey,
     );
+    _dataLoader.onDataLoaded((mapData) async {
+      setState(() {
+        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getBusStopsMap()));
+      });
+    });
     super.initState();
   }
 
