@@ -60,11 +60,13 @@ void main() {
           "bus_stop_id": "U1-03",
           "arrive_time": "11:11",
           "depart_time": "23:23",
+          "route" : 1,
         },
         {
           "bus_stop_id": "U1-04",
           "arrive_time": "22:22",
           "depart_time": "24:24",
+          "route" : 1,
         }
       ]);
 

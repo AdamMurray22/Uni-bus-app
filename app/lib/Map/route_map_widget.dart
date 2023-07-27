@@ -1,8 +1,8 @@
-import 'package:app/Routing/basic_route_creator.dart';
+import 'package:app/Routing/RouteCreators/basic_route_creator.dart';
 import 'package:app/Routing/walking_route.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
-import '../Routing/route_creator.dart';
+import '../Routing/RouteCreators/route_creator.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import 'map_widget.dart';

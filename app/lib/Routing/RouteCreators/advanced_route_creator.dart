@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:app/Routing/route_creator.dart';
+import 'package:app/Routing/RouteCreators/route_creator.dart';
 import 'package:app/Routing/walking_route.dart';
 import 'package:http/http.dart' as http;
-import '../MapData/bus_stop.dart';
-import '../Routing/location.dart';
+import '../../MapData/bus_stop.dart';
+import '../location.dart';
 
 /// Creates the indented route using the bus timetable.
 class AdvancedRouteCreator extends RouteCreator
