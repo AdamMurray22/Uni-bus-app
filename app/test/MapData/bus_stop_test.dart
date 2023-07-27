@@ -98,38 +98,38 @@ void main() {
 
     test('getHasSeparateArrDepTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11")}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
       expect(feature.getHasSeparateArrDepTimes(), false);
     });
 
     test('getHasSeparateArrDepTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11")}, {BusTime("11:13")}, true);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
       expect(feature.getHasSeparateArrDepTimes(), true);
     });
 
     test('getDepartureTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11")}, {}, true);
-      expect(feature.getDepartureTimes(), [BusTime("11:11")]);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
+      expect(feature.getDepartureTimes(), [BusTime("11:11", 1)]);
     });
 
     test('getDepartureTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11")}, {BusTime("11:13")}, true);
-      expect(feature.getDepartureTimes(), [BusTime("11:13")]);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
+      expect(feature.getDepartureTimes(), [BusTime("11:13", 1)]);
     });
 
     test('getArrivalTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11")}, {}, true);
-      expect(feature.getArrivalTimes(), [BusTime("11:11")]);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
+      expect(feature.getArrivalTimes(), [BusTime("11:11", 1)]);
     });
 
     test('getArrivalTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11")}, {BusTime("11:13")}, true);
-      expect(feature.getArrivalTimes(), [BusTime("11:11")]);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
+      expect(feature.getArrivalTimes(), [BusTime("11:11", 1)]);
     });
   });
 }

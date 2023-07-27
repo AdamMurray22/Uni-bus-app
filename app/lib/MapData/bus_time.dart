@@ -6,10 +6,11 @@ class BusTime
   late final int _minute;
   late final int _totalMins;
   late bool _isBusRunning;
+  final int _route;
 
   /// The constructor assigning the time
   /// Must be in the format HH:MM.
-  BusTime(String time)
+  BusTime(String time, this._route)
   {
     _time = time;
     if (int.tryParse(time.substring(0, 2)) == null ||

@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:app/Location/location_handler.dart';
+import 'package:app/Routing/advanced_route_creator.dart';
+import 'package:app/Routing/routing_status_enum.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
@@ -32,6 +34,12 @@ class _RouteScreenState extends State<RouteScreen> {
   late final SingleValueDropDownController _toRouteDropDownController;
   final List<DropDownValueModel> _fromDropDownList = [];
   List<DropDownValueModel> _toDropDownList = [];
+
+  String nextTurn = "";
+  String totalDistance = "";
+  String totalTime = "";
+
+  RoutingStatus currentlyRouting = RoutingStatus.notRouting;
 
   @override
   void initState() {
@@ -68,19 +76,18 @@ class _RouteScreenState extends State<RouteScreen> {
     _dataLoader.onDataLoaded((mapData) async {
       _fromDropDownList.clear();
       if (await LocationHandler.getHandler().hasPermission()) {
-      _fromDropDownList.add(DropDownValueModel(
-          name: "Current Location",
-          value: MapDataId.userLocation.idPrefix));
+        _fromDropDownList.add(DropDownValueModel(
+            name: "Current Location", value: MapDataId.userLocation.idPrefix));
       }
+      List<DropDownValueModel> fromList = [];
       setState(() {
         for (Feature feature in mapData.getAllFeatures()) {
-          _fromDropDownList
+          fromList
               .add(DropDownValueModel(name: feature.name, value: feature.id));
           _toDropDownList
               .add(DropDownValueModel(name: feature.name, value: feature.id));
         }
-        List<DropDownValueModel> fromList =
-            _dropDownSort.sort(_fromDropDownList);
+        fromList = _dropDownSort.sort(fromList);
         _fromDropDownList.addAll(fromList);
         _toDropDownList = _dropDownSort.sort(_toDropDownList);
       });
@@ -88,12 +95,153 @@ class _RouteScreenState extends State<RouteScreen> {
 
     _mapWidget = RouteMapWidget(
       key: _mapStateKey,
+      routeScreenUpdateFunction: (route)
+      {
+        setState(() {
+          nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
+          totalDistance = "${route.getTotalDisplayDistance()} total";
+          totalTime = route.getTotalDisplayTime();
+        });
+      },
     );
+    _dataLoader.onDataLoaded((mapData) async {
+      setState(() {
+        /// TODO: Create Advanced Route Creator.
+        //_mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getBusStopsMap()));
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget routeInfoScreen;
+    if (currentlyRouting == RoutingStatus.notRouting)
+    {
+        routeInfoScreen = Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            MaterialButton(
+              onPressed: () {
+                _createRoute();
+              },
+              color: const Color(0xffffffff),
+              elevation: 0,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+                side: BorderSide(color: Color(0xff808080), width: 1),
+              ),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              textColor: const Color(0xff000000),
+              height: 40,
+              minWidth: 140,
+              child: const Text(
+                "Route",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
+            ),
+          ],
+        );
+    }
+    else if (currentlyRouting == RoutingStatus.userLocationRouting)
+    {
+      routeInfoScreen = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(nextTurn),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(totalTime),
+                  const SizedBox(width: 3),
+                  Text(totalDistance),
+                ]),
+            ],
+          ),
+          const SizedBox(width: 5),
+          MaterialButton(
+            onPressed: () {
+              _endRoute();
+            },
+            color: const Color(0xffffffff),
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+              side: BorderSide(color: Color(0xff808080), width: 1),
+            ),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            textColor: const Color(0xff000000),
+            height: 40,
+            minWidth: 140,
+            child: const Text(
+              "End Route",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    else
+    {
+      routeInfoScreen = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(totalTime),
+                const SizedBox(width: 3),
+                Text(totalDistance),
+              ]),
+          const SizedBox(width: 5),
+          MaterialButton(
+            onPressed: () {
+              _endRoute();
+            },
+            color: const Color(0xffffffff),
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+              side: BorderSide(color: Color(0xff808080), width: 1),
+            ),
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            textColor: const Color(0xff000000),
+            height: 40,
+            minWidth: 140,
+            child: const Text(
+              "End Route",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -163,69 +311,18 @@ class _RouteScreenState extends State<RouteScreen> {
                   border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
                 ),
                 child: _mapWidget),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-              MaterialButton(
-                onPressed: () {
-                  _createRoute();
-                },
-                color: const Color(0xffffffff),
-                elevation: 0,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Color(0xff808080), width: 1),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                textColor: const Color(0xff000000),
-                height: 40,
-                minWidth: 140,
-                child: const Text(
-                  "Route",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
-                ),
-              ),
-                const SizedBox(width: 5),
-              MaterialButton(
-                onPressed: () {
-                  _endRoute();
-                },
-                color: const Color(0xffffffff),
-                elevation: 0,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                  side: BorderSide(color: Color(0xff808080), width: 1),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                textColor: const Color(0xff000000),
-                height: 40,
-                minWidth: 140,
-                child: const Text(
-                  "End Route",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
-                ),
-              ),
-            ],),
+            Container(
+                child: routeInfoScreen),
           ]),
     );
   }
 
   // Gets the chosen start and end for the route and creates it.
   _createRoute() async {
-    LocationHandler locationHandler =
-        LocationHandler.getHandler();
+    LocationHandler locationHandler = LocationHandler.getHandler();
     String? nullableFromId = _fromRouteDropDownController.dropDownValue?.value;
     String? nullableToId = _toRouteDropDownController.dropDownValue?.value;
-    if (nullableFromId == null || nullableToId == null)
-    {
+    if (nullableFromId == null || nullableToId == null) {
       return;
     }
     String fromId = nullableFromId;
@@ -235,7 +332,8 @@ class _RouteScreenState extends State<RouteScreen> {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
     _mapStateKey.currentState?.setCurrentRoute(fromId, toId);
-    await _mapStateKey.currentState?.createRoute(fromLocation, toLocation, fromId, toId);
+    await _mapStateKey.currentState
+        ?.createRoute(fromLocation, toLocation, fromId, toId);
     _mapStateKey.currentState?.addDestinationMarker(toLocation);
     if (isUserLocation) {
       String currentFromId = fromId;
@@ -243,28 +341,29 @@ class _RouteScreenState extends State<RouteScreen> {
       await locationHandler.onRouteLocationChanged((locationData) async {
         await _updateRoute(currentFromId, currentToId);
       });
-    }
-    else
-    {
+      currentlyRouting = RoutingStatus.userLocationRouting;
+    } else {
       _mapStateKey.currentState?.addStartMarker(fromLocation);
+      currentlyRouting = RoutingStatus.nonUserLocationRouting;
     }
+    setState(() {
+    });
   }
 
   // Updates the route on the map.
   _updateRoute(String fromId, String toId) async {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    var x = (fromLocation.getLongitude() - toLocation.getLongitude()) * cos((fromLocation.getLatitude() + toLocation.getLatitude())/2);
-    var y = (fromLocation.getLatitude()-toLocation.getLatitude());
-    var d = sqrt(x*x + y*y) * 6371000;
-    if (d > 3000)
-    {
-      await _mapStateKey.currentState?.createRoute(fromLocation, toLocation, fromId, toId);
-    }
-    else
-    {
+    var x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
+        cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
+    var y = (fromLocation.getLatitude() - toLocation.getLatitude());
+    var d = sqrt(x * x + y * y) * 6371000;
+    if (d < 3000) {
       _endRoute();
+      return;
     }
+    await _mapStateKey.currentState
+        ?.createRoute(fromLocation, toLocation, fromId, toId);
   }
 
   // Returns the from location.
@@ -274,8 +373,7 @@ class _RouteScreenState extends State<RouteScreen> {
     bool isUserLocation = (fromId == MapDataId.userLocation.idPrefix);
     location.Location? fromLocation;
     if (isUserLocation) {
-      LocationHandler handler =
-          LocationHandler.getHandler();
+      LocationHandler handler = LocationHandler.getHandler();
       LocationData data = (await handler.getLocationData())!;
       double long = data.longitude!;
       double lat = data.latitude!;
@@ -306,5 +404,8 @@ class _RouteScreenState extends State<RouteScreen> {
     }
     await _mapStateKey.currentState?.endRoute(fromId, toId);
     LocationHandler.getHandler().removeOnRouteLocationChanged();
+    setState(() {
+      currentlyRouting = RoutingStatus.notRouting;
+    });
   }
 }
