@@ -6,9 +6,19 @@ class WalkingRoute
   final double _distanceTillNextTurn;
   late final String _nextTurn;
 
+  /// Constructor removes "" or '' from the first and last positions of nextTurn.
   WalkingRoute(this._geometry, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String nextTurn)
   {
-    _nextTurn = nextTurn.substring(1, nextTurn.length - 1);
+    if (nextTurn.length > 1) {
+      if (nextTurn[0] == '"' || nextTurn[0] == "'") {
+        nextTurn = nextTurn.substring(1);
+      }
+      if (nextTurn[nextTurn.length - 1] == '"' ||
+          nextTurn[nextTurn.length - 1] == "'") {
+        nextTurn = nextTurn.substring(0, nextTurn.length - 1);
+      }
+    }
+    _nextTurn = nextTurn;
   }
 
   /// Returns a geojson of the route geometry.
