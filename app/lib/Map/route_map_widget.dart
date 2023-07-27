@@ -10,7 +10,10 @@ import 'map_widget.dart';
 import '../Routing/location.dart';
 
 class RouteMapWidget extends MapWidget {
-  const RouteMapWidget({super.key});
+  const RouteMapWidget({required this.routeScreenUpdateFunction, super.key});
+
+  // The function to be run whenever a route is updated.
+  final Function(WalkingRoute) routeScreenUpdateFunction;
 
   @override
   State<RouteMapWidget> createState() => RouteMapWidgetState();
@@ -35,6 +38,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     }
     WalkingRoute route = await routeCreator.createRoute(from, to);
     _loadRouteGeoJson(route.getGeometry());
+    widget.routeScreenUpdateFunction(route);
   }
 
   /// Removes the route.
@@ -70,9 +74,10 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     updateMarker(MapDataId.destination, "${MapDataId.destination.idPrefix}s", location.getLongitude(), location.getLatitude());
   }
 
+  /// Sets the RouteCreator.
   setRouteCreator(RouteCreator routeCreator)
   {
-
+    this.routeCreator = routeCreator;
   }
 
   /// Sets the values for the map set up.
