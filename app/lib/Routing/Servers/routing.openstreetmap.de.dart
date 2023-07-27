@@ -21,7 +21,6 @@ class RoutingOpenstreetmapDe implements RoutingServer
     String linkSuffix = '?overview=full&geometries=geojson&steps=true';
     String link = '$linkPrefix$linkLocationData$linkSuffix';
     Uri uri = Uri.parse(link);
-    print(uri);
     return uri;
   }
 }
