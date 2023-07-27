@@ -358,7 +358,7 @@ class _RouteScreenState extends State<RouteScreen> {
         cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
     var y = (fromLocation.getLatitude() - toLocation.getLatitude());
     var d = sqrt(x * x + y * y) * 6371000;
-    if (d < 3000) {
+    if (d < 3000) { // 3000 is 30 metres.
       _endRoute();
       return;
     }

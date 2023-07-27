@@ -8,6 +8,8 @@ import 'feature.dart';
 /// Holds the information for a bus stop.
 class BusStop extends Feature
 {
+  late final BusStop _prevBusStop;
+  late final BusStop _nextBusStop;
   late final List<BusTime> _arrTimes;
   late final List<BusTime> _depTimes;
   late final bool _separateArrDepTimes;
@@ -77,5 +79,39 @@ class BusStop extends Feature
   bool getHasSeparateArrDepTimes()
   {
     return _separateArrDepTimes;
+  }
+
+  /// Sets the previous bus stop on the route.
+  setPrevBusStop(BusStop prevBusStop)
+  {
+    _prevBusStop = prevBusStop;
+  }
+
+  /// Sets the next bus stop on the route.
+  setNextBusStop(BusStop nextBusStop)
+  {
+    _nextBusStop = nextBusStop;
+  }
+
+  /// Returns the next bus to depart this bus stop on the day.
+  BusTime? getNextBusDeparture()
+  {
+    return getNextBusDepartureAfterTime(DateTime.now());
+  }
+
+  /// Returns the next bus to depart this bus stop after the given time on the day.
+  BusTime? getNextBusDepartureAfterTime(DateTime time)
+  {
+    if (!_isBusRunning)
+    {
+      return null;
+    }
+    for (BusTime busTime in _depTimes)
+    {
+      if (busTime.laterThanGiven(time))
+      {
+        return busTime;
+      }
+    }
   }
 }

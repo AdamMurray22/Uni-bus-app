@@ -37,7 +37,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
       return;
     }
     WalkingRoute route = await routeCreator.createRoute(from, to);
-    _loadRouteGeoJson(route.getGeometry());
+    _loadRouteGeoJson(route.getGeometries());
     widget.routeScreenUpdateFunction(route);
   }
 
@@ -104,8 +104,12 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   }
 
   // Displays the route on the map.
-  _loadRouteGeoJson(String routeGeometry) {
-    String jsObject = "{route: `$routeGeometry`}";
-    webViewController.runJavascript("addRoute($jsObject)");
+  _loadRouteGeoJson(List<String> routeGeometries) {
+    webViewController.runJavascript("removeRoute()");
+    for (String routeGeometry in routeGeometries)
+    {
+      String jsObject = "{route: `$routeGeometry`}";
+      webViewController.runJavascript("addRoute($jsObject)");
+    }
   }
 }

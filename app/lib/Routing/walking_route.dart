@@ -1,13 +1,13 @@
 class WalkingRoute
 {
-  final String _geometry;
+  final List<String> _geometries;
   final double _totalSeconds;
   final double _totalDistance;
   final double _distanceTillNextTurn;
   late final String _nextTurn;
 
   /// Constructor removes "" or '' from the first and last positions of nextTurn.
-  WalkingRoute(this._geometry, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String nextTurn)
+  WalkingRoute(this._geometries, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String nextTurn)
   {
     if (nextTurn.length > 1) {
       if (nextTurn[0] == '"' || nextTurn[0] == "'") {
@@ -22,9 +22,9 @@ class WalkingRoute
   }
 
   /// Returns a geojson of the route geometry.
-  String getGeometry()
+  List<String> getGeometries()
   {
-    return _geometry;
+    return _geometries;
   }
 
   /// Returns the time remaining in seconds.
@@ -110,12 +110,12 @@ class WalkingRoute
       identical(this, other) ||
           other is WalkingRoute &&
               runtimeType == other.runtimeType &&
-              _geometry == other._geometry &&
+              _geometries == other._geometries &&
               _totalSeconds == other._totalSeconds &&
               _totalDistance == other._totalDistance &&
               _distanceTillNextTurn == other._distanceTillNextTurn &&
               _nextTurn == other._nextTurn;
 
   @override
-  int get hashCode => _geometry.hashCode;
+  int get hashCode => _geometries.hashCode;
 }

@@ -26,7 +26,19 @@ class MapData
     {
       if (MapDataId.getMapDataIdEnumFromId(feature.id) == MapDataId.u1)
       {
-        _busStops[feature.id] = BusStop(feature.id, feature.name, feature.long, feature.lat, busArrTimes[feature.id]??[], busDepTimes[feature.id]??[], isBusRunning);
+        BusStop busStop = BusStop(feature.id, feature.name, feature.long, feature.lat, busArrTimes[feature.id]??[], busDepTimes[feature.id]??[], isBusRunning);
+        for (BusTime busTime in busStop.getArrivalTimes())
+        {
+          busTime.setBusStop(busStop);
+        }
+        if (busStop.getHasSeparateArrDepTimes())
+        {
+          for (BusTime busTime in busStop.getDepartureTimes())
+          {
+            busTime.setBusStop(busStop);
+          }
+        }
+        _busStops[feature.id] = busStop;
       }
       else {
         _otherFeatures[feature.id] = feature;

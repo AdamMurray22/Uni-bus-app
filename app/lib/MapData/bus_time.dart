@@ -1,16 +1,21 @@
+import 'package:app/MapData/bus_stop.dart';
+
 /// Time that a bus arrives at a bus stop
 class BusTime
 {
+  late final BusStop _ownBusStop;
+  late final BusTime? _prevBusTimeOnRoute;
+  late final BusTime? _nextBusTimeOnRoute;
+  final int _routeNumber;
   late final String _time;
   late final int _hour;
   late final int _minute;
   late final int _totalMins;
   late bool _isBusRunning;
-  final int _route;
 
   /// The constructor assigning the time
   /// Must be in the format HH:MM.
-  BusTime(String time, this._route)
+  BusTime(String time, this._routeNumber)
   {
     _time = time;
     if (int.tryParse(time.substring(0, 2)) == null ||
@@ -72,6 +77,21 @@ class BusTime
     _isBusRunning = isBusRunning;
   }
 
+  setBusStop(BusStop busStop)
+  {
+    _ownBusStop = busStop;
+  }
+
+  setPrevBusTimeOnRoute(BusTime busTime)
+  {
+    _prevBusTimeOnRoute = busTime;
+  }
+
+  setNextBusTimeOnRoute(BusTime busTime)
+  {
+    _nextBusTimeOnRoute = busTime;
+  }
+
   // Returns the current time of day in minutes.
   int _getCurrentTimeInMins(DateTime now)
   {
@@ -87,7 +107,7 @@ class BusTime
           other is BusTime &&
               runtimeType == other.runtimeType &&
               _time == other._time &&
-              _route == other._route;
+              _routeNumber == other._routeNumber;
 
   @override
   int get hashCode => _time.hashCode;
