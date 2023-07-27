@@ -104,4 +104,18 @@ class WalkingRoute
     }
     return distanceStr;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is WalkingRoute &&
+              runtimeType == other.runtimeType &&
+              _geometry == other._geometry &&
+              _totalSeconds == other._totalSeconds &&
+              _totalDistance == other._totalDistance &&
+              _distanceTillNextTurn == other._distanceTillNextTurn &&
+              _nextTurn == other._nextTurn;
+
+  @override
+  int get hashCode => _geometry.hashCode;
 }

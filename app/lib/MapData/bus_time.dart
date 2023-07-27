@@ -86,7 +86,8 @@ class BusTime
       identical(this, other) ||
           other is BusTime &&
               runtimeType == other.runtimeType &&
-              _time == other._time;
+              _time == other._time &&
+              _route == other._route;
 
   @override
   int get hashCode => _time.hashCode;

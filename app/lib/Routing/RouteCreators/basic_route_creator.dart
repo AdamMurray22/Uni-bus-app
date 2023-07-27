@@ -1,13 +1,20 @@
 import 'dart:convert';
 
-import 'package:app/Routing/route_creator.dart';
+import 'package:app/Routing/RouteCreators/route_creator.dart';
+import 'package:app/Routing/Servers/routing_server.dart';
 import 'package:app/Routing/walking_route.dart';
-import 'package:http/http.dart' as http;
-import '../Routing/location.dart';
+import '../location.dart';
 
 /// This is a route creator that only takes the start and end locations into account.
 class BasicRouteCreator extends RouteCreator
 {
+
+  /// Assigns default Server.
+  BasicRouteCreator() : super();
+
+  /// Allows for non default server.
+  BasicRouteCreator.setServer(RoutingServer server) : super.setServer(server);
+
   /// This creates the fastest walking route from the start to the end locations.
   @override
   Future<WalkingRoute> createRoute(Location from, Location to)
@@ -19,15 +26,13 @@ class BasicRouteCreator extends RouteCreator
   // Returns the json containing all the route information.
   Future<Map<String, dynamic>> _getJsonResponse(Location from, Location to)
   async {
-    http.Response response = await _fetchORSMRoute(from, to);
-    String responseBody = response.body;
+    String responseBody = await _fetchORSMRouteInformation(from, to);
     return jsonDecode(responseBody);
   }
 
-  // Retrieves the Route from the server.
-  Future<http.Response> _fetchORSMRoute(Location startLocation, Location endLocation) async {
-    Uri serverUri = routingServer.getUri(startLocation, endLocation);
-    return await http.get(serverUri);
+  // Retrieves the Route information from the server.
+  Future<String> _fetchORSMRouteInformation(Location startLocation, Location endLocation) async {
+    return await routingServer.getResponseBody(startLocation, endLocation);
   }
 
   // This extracts the information from the json and creates a WalkingRoute.
