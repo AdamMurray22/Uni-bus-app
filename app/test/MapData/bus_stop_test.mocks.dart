@@ -3,6 +3,7 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:app/MapData/bus_stop.dart' as _i3;
 import 'package:app/MapData/bus_time.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -70,5 +71,23 @@ class MockBusTime extends _i1.Mock implements _i2.BusTime {
       super.noSuchMethod(Invocation.method(
         #setIsBusRunning,
         [isBusRunning],
+      ));
+  @override
+  dynamic setBusStop(_i3.BusStop? busStop) =>
+      super.noSuchMethod(Invocation.method(
+        #setBusStop,
+        [busStop],
+      ));
+  @override
+  dynamic setPrevBusTimeOnRoute(_i2.BusTime? busTime) =>
+      super.noSuchMethod(Invocation.method(
+        #setPrevBusTimeOnRoute,
+        [busTime],
+      ));
+  @override
+  dynamic setNextBusTimeOnRoute(_i2.BusTime? busTime) =>
+      super.noSuchMethod(Invocation.method(
+        #setNextBusTimeOnRoute,
+        [busTime],
       ));
 }
