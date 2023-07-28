@@ -24,9 +24,9 @@ class AdvancedRouteCreator extends RouteCreator
   @override
   Future<WalkingRoute> createRoute(Location from, Location to)
   async {
-    Map<String, dynamic> jsonResponse = await getJsonResponse(from, to);
-    WalkingRoute basicRoute = decodeJson(jsonResponse);
-    Tuple3<double, BusTime, BusTime>? busRouteEstimate = _getEntireEstimate(from, to);
+    WalkingRoute basicRoute = await _getWalkingRoute(from, to);
+
+    Tuple3<double, BusStop, BusStop>? busRouteEstimate = _getEntireEstimate(from, to);
     if (busRouteEstimate == null)
     {
       return basicRoute;
@@ -36,16 +36,61 @@ class AdvancedRouteCreator extends RouteCreator
     {
       return basicRoute;
     }
-    BusTime estimateDeppTime = busRouteEstimate.item2;
-    BusTime estimateArrTime = busRouteEstimate.item3;
 
+    WalkingRoute? busRoute = await _getBusRoute(from, to, busRouteEstimate);
+    if (busRoute == null)
+    {
+      return basicRoute;
+    }
+    if (busRoute.getTotalSeconds() > basicRoute.getTotalSeconds())
+    {
+      return basicRoute;
+    }
 
-    return basicRoute;
+    return busRoute;
+  }
+
+  // Returns the walking route between two location.
+  Future<WalkingRoute> _getWalkingRoute(Location from, Location to)
+  async {
+    Map<String, dynamic> jsonResponse = await getJsonResponse(from, to);
+    WalkingRoute route = decodeJson(jsonResponse);
+    return route;
+  }
+
+  // Returns the complete route including the bus leg.
+  Future<WalkingRoute?> _getBusRoute(Location journeyStart, Location journeyEnd, Tuple3<double, BusStop, BusStop> estimateRoute)
+  async {
+    BusStop deppBusStop = estimateRoute.item2;
+    WalkingRoute firstLeg = await _getWalkingRoute(journeyStart, Location(deppBusStop.long, deppBusStop.lat));
+    DateTime busStopDep = DateTime.now().add(Duration(seconds: firstLeg.getTotalSeconds().ceil()));
+    BusTime? busDeparture = deppBusStop.getNextBusDepartureAfterTime(busStopDep);
+    if (busDeparture == null)
+    {
+      return null;
+    }
+
+    BusStop arrBusStop = estimateRoute.item3;
+    BusTime? busArrival = arrBusStop.getArrivalTimeOnRoute(busDeparture.getRouteNumber());
+    if (busArrival == null)
+    {
+      return null;
+    }
+    int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
+    double busLegTimeSeconds = busLegTime * 60;
+
+    WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
+    WalkingRoute completeRoute =
+      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries()],
+        firstLeg.getTotalSeconds() + secondLeg.getTotalSeconds() + busLegTimeSeconds,
+        firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
+        firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());
+    return completeRoute;
   }
 
   // Gets the complete estimate for the time in seconds for the route taking
   // the bus (if applicable).
-  Tuple3<double, BusTime, BusTime>? _getEntireEstimate(Location journeyStart, Location journeyEnd)
+  Tuple3<double, BusStop, BusStop>? _getEntireEstimate(Location journeyStart, Location journeyEnd)
   {
     Tuple2<double, BusStop>? closestBusStopWithTime = _getClosestBusStop(journeyStart, _busStops);
     if (closestBusStopWithTime == null)
@@ -54,8 +99,8 @@ class AdvancedRouteCreator extends RouteCreator
     }
     double firstLegSmallestTime = closestBusStopWithTime.item1;
     BusStop firstLegClosestBusStop = closestBusStopWithTime.item2;
-    DateTime busStopArrival = DateTime.now().add(Duration(seconds: firstLegSmallestTime.ceil()));
-    BusTime? busDeparture = firstLegClosestBusStop.getNextBusDepartureAfterTime(busStopArrival);
+    DateTime busStopDep = DateTime.now().add(Duration(seconds: firstLegSmallestTime.ceil()));
+    BusTime? busDeparture = firstLegClosestBusStop.getNextBusDepartureAfterTime(busStopDep);
     if (busDeparture == null)
     {
       return null;
@@ -76,9 +121,9 @@ class AdvancedRouteCreator extends RouteCreator
     }
     BusTime busArrival = secondLegClosestBusStop.getArrivalTimeOnRoute(busDeparture.getRouteNumber())!;
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
-    double busLetTimeSeconds = busLegTime * 60;
-    double totalEstimate = firstLegSmallestTime + secondLegSmallestTime + busLetTimeSeconds;
-    return Tuple3<double, BusTime, BusTime>(totalEstimate, busDeparture, busArrival);
+    double busLegTimeSeconds = busLegTime * 60;
+    double totalEstimate = firstLegSmallestTime + secondLegSmallestTime + busLegTimeSeconds;
+    return Tuple3<double, BusStop, BusStop>(totalEstimate, firstLegClosestBusStop, secondLegClosestBusStop);
   }
 
   // Finds the closest bus stop, and an estimate to walk that distance,
