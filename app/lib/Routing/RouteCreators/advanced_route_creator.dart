@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:app/Routing/RouteCreators/route_creator.dart';
 import 'package:app/Routing/walking_route.dart';
+import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import 'package:tuple/tuple.dart';
 import '../../MapData/bus_stop.dart';
 import '../../MapData/bus_time.dart';
@@ -12,6 +15,7 @@ import '../location.dart';
 class AdvancedRouteCreator extends RouteCreator
 {
   final Set<BusStop> _busStops;
+  String? _busRouteGeoJson;
 
   /// Assigns default Server.
   AdvancedRouteCreator(this._busStops) : super();
@@ -78,10 +82,11 @@ class AdvancedRouteCreator extends RouteCreator
     }
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
     double busLegTimeSeconds = busLegTime * 60;
+    List<String> busLegGeoJson = _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
 
     WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
     WalkingRoute completeRoute =
-      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries()],
+      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), ...busLegGeoJson],
         firstLeg.getTotalSeconds() + secondLeg.getTotalSeconds() + busLegTimeSeconds,
         firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
         firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());
@@ -178,5 +183,23 @@ class AdvancedRouteCreator extends RouteCreator
     var d = sqrt(x * x + y * y) * 6371000;
     d = d / 10;
     return d;
+  }
+
+  List<String> _getBusLegGeoJson(BusStop departBusStop, BusStop arriveBusStop, Location currentLocation)
+  {
+    return [];
+  }
+
+  Future<String> _getBusRouteGeoJson()
+  async {
+    _busRouteGeoJson ??= await _loadBusRouteGeoJson();
+    return _busRouteGeoJson!;
+  }
+
+  //Displays the bus route on the map.
+  Future<String> _loadBusRouteGeoJson() async {
+      String busRouteJson = await rootBundle
+          .loadString(join("assets", "open-layers-map/Bus_Route.geojson"));
+      return jsonDecode(busRouteJson);
   }
 }

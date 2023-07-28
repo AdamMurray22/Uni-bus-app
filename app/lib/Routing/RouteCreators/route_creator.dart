@@ -4,7 +4,6 @@ import 'package:app/Routing/Servers/routing.openstreetmap.de.dart';
 import 'package:flutter/material.dart';
 import 'package:app/Routing/Servers/routing_server.dart';
 import 'package:app/Routing/walking_route.dart';
-import 'package:flutter/material.dart';
 
 import '../location.dart';
 
