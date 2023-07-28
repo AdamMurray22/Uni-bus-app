@@ -174,7 +174,7 @@ class AdvancedRouteCreator extends RouteCreator
   // Estimates the straight line time to walk between 2 points in s.
   double _estimateStraightLineTime(Location fromLocation, Location toLocation)
   {
-    return _estimateStraightLineDistance(fromLocation, toLocation) / 1.6; // 1.6m/s is an overestimate of typical walking speed of an adult.
+    return _estimateStraightLineDistance(fromLocation, toLocation) / 1; // 1m/s is an underestimate of typical walking speed of an adult.
   }
 
   // Estimates the straight line distance of 2 points in m.
