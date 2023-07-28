@@ -35,7 +35,7 @@ abstract class RouteCreator
 
   /// This extracts the information from the json and creates a WalkingRoute.
   @protected
-  WalkingRoute decodeJson(Map<String, dynamic> jsonResponse)
+  WalkingRoute decodeWalkingRouteJson(Map<String, dynamic> jsonResponse)
   {
     String geometry = json.encode(jsonResponse['routes'][0]['geometry']);
     double totalSeconds = double.parse(json.encode(jsonResponse['routes'][0]['duration']));

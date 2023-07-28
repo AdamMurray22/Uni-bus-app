@@ -15,7 +15,7 @@ import '../location.dart';
 class AdvancedRouteCreator extends RouteCreator
 {
   final Set<BusStop> _busStops;
-  String? _busRouteGeoJson;
+  Map<String, dynamic>? _busRouteGeoJson;
 
   /// Assigns default Server.
   AdvancedRouteCreator(this._busStops) : super();
@@ -57,7 +57,7 @@ class AdvancedRouteCreator extends RouteCreator
   Future<WalkingRoute> _getWalkingRoute(Location from, Location to)
   async {
     Map<String, dynamic> jsonResponse = await getJsonResponse(from, to);
-    WalkingRoute route = decodeJson(jsonResponse);
+    WalkingRoute route = decodeWalkingRouteJson(jsonResponse);
     return route;
   }
 
@@ -81,7 +81,7 @@ class AdvancedRouteCreator extends RouteCreator
     }
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
     double busLegTimeSeconds = busLegTime * 60;
-    List<String> busLegGeoJson = _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
+    List<String> busLegGeoJson = await _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
 
     WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
     double currentTimeInSecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch / 1000;
@@ -188,19 +188,24 @@ class AdvancedRouteCreator extends RouteCreator
     return d;
   }
 
-  List<String> _getBusLegGeoJson(BusStop departBusStop, BusStop arriveBusStop, Location currentLocation)
-  {
+  // Returns all of the bus GeoJson for this route.
+  Future<List<String>> _getBusLegGeoJson(BusStop departBusStop, BusStop arriveBusStop, Location currentLocation)
+  async {
+    Map<String, dynamic> busRouteGeoJson = await _getBusRouteGeoJson();
+    print(busRouteGeoJson["features"][0]["geometry"]["coordinates"][0]);
     return [];
   }
 
-  Future<String> _getBusRouteGeoJson()
+  // Returns the complete bus route GeoJson as loaded from the file.
+  Future<Map<String, dynamic>> _getBusRouteGeoJson()
   async {
     _busRouteGeoJson ??= await _loadBusRouteGeoJson();
     return _busRouteGeoJson!;
   }
 
-  //Displays the bus route on the map.
-  Future<String> _loadBusRouteGeoJson() async {
+  // Loads the bus route GeoJson.
+  // Call _getBusRouteGeoJson() instead.
+  Future<Map<String, dynamic>> _loadBusRouteGeoJson() async {
       String busRouteJson = await rootBundle
           .loadString(join("assets", "open-layers-map/Bus_Route.geojson"));
       return jsonDecode(busRouteJson);

@@ -20,6 +20,6 @@ class BasicRouteCreator extends RouteCreator
   Future<WalkingRoute> createRoute(Location from, Location to)
   async {
     Map<String, dynamic> jsonResponse = await getJsonResponse(from, to);
-    return decodeJson(jsonResponse);
+    return decodeWalkingRouteJson(jsonResponse);
   }
 }
