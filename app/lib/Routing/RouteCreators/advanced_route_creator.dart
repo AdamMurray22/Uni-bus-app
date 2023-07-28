@@ -180,11 +180,11 @@ class AdvancedRouteCreator extends RouteCreator
   // Estimates the straight line distance of 2 points in m.
   double _estimateStraightLineDistance(Location fromLocation, Location toLocation)
   {
-    double x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
-        cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
-    double y = (fromLocation.getLatitude() - toLocation.getLatitude());
+    double x = (fromLocation.getLatitude() - toLocation.getLatitude()) *
+        cos((fromLocation.getLongitude() + toLocation.getLongitude()) / 2);
+    double y = (fromLocation.getLongitude() - toLocation.getLongitude());
     double d = sqrt(x * x + y * y) * 6371000;
-    d = d / 10;
+    d = d / 100;
     return d;
   }
 

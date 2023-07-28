@@ -353,11 +353,12 @@ class _RouteScreenState extends State<RouteScreen> {
   _updateRoute(String fromId, String toId) async {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    var x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
-        cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
-    var y = (fromLocation.getLatitude() - toLocation.getLatitude());
+    var x = (fromLocation.getLatitude() - toLocation.getLatitude()) *
+        cos((fromLocation.getLongitude() + toLocation.getLongitude()) / 2);
+    var y = (fromLocation.getLongitude() - toLocation.getLongitude());
     var d = sqrt(x * x + y * y) * 6371000;
-    if (d < 3000) { // 3000 is 30 metres.
+    d = d / 100;
+    if (d < 30) { // 30 metres.
       _endRoute();
       return;
     }
