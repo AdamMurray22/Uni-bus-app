@@ -50,7 +50,6 @@ class AdvancedRouteCreator extends RouteCreator
     {
       return basicRoute;
     }
-
     return busRoute;
   }
 
@@ -85,11 +84,13 @@ class AdvancedRouteCreator extends RouteCreator
     List<String> busLegGeoJson = _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
 
     WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
+    double currentTimeInSecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch / 1000;
+    double timeTillBusDeparts = (busDeparture.getTimeAsDateTime().millisecondsSinceEpoch / 1000) - currentTimeInSecondsSinceEpoch;
     WalkingRoute completeRoute =
       WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), ...busLegGeoJson],
-        firstLeg.getTotalSeconds() + secondLeg.getTotalSeconds() + busLegTimeSeconds,
-        firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
-        firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());
+          timeTillBusDeparts + secondLeg.getTotalSeconds() + busLegTimeSeconds,
+          firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
+          firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());
     return completeRoute;
   }
 
@@ -127,7 +128,9 @@ class AdvancedRouteCreator extends RouteCreator
     BusTime busArrival = secondLegClosestBusStop.getArrivalTimeOnRoute(busDeparture.getRouteNumber())!;
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
     double busLegTimeSeconds = busLegTime * 60;
-    double totalEstimate = firstLegSmallestTime + secondLegSmallestTime + busLegTimeSeconds;
+    double currentTimeInSecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch / 1000;
+    double timeTillBusDeparts = (busDeparture.getTimeAsDateTime().millisecondsSinceEpoch / 1000) - currentTimeInSecondsSinceEpoch;
+    double totalEstimate = timeTillBusDeparts + secondLegSmallestTime + busLegTimeSeconds;
     return Tuple3<double, BusStop, BusStop>(totalEstimate, firstLegClosestBusStop, secondLegClosestBusStop);
   }
 
@@ -171,16 +174,16 @@ class AdvancedRouteCreator extends RouteCreator
   // Estimates the straight line time to walk between 2 points in s.
   double _estimateStraightLineTime(Location fromLocation, Location toLocation)
   {
-    return _estimateStraightLineDistance(fromLocation, toLocation) / 1; // 1m/s is an underestimate of typical walking speed of an adult.
+    return _estimateStraightLineDistance(fromLocation, toLocation) / 1.6; // 1.6m/s is an overestimate of typical walking speed of an adult.
   }
 
   // Estimates the straight line distance of 2 points in m.
   double _estimateStraightLineDistance(Location fromLocation, Location toLocation)
   {
-    var x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
+    double x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
         cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
-    var y = (fromLocation.getLatitude() - toLocation.getLatitude());
-    var d = sqrt(x * x + y * y) * 6371000;
+    double y = (fromLocation.getLatitude() - toLocation.getLatitude());
+    double d = sqrt(x * x + y * y) * 6371000;
     d = d / 10;
     return d;
   }

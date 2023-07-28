@@ -69,6 +69,18 @@ class BusTime
     return _totalMins;
   }
 
+  /// Returns the time of this BusTime as a DateTime of today.
+  DateTime getTimeAsDateTime()
+  {
+    int hour = _hour;
+    if (_hour == 24)
+    {
+      hour = 0;
+    }
+    DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, hour, _minute);
+  }
+
   /// Sets whether the buses are running on that day.
   setIsBusRunning(bool isBusRunning)
   {
