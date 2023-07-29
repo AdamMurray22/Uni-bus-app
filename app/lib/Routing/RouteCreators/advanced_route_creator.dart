@@ -82,14 +82,14 @@ class AdvancedRouteCreator extends RouteCreator
     }
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
     double busLegTimeSeconds = busLegTime * 60;
-    List<String> busLegGeoJson = await _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
-    Iterable<GeoJsonGeometry> busLegGeoJsonGeometry = busLegGeoJson.map((e) => GeoJsonGeometry.setColour(e, "purple"));
+    String busLegGeoJson = await getBusLegGeoJson(deppBusStop, arrBusStop);
+    GeoJsonGeometry busLegGeoJsonGeometry = GeoJsonGeometry.setColour(busLegGeoJson, "purple");
 
     WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
     double currentTimeInSecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch / 1000;
     double timeTillBusDeparts = (busDeparture.getTimeAsDateTime().millisecondsSinceEpoch / 1000) - currentTimeInSecondsSinceEpoch;
     WalkingRoute completeRoute =
-      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), ...busLegGeoJsonGeometry],
+      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), busLegGeoJsonGeometry],
           timeTillBusDeparts + secondLeg.getTotalSeconds() + busLegTimeSeconds,
           firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
           firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());
@@ -191,11 +191,99 @@ class AdvancedRouteCreator extends RouteCreator
   }
 
   // Returns all of the bus GeoJson for this route.
-  Future<List<String>> _getBusLegGeoJson(BusStop departBusStop, BusStop arriveBusStop, Location currentLocation)
+  Future<String> getBusLegGeoJson(BusStop departBusStop, BusStop arriveBusStop)
   async {
     Map<String, dynamic> busRouteGeoJson = await _getBusRouteGeoJson();
-    print(busRouteGeoJson["features"][0]["geometry"]["coordinates"][0]);
-    return [];
+    List<dynamic> busRouteFeaturesJson = busRouteGeoJson["features"];
+    busRouteFeaturesJson = _getBusRouteLegs(departBusStop, arriveBusStop, busRouteFeaturesJson);
+    String busRouteFeaturesJsonString = json.encode(busRouteFeaturesJson);
+    return busRouteFeaturesJsonString;
+  }
+
+  List<dynamic> _getBusRouteLegs(BusStop departBusStop, BusStop arriveBusStop, List<dynamic> busRouteFeaturesJson)
+  {
+    int startingLeg = _departBusStopLeg(departBusStop, busRouteFeaturesJson);
+    busRouteFeaturesJson = _removeBeforeLegs(startingLeg, busRouteFeaturesJson);
+    int endingLeg = _arriveBusStopLeg(arriveBusStop, busRouteFeaturesJson);
+    busRouteFeaturesJson = _removeAfterLegs(endingLeg, busRouteFeaturesJson);
+    return busRouteFeaturesJson;
+  }
+
+  // Returns the closest start of a leg to the departing bus stop.
+  int _departBusStopLeg(BusStop departBusStop, List<dynamic> busRouteFeaturesJson)
+  {
+    Iterable<Tuple2<int, List<double>>> legs =
+      busRouteFeaturesJson.map((e) => Tuple2(e["leg"], e["geometry"]["coordinates"][0]));
+    int? closestLeg;
+    double closestLegDistance = double.infinity;
+    for (Tuple2<int, List<double>> leg in legs)
+    {
+      Location legStartLocation = Location(leg.item2[0], leg.item2[1]);
+      Location departBusStopLocation = Location(departBusStop.long, departBusStop.lat);
+      double legStartDistanceToDepBusStop = _estimateStraightLineDistance(departBusStopLocation, legStartLocation);
+      if (legStartDistanceToDepBusStop < closestLegDistance)
+      {
+          closestLeg = leg.item1;
+          closestLegDistance = legStartDistanceToDepBusStop;
+      }
+    }
+    if (closestLeg == null)
+    {
+      throw ArgumentError("Bus Route GeoJson empty");
+    }
+    return closestLeg;
+  }
+
+  // Returns the closest end of a leg to the arriving bus stop.
+  int _arriveBusStopLeg(BusStop arriveBusStop, List<dynamic> busRouteFeaturesJson)
+  {
+    Iterable<Tuple2<int, List<double>>> legs =
+      busRouteFeaturesJson.map((e) => Tuple2(e["leg"],
+          e["geometry"]["coordinates"][e["geometry"]["coordinates"].length - 1]));
+    int? closestLeg;
+    double closestLegDistance = double.infinity;
+    for (Tuple2<int, List<double>> leg in legs)
+    {
+      Location legStartLocation = Location(leg.item2[0], leg.item2[1]);
+      Location departBusStopLocation = Location(arriveBusStop.long, arriveBusStop.lat);
+      double legStartDistanceToDepBusStop = _estimateStraightLineDistance(departBusStopLocation, legStartLocation);
+      if (legStartDistanceToDepBusStop < closestLegDistance)
+      {
+        closestLeg = leg.item1;
+        closestLegDistance = legStartDistanceToDepBusStop;
+      }
+    }
+    if (closestLeg == null)
+    {
+      throw ArgumentError("Bus Route GeoJson empty");
+    }
+    return closestLeg;
+  }
+
+  // Returns the GeoJson with the legs before the given number removed.
+  List<dynamic> _removeBeforeLegs(int startingLeg, List<dynamic> busRouteFeaturesJson)
+  {
+    for (int i = 0; i < busRouteFeaturesJson.length; i++)
+    {
+      if (busRouteFeaturesJson[i]["leg"] < startingLeg)
+      {
+        busRouteFeaturesJson.remove(i);
+      }
+    }
+    return busRouteFeaturesJson;
+  }
+
+  // Returns the GeoJson with the legs after the given number removed.
+  List<dynamic> _removeAfterLegs(int endLeg, List<dynamic> busRouteFeaturesJson)
+  {
+    for (int i = 0; i < busRouteFeaturesJson.length; i++)
+    {
+      if (busRouteFeaturesJson[i]["leg"] > endLeg)
+      {
+        busRouteFeaturesJson.remove(i);
+      }
+    }
+    return busRouteFeaturesJson;
   }
 
   // Returns the complete bus route GeoJson as loaded from the file.
