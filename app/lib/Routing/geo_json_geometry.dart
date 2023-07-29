@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class GeoJsonGeometry
 {
   final String _geometry;
@@ -9,11 +11,19 @@ class GeoJsonGeometry
   }
   GeoJsonGeometry.setColour(this._geometry, this._colour);
 
-  String getGeometry()
+  /// Returns the geometry as a string.
+  String getGeometryString()
   {
     return _geometry;
   }
 
+  /// Returns the geometry as a json.
+  dynamic getGeometry()
+  {
+    return jsonDecode(_geometry);
+  }
+
+  /// Returns the colour of the geojson if it has one.
   String? getColour()
   {
     return _colour;

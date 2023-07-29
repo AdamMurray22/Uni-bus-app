@@ -2,15 +2,20 @@ import 'package:app/Routing/geo_json_geometry.dart';
 
 class WalkingRoute
 {
-  final List<GeoJsonGeometry> _geometries;
+  final Set<GeoJsonGeometry> _geometries;
   final double _totalSeconds;
   final double _totalDistance;
   final double _distanceTillNextTurn;
-  late final String _nextTurn;
+  late final String? _nextTurn;
 
   /// Constructor removes "" or '' from the first and last positions of nextTurn.
-  WalkingRoute(this._geometries, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String nextTurn)
+  WalkingRoute(this._geometries, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String? nextTurn)
   {
+    if (nextTurn == null || nextTurn == 'null')
+    {
+      _nextTurn = nextTurn;
+      return;
+    }
     if (nextTurn.length > 1) {
       if (nextTurn[0] == '"' || nextTurn[0] == "'") {
         nextTurn = nextTurn.substring(1);
@@ -24,7 +29,7 @@ class WalkingRoute
   }
 
   /// Returns a geojson of the route geometry.
-  List<GeoJsonGeometry> getGeometries()
+  Set<GeoJsonGeometry> getGeometries()
   {
     return _geometries;
   }
@@ -48,7 +53,7 @@ class WalkingRoute
   }
 
   /// Returns the next turn.
-  String getNextTurn()
+  String? getNextTurn()
   {
     return _nextTurn;
   }

@@ -18,6 +18,16 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeDateTime_0 extends _i1.SmartFake implements DateTime {
+  _FakeDateTime_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [BusTime].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -67,6 +77,20 @@ class MockBusTime extends _i1.Mock implements _i2.BusTime {
         returnValue: 0,
       ) as int);
   @override
+  DateTime getTimeAsDateTime() => (super.noSuchMethod(
+        Invocation.method(
+          #getTimeAsDateTime,
+          [],
+        ),
+        returnValue: _FakeDateTime_0(
+          this,
+          Invocation.method(
+            #getTimeAsDateTime,
+            [],
+          ),
+        ),
+      ) as DateTime);
+  @override
   dynamic setIsBusRunning(bool? isBusRunning) =>
       super.noSuchMethod(Invocation.method(
         #setIsBusRunning,
@@ -79,15 +103,35 @@ class MockBusTime extends _i1.Mock implements _i2.BusTime {
         [busStop],
       ));
   @override
-  dynamic setPrevBusTimeOnRoute(_i2.BusTime? busTime) =>
-      super.noSuchMethod(Invocation.method(
-        #setPrevBusTimeOnRoute,
-        [busTime],
-      ));
+  int getRouteNumber() => (super.noSuchMethod(
+        Invocation.method(
+          #getRouteNumber,
+          [],
+        ),
+        returnValue: 0,
+      ) as int);
   @override
-  dynamic setNextBusTimeOnRoute(_i2.BusTime? busTime) =>
-      super.noSuchMethod(Invocation.method(
-        #setNextBusTimeOnRoute,
+  _i2.BusTime? getPrevBusDeppTimeOnRoute(_i2.BusTime? busTime) =>
+      (super.noSuchMethod(Invocation.method(
+        #getPrevBusDeppTimeOnRoute,
         [busTime],
-      ));
+      )) as _i2.BusTime?);
+  @override
+  _i2.BusTime? getNextBusDeppTimeOnRoute(_i2.BusTime? busTime) =>
+      (super.noSuchMethod(Invocation.method(
+        #getNextBusDeppTimeOnRoute,
+        [busTime],
+      )) as _i2.BusTime?);
+  @override
+  _i2.BusTime? getPrevBusArrTimeOnRoute(_i2.BusTime? busTime) =>
+      (super.noSuchMethod(Invocation.method(
+        #getPrevBusArrTimeOnRoute,
+        [busTime],
+      )) as _i2.BusTime?);
+  @override
+  _i2.BusTime? getNextBusArrTimeOnRoute(_i2.BusTime? busTime) =>
+      (super.noSuchMethod(Invocation.method(
+        #getNextBusArrTimeOnRoute,
+        [busTime],
+      )) as _i2.BusTime?);
 }

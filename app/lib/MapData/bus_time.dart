@@ -1,4 +1,5 @@
 import 'package:app/MapData/bus_stop.dart';
+import 'package:app/Wrapper/date_time_wrapper.dart';
 
 /// Time that a bus arrives at a bus stop
 class BusTime
@@ -72,12 +73,18 @@ class BusTime
   /// Returns the time of this BusTime as a DateTime of today.
   DateTime getTimeAsDateTime()
   {
+    return getTimeAsDateTimeGivenDateTime(DateTimeWrapper());
+  }
+
+  /// Returns the time of this BusTime as a DateTime of the given DateTime.
+  DateTime getTimeAsDateTimeGivenDateTime(DateTimeWrapper dateTime)
+  {
     int hour = _hour;
     if (_hour == 24)
     {
       hour = 0;
     }
-    DateTime now = DateTime.now();
+    DateTime now = dateTime.now();
     return DateTime(now.year, now.month, now.day, hour, _minute);
   }
 

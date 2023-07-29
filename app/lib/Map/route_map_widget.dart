@@ -9,7 +9,7 @@ import 'map_data_id_enum.dart';
 import 'map_widget.dart';
 
 import '../Routing/location.dart';
-
+import 'dart:developer';
 class RouteMapWidget extends MapWidget {
   const RouteMapWidget({required this.routeScreenUpdateFunction, super.key});
 
@@ -105,7 +105,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   }
 
   // Displays the route on the map.
-  _setRouteGeoJson(List<GeoJsonGeometry> routeGeometries) {
+  _setRouteGeoJson(Set<GeoJsonGeometry> routeGeometries) {
     webViewController.runJavascript("removeRoute()");
     for (GeoJsonGeometry routeGeometry in routeGeometries)
     {
@@ -113,12 +113,12 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
       String javaScriptCall = "";
       if (routeGeometry.hasColour())
       {
-        jsObject = "{route: `${routeGeometry.getGeometry()}` colour: '${routeGeometry.getColour()}'}";
+        jsObject = "{route: `${routeGeometry.getGeometryString()}`, colour: '${routeGeometry.getColour()}'}";
         javaScriptCall = "addRouteWithColour($jsObject)";
       }
       else
       {
-        jsObject = "{route: `${routeGeometry.getGeometry()}`}";
+        jsObject = "{route: `${routeGeometry.getGeometryString()}`}";
         javaScriptCall = "addRoute($jsObject)";
       }
       webViewController.runJavascript(javaScriptCall);

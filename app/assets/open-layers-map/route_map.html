@@ -167,17 +167,17 @@
 
     // Add the given GeoJson to the map
     function drawRouteLinesWithColour(geoJson) {
-        features = (new ol.format.GeoJSON({
+        var features = (new ol.format.GeoJSON({
             featureProjection: 'EPSG:3857',
             dataProjection: 'EPSG:4326'
         })).readFeatures(geoJson.route);
-        features.map(feature => {
+        features.forEach(function (feature) {
             feature.setStyle(new ol.style.Style({
                 stroke: new ol.style.Stroke({
                    color: geoJson.colour,
-                   width: 5
+                   width: 9
                 })
-            }))
+            }));
         });
         RouteLayer.getSource().addFeatures(features);
     }
