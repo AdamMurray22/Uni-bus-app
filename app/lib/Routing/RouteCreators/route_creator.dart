@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:app/Routing/Servers/routing_server.dart';
 import 'package:app/Routing/walking_route.dart';
 
+import '../geo_json_geometry.dart';
 import '../location.dart';
 
 /// The template for a route creator.
@@ -42,7 +43,7 @@ abstract class RouteCreator
     double totalDistance = double.parse(json.encode(jsonResponse['routes'][0]['distance']));
     double distanceTillNextTurn = double.parse(json.encode(jsonResponse['routes'][0]['legs'][0]['steps'][0]['distance']));
     String nextTurn = json.encode(jsonResponse['routes'][0]['legs'][0]['steps'][0]['maneuver']['modifier']);
-    return WalkingRoute([geometry], totalSeconds, totalDistance, distanceTillNextTurn, nextTurn);
+    return WalkingRoute([GeoJsonGeometry(geometry)], totalSeconds, totalDistance, distanceTillNextTurn, nextTurn);
   }
 
   // Retrieves the Route information from the server.

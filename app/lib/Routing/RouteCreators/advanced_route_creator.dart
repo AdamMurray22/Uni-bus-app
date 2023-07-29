@@ -9,6 +9,7 @@ import 'package:tuple/tuple.dart';
 import '../../MapData/bus_stop.dart';
 import '../../MapData/bus_time.dart';
 import '../Servers/routing_server.dart';
+import '../geo_json_geometry.dart';
 import '../location.dart';
 
 /// Creates the indented route using the bus timetable.
@@ -82,12 +83,13 @@ class AdvancedRouteCreator extends RouteCreator
     int busLegTime = busArrival.getTimeAsMins() - busDeparture.getTimeAsMins();
     double busLegTimeSeconds = busLegTime * 60;
     List<String> busLegGeoJson = await _getBusLegGeoJson(deppBusStop, arrBusStop, journeyStart);
+    Iterable<GeoJsonGeometry> busLegGeoJsonGeometry = busLegGeoJson.map((e) => GeoJsonGeometry.setColour(e, "purple"));
 
     WalkingRoute secondLeg = await _getWalkingRoute(Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
     double currentTimeInSecondsSinceEpoch = DateTime.now().millisecondsSinceEpoch / 1000;
     double timeTillBusDeparts = (busDeparture.getTimeAsDateTime().millisecondsSinceEpoch / 1000) - currentTimeInSecondsSinceEpoch;
     WalkingRoute completeRoute =
-      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), ...busLegGeoJson],
+      WalkingRoute([...firstLeg.getGeometries(), ...secondLeg.getGeometries(), ...busLegGeoJsonGeometry],
           timeTillBusDeparts + secondLeg.getTotalSeconds() + busLegTimeSeconds,
           firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
           firstLeg.getDistanceTillNextTurn(), firstLeg.getNextTurn());

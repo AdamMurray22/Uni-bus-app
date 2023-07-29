@@ -148,6 +148,10 @@
         drawRouteLines(geoJson);
     }
 
+    function addRouteWithColour(geoJson) {
+        drawRouteLinesWithColour(geoJson);
+    }
+
     function removeRoute()
     {
         RouteLayer.getSource().clear();
@@ -155,12 +159,27 @@
 
     // Add the given GeoJson to the map
     function drawRouteLines(geoJson) {
-        //RouteLayer.getSource().addFeatures((new ol.format.Geometry(geoJson.route)));
-
         RouteLayer.getSource().addFeatures((new ol.format.GeoJSON({
             featureProjection: 'EPSG:3857',
             dataProjection: 'EPSG:4326'
         })).readFeatures(geoJson.route));
+    }
+
+    // Add the given GeoJson to the map
+    function drawRouteLinesWithColour(geoJson) {
+        features = (new ol.format.GeoJSON({
+            featureProjection: 'EPSG:3857',
+            dataProjection: 'EPSG:4326'
+        })).readFeatures(geoJson.route);
+        features.map(feature => {
+            feature.setStyle(new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                   color: geoJson.colour,
+                   width: 5
+                })
+            }))
+        });
+        RouteLayer.getSource().addFeatures(features);
     }
 
     // Adds the layers to the map

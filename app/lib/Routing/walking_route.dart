@@ -1,6 +1,8 @@
+import 'package:app/Routing/geo_json_geometry.dart';
+
 class WalkingRoute
 {
-  final List<String> _geometries;
+  final List<GeoJsonGeometry> _geometries;
   final double _totalSeconds;
   final double _totalDistance;
   final double _distanceTillNextTurn;
@@ -22,7 +24,7 @@ class WalkingRoute
   }
 
   /// Returns a geojson of the route geometry.
-  List<String> getGeometries()
+  List<GeoJsonGeometry> getGeometries()
   {
     return _geometries;
   }
