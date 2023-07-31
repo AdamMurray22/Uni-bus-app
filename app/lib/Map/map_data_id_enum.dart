@@ -8,7 +8,8 @@ enum MapDataId
   landmark("LM-"),
   userLocation("UL-"),
   route("RT-"),
-  destination("DN-");
+  destination("DN-"),
+  routeStart("RS-");
 
   const MapDataId(this.idPrefix);
   final String idPrefix;
