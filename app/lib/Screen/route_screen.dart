@@ -11,6 +11,7 @@ import '../Map/map_data_id_enum.dart';
 import '../Map/route_map_widget.dart';
 import '../MapData/feature.dart';
 import '../MapData/map_data_loader.dart';
+import '../Routing/estimate_straight_line_distance.dart';
 import '../Sorts/heap_sort.dart';
 import '../Sorts/comparator.dart';
 import '../Routing/location.dart' as location;
@@ -98,7 +99,14 @@ class _RouteScreenState extends State<RouteScreen> {
       routeScreenUpdateFunction: (route)
       {
         setState(() {
-          nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
+          if (route.getNextTurn() != null)
+          {
+            nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
+          }
+          else
+          {
+            nextTurn = "";
+          }
           totalDistance = "${route.getTotalDisplayDistance()} total";
           totalTime = route.getTotalDisplayTime();
         });
@@ -106,8 +114,7 @@ class _RouteScreenState extends State<RouteScreen> {
     );
     _dataLoader.onDataLoaded((mapData) async {
       setState(() {
-        /// TODO: Create Advanced Route Creator.
-        //_mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getBusStopsMap()));
+        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getAllBusStops()));
       });
     });
     super.initState();
@@ -354,11 +361,8 @@ class _RouteScreenState extends State<RouteScreen> {
   _updateRoute(String fromId, String toId) async {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    var x = (fromLocation.getLongitude() - toLocation.getLongitude()) *
-        cos((fromLocation.getLatitude() + toLocation.getLatitude()) / 2);
-    var y = (fromLocation.getLatitude() - toLocation.getLatitude());
-    var d = sqrt(x * x + y * y) * 6371000;
-    if (d < 3000) {
+    double distanceToDestination = EstimateStraightLineDistance.estimateStraightLineDistance(fromLocation, toLocation);
+    if (distanceToDestination < 30) { // 30 metres.
       _endRoute();
       return;
     }

@@ -24,9 +24,9 @@ import 'package:tuple/tuple.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeTuple4_0<T1, T2, T3, T4> extends _i1.SmartFake
-    implements _i2.Tuple4<T1, T2, T3, T4> {
-  _FakeTuple4_0(
+class _FakeTuple5_0<T1, T2, T3, T4, T5> extends _i1.SmartFake
+    implements _i2.Tuple5<T1, T2, T3, T4, T5> {
+  _FakeTuple5_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -45,20 +45,25 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
 
   @override
   _i4.Future<
-      _i2.Tuple4<Set<_i5.Feature>, Map<String, List<_i6.BusTime>>,
-          Map<String, List<_i6.BusTime>>, _i7.BusRunningDates>> load() =>
-      (super.noSuchMethod(
+      _i2.Tuple5<
+          Set<_i5.Feature>,
+          Map<String, int>,
+          Map<String, List<_i6.BusTime>>,
+          Map<String, List<_i6.BusTime>>,
+          _i7.BusRunningDates>> load() => (super.noSuchMethod(
         Invocation.method(
           #load,
           [],
         ),
         returnValue: _i4.Future<
-            _i2.Tuple4<
+            _i2.Tuple5<
                 Set<_i5.Feature>,
+                Map<String, int>,
                 Map<String, List<_i6.BusTime>>,
                 Map<String, List<_i6.BusTime>>,
-                _i7.BusRunningDates>>.value(_FakeTuple4_0<
+                _i7.BusRunningDates>>.value(_FakeTuple5_0<
             Set<_i5.Feature>,
+            Map<String, int>,
             Map<String, List<_i6.BusTime>>,
             Map<String, List<_i6.BusTime>>,
             _i7.BusRunningDates>(
@@ -69,12 +74,17 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           ),
         )),
       ) as _i4.Future<
-          _i2.Tuple4<Set<_i5.Feature>, Map<String, List<_i6.BusTime>>,
-              Map<String, List<_i6.BusTime>>, _i7.BusRunningDates>>);
+          _i2.Tuple5<
+              Set<_i5.Feature>,
+              Map<String, int>,
+              Map<String, List<_i6.BusTime>>,
+              Map<String, List<_i6.BusTime>>,
+              _i7.BusRunningDates>>);
   @override
   _i4.Future<
-      _i2.Tuple4<
+      _i2.Tuple5<
           Set<_i5.Feature>,
+          Map<String, int>,
           Map<String, List<_i6.BusTime>>,
           Map<String, List<_i6.BusTime>>,
           _i7.BusRunningDates>> loadDatabase(_i8.Database? db) =>
@@ -84,12 +94,14 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           [db],
         ),
         returnValue: _i4.Future<
-            _i2.Tuple4<
+            _i2.Tuple5<
                 Set<_i5.Feature>,
+                Map<String, int>,
                 Map<String, List<_i6.BusTime>>,
                 Map<String, List<_i6.BusTime>>,
-                _i7.BusRunningDates>>.value(_FakeTuple4_0<
+                _i7.BusRunningDates>>.value(_FakeTuple5_0<
             Set<_i5.Feature>,
+            Map<String, int>,
             Map<String, List<_i6.BusTime>>,
             Map<String, List<_i6.BusTime>>,
             _i7.BusRunningDates>(
@@ -100,6 +112,10 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           ),
         )),
       ) as _i4.Future<
-          _i2.Tuple4<Set<_i5.Feature>, Map<String, List<_i6.BusTime>>,
-              Map<String, List<_i6.BusTime>>, _i7.BusRunningDates>>);
+          _i2.Tuple5<
+              Set<_i5.Feature>,
+              Map<String, int>,
+              Map<String, List<_i6.BusTime>>,
+              Map<String, List<_i6.BusTime>>,
+              _i7.BusRunningDates>>);
 }

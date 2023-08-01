@@ -39,7 +39,7 @@ class MapDataLoader
   /// function given to onDataLoaded().
   loadFromLoader(DatabaseLoader loader) async
   {
-    Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
+    Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
         BusRunningDates> mapData = await loader.load();
     _data = MapData(mapData);
 

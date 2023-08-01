@@ -3,12 +3,13 @@ import 'package:app/Routing/walking_route.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 import '../Routing/RouteCreators/route_creator.dart';
+import '../Routing/geo_json_geometry.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import 'map_widget.dart';
 
 import '../Routing/location.dart';
-
+import 'dart:developer';
 class RouteMapWidget extends MapWidget {
   const RouteMapWidget({required this.routeScreenUpdateFunction, super.key});
 
@@ -37,7 +38,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
       return;
     }
     WalkingRoute route = await routeCreator.createRoute(from, to);
-    _loadRouteGeoJson(route.getGeometry());
+    _setRouteGeoJson(route.getGeometries());
     widget.routeScreenUpdateFunction(route);
   }
 
@@ -104,8 +105,23 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   }
 
   // Displays the route on the map.
-  _loadRouteGeoJson(String routeGeometry) {
-    String jsObject = "{route: `$routeGeometry`}";
-    webViewController.runJavascript("addRoute($jsObject)");
+  _setRouteGeoJson(Set<GeoJsonGeometry> routeGeometries) {
+    webViewController.runJavascript("removeRoute()");
+    for (GeoJsonGeometry routeGeometry in routeGeometries)
+    {
+      String jsObject = "";
+      String javaScriptCall = "";
+      if (routeGeometry.hasColour())
+      {
+        jsObject = "{route: `${routeGeometry.getGeometryString()}`, colour: '${routeGeometry.getColour()}'}";
+        javaScriptCall = "addRouteWithColour($jsObject)";
+      }
+      else
+      {
+        jsObject = "{route: `${routeGeometry.getGeometryString()}`}";
+        javaScriptCall = "addRoute($jsObject)";
+      }
+      webViewController.runJavascript(javaScriptCall);
+    }
   }
 }

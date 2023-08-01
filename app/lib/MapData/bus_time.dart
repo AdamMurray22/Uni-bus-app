@@ -1,16 +1,20 @@
+import 'package:app/MapData/bus_stop.dart';
+import 'package:app/Wrapper/date_time_wrapper.dart';
+
 /// Time that a bus arrives at a bus stop
 class BusTime
 {
+  late final BusStop _ownBusStop;
+  final int _routeNumber;
   late final String _time;
   late final int _hour;
   late final int _minute;
   late final int _totalMins;
   late bool _isBusRunning;
-  final int _route;
 
   /// The constructor assigning the time
   /// Must be in the format HH:MM.
-  BusTime(String time, this._route)
+  BusTime(String time, this._routeNumber)
   {
     _time = time;
     if (int.tryParse(time.substring(0, 2)) == null ||
@@ -66,10 +70,70 @@ class BusTime
     return _totalMins;
   }
 
+  /// Returns the time of this BusTime as a DateTime of today.
+  DateTime getTimeAsDateTime()
+  {
+    return getTimeAsDateTimeGivenDateTime(DateTimeWrapper());
+  }
+
+  /// Returns the time of this BusTime as a DateTime of the given DateTime.
+  DateTime getTimeAsDateTimeGivenDateTime(DateTimeWrapper dateTime)
+  {
+    int hour = _hour;
+    if (_hour == 24)
+    {
+      hour = 0;
+    }
+    DateTime now = dateTime.now();
+    return DateTime(now.year, now.month, now.day, hour, _minute);
+  }
+
   /// Sets whether the buses are running on that day.
   setIsBusRunning(bool isBusRunning)
   {
     _isBusRunning = isBusRunning;
+  }
+
+  /// Sets the bus stop.
+  setBusStop(BusStop busStop)
+  {
+    _ownBusStop = busStop;
+  }
+
+  /// Gets the bus stop.
+  getBusStop()
+  {
+    return _ownBusStop;
+  }
+
+  /// Returns the route number.
+  int getRouteNumber()
+  {
+    return _routeNumber;
+  }
+
+  /// Returns the previous departure bus time on the route.
+  BusTime? getPrevBusDeppTimeOnRoute(BusTime busTime)
+  {
+    return _ownBusStop.getPrevBusStop().getDepartureTimeOnRoute(_routeNumber);
+  }
+
+  /// Returns the next departure bus time on the route.
+  BusTime? getNextBusDeppTimeOnRoute(BusTime busTime)
+  {
+    return _ownBusStop.getNextBusStop().getDepartureTimeOnRoute(_routeNumber);
+  }
+
+  /// Returns the previous arrival bus time on the route.
+  BusTime? getPrevBusArrTimeOnRoute(BusTime busTime)
+  {
+    return _ownBusStop.getPrevBusStop().getArrivalTimeOnRoute(_routeNumber);
+  }
+
+  /// Returns the next arrival bus time on the route.
+  BusTime? getNextBusArrTimeOnRoute(BusTime busTime)
+  {
+    return _ownBusStop.getNextBusStop().getArrivalTimeOnRoute(_routeNumber);
   }
 
   // Returns the current time of day in minutes.
@@ -87,7 +151,7 @@ class BusTime
           other is BusTime &&
               runtimeType == other.runtimeType &&
               _time == other._time &&
-              _route == other._route;
+              _routeNumber == other._routeNumber;
 
   @override
   int get hashCode => _time.hashCode;

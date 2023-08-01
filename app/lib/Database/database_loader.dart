@@ -14,7 +14,7 @@ import '../MapData/term_dates.dart';
 class DatabaseLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple4<Set<Feature>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
+  Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
       BusRunningDates>? _data;
 
   DatabaseLoader._();
@@ -28,7 +28,7 @@ class DatabaseLoader {
   /// Loads the database and returns a List of Features. Saves the result to be
   /// given for future calls.
   Future<
-      Tuple4<Set<Feature>, Map<String, List<BusTime>>,
+      Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
           Map<String, List<BusTime>>, BusRunningDates>> load() async {
     _data ??= await loadDatabase(await _getDatabase());
     return _data!;
@@ -36,14 +36,19 @@ class DatabaseLoader {
 
   // Loads the database and returns a List of Features.
   Future<
-      Tuple4<
+      Tuple5<
           Set<Feature>,
+          Map<String, int>,
           Map<String, List<BusTime>>,
           Map<String, List<BusTime>>,
           BusRunningDates>> loadDatabase(Database db) async {
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =
         await db.rawQuery('SELECT * FROM Feature');
+
+    // Gets the bus stop order table
+    List<Map<String, Object?>> busStopOrderList =
+      await db.rawQuery('SELECT * FROM Bus_Stop_Order');
 
     // Gets the bus arrTimes table
     List<Map<String, Object?>> busTimesList =
@@ -64,6 +69,12 @@ class DatabaseLoader {
     for (Map map in featuresList) {
       features.add(Feature(map["feature_id"], map["feature_name"],
           map["longitude"], map["latitude"]));
+    }
+
+    // Copy's the busStopOrder's table into a map of the bus stops order.
+    Map<String, int> busStopOrder = {};
+    for (Map map in busStopOrderList) {
+      busStopOrder[map["bus_stop_id"]] = map["order"];
     }
 
     // Copy's the Bus Time's arrive table into a map from bus stop id's to BusTime objects.
@@ -104,7 +115,7 @@ class DatabaseLoader {
 
     BusRunningDates runningDates = BusRunningDates(termDates, nationalHolidays);
 
-    _data = Tuple4(features, arrTimes, depTimes, runningDates);
+    _data = Tuple5(features, busStopOrder, arrTimes, depTimes, runningDates);
     return _data!;
   }
 

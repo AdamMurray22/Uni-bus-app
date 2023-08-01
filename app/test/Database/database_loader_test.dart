@@ -54,6 +54,18 @@ void main() {
         }
       ]);
 
+      when(db.rawQuery('SELECT * FROM Bus_Stop_Order')).thenAnswer((_) async =>
+      [
+        {
+          "bus_stop_id": "U1-03",
+          "order": 0,
+        },
+        {
+          "bus_stop_id": "U1-04",
+          "order": 0,
+        }
+      ]);
+
       when(db.rawQuery('SELECT * FROM Bus_Times')).thenAnswer((_) async =>
       [
         {
@@ -92,8 +104,9 @@ void main() {
         }
       ]);
 
-      expect(await (loader.loadDatabase(db)), isA<Tuple4<
+      expect(await (loader.loadDatabase(db)), isA<Tuple5<
           Set<Feature>,
+          Map<String, int>,
           Map<String, List<BusTime>>,
           Map<String, List<BusTime>>,
           BusRunningDates>>());
