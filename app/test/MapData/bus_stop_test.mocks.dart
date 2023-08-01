@@ -3,8 +3,9 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:app/MapData/bus_stop.dart' as _i3;
+import 'package:app/MapData/bus_stop.dart' as _i4;
 import 'package:app/MapData/bus_time.dart' as _i2;
+import 'package:app/Wrapper/date_time_wrapper.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -91,13 +92,28 @@ class MockBusTime extends _i1.Mock implements _i2.BusTime {
         ),
       ) as DateTime);
   @override
+  DateTime getTimeAsDateTimeGivenDateTime(_i3.DateTimeWrapper? dateTime) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTimeAsDateTimeGivenDateTime,
+          [dateTime],
+        ),
+        returnValue: _FakeDateTime_0(
+          this,
+          Invocation.method(
+            #getTimeAsDateTimeGivenDateTime,
+            [dateTime],
+          ),
+        ),
+      ) as DateTime);
+  @override
   dynamic setIsBusRunning(bool? isBusRunning) =>
       super.noSuchMethod(Invocation.method(
         #setIsBusRunning,
         [isBusRunning],
       ));
   @override
-  dynamic setBusStop(_i3.BusStop? busStop) =>
+  dynamic setBusStop(_i4.BusStop? busStop) =>
       super.noSuchMethod(Invocation.method(
         #setBusStop,
         [busStop],
