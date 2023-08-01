@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
 
+import 'bus_route_geojson_loader.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import '../MapData/feature.dart';
@@ -84,10 +85,9 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
     widget.markerClickedFunction!(markerId);
   }
 
-  //Displays the bus route on the map.
+  // Displays the bus route on the map.
   _loadBusRouteGeoJson() async {
-    String busRouteJson = await rootBundle
-        .loadString(join("assets", "open-layers-map/Bus_Route.geojson"));
+    String busRouteJson = await BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader().getBusRouteGeoJsonAsString();
     String jsObject = "{busRoute: `$busRouteJson`}";
     webViewController.runJavascript("drawBusRouteLines($jsObject)");
   }

@@ -18,4 +18,15 @@ class Location
   {
     return _longitude;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Location &&
+              runtimeType == other.runtimeType &&
+              _latitude == other._latitude &&
+              _longitude == other._longitude;
+
+  @override
+  int get hashCode => _longitude.hashCode + _latitude.hashCode;
 }

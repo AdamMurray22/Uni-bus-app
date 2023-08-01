@@ -5,7 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 
-import 'bus_running_test.mocks.dart';
+import 'bus_running_dates_test.mocks.dart';
 
 @GenerateMocks([DateTime])
 void main() {

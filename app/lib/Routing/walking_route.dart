@@ -1,14 +1,21 @@
+import 'package:app/Routing/geo_json_geometry.dart';
+
 class WalkingRoute
 {
-  final String _geometry;
+  final Set<GeoJsonGeometry> _geometries;
   final double _totalSeconds;
   final double _totalDistance;
   final double _distanceTillNextTurn;
-  late final String _nextTurn;
+  late final String? _nextTurn;
 
   /// Constructor removes "" or '' from the first and last positions of nextTurn.
-  WalkingRoute(this._geometry, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String nextTurn)
+  WalkingRoute(this._geometries, this._totalSeconds, this._totalDistance, this._distanceTillNextTurn, String? nextTurn)
   {
+    if (nextTurn == null || nextTurn == 'null')
+    {
+      _nextTurn = nextTurn;
+      return;
+    }
     if (nextTurn.length > 1) {
       if (nextTurn[0] == '"' || nextTurn[0] == "'") {
         nextTurn = nextTurn.substring(1);
@@ -22,9 +29,9 @@ class WalkingRoute
   }
 
   /// Returns a geojson of the route geometry.
-  String getGeometry()
+  Set<GeoJsonGeometry> getGeometries()
   {
-    return _geometry;
+    return _geometries;
   }
 
   /// Returns the time remaining in seconds.
@@ -46,7 +53,7 @@ class WalkingRoute
   }
 
   /// Returns the next turn.
-  String getNextTurn()
+  String? getNextTurn()
   {
     return _nextTurn;
   }
@@ -110,12 +117,12 @@ class WalkingRoute
       identical(this, other) ||
           other is WalkingRoute &&
               runtimeType == other.runtimeType &&
-              _geometry == other._geometry &&
+              _geometries == other._geometries &&
               _totalSeconds == other._totalSeconds &&
               _totalDistance == other._totalDistance &&
               _distanceTillNextTurn == other._distanceTillNextTurn &&
               _nextTurn == other._nextTurn;
 
   @override
-  int get hashCode => _geometry.hashCode;
+  int get hashCode => _geometries.hashCode;
 }

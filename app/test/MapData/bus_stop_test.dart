@@ -26,7 +26,7 @@ void main() {
       when(busTime2.setIsBusRunning(true)).thenReturn(null);
 
       BusStop busStop = BusStop(
-          "U1-1", "bus1", 50, 60, {busTime1}, {busTime2}, true);
+          "U1-1", "bus1", 50, 60, {busTime1}, {busTime2}, true, 0);
 
       Tuple2<List<String>, List<String>> displayInfo =
           busStop.toDisplayInfoScreen();
@@ -45,7 +45,7 @@ void main() {
           when(busTime1.setIsBusRunning(true)).thenReturn(null);
 
       BusStop busStop =
-          BusStop("U1-1", "bus1", 50, 60, {busTime1}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {busTime1}, {}, true, 0);
 
       Tuple2<List<String>, List<String>> displayInfo =
           busStop.toDisplayInfoScreen();
@@ -69,7 +69,7 @@ void main() {
           when(busTime2.setIsBusRunning(true)).thenReturn(null);
 
           BusStop busStop = BusStop(
-              "U1-1", "bus1", 50, 60, {busTime1}, {busTime2}, true);
+              "U1-1", "bus1", 50, 60, {busTime1}, {busTime2}, true, 0);
 
           Tuple2<List<String>, List<String>> displayInfo =
           busStop.toDisplayInfoScreen();
@@ -88,7 +88,7 @@ void main() {
           when(busTime1.setIsBusRunning(true)).thenReturn(null);
 
           BusStop busStop =
-          BusStop("U1-1", "bus1", 50, 60, {busTime1}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {busTime1}, {}, true, 0);
 
           Tuple2<List<String>, List<String>> displayInfo =
           busStop.toDisplayInfoScreen();
@@ -98,37 +98,37 @@ void main() {
 
     test('getHasSeparateArrDepTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true, 0);
       expect(feature.getHasSeparateArrDepTimes(), false);
     });
 
     test('getHasSeparateArrDepTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true, 0);
       expect(feature.getHasSeparateArrDepTimes(), true);
     });
 
     test('getDepartureTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true, 0);
       expect(feature.getDepartureTimes(), [BusTime("11:11", 1)]);
     });
 
     test('getDepartureTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true, 0);
       expect(feature.getDepartureTimes(), [BusTime("11:13", 1)]);
     });
 
     test('getArrivalTimes() with out separate dep', () {
       BusStop feature =
-          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true);
+          BusStop("U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {}, true, 0);
       expect(feature.getArrivalTimes(), [BusTime("11:11", 1)]);
     });
 
     test('getArrivalTimes() with separate dep', () {
       BusStop feature = BusStop(
-          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true);
+          "U1-1", "bus1", 50, 60, {BusTime("11:11", 1)}, {BusTime("11:13", 1)}, true, 0);
       expect(feature.getArrivalTimes(), [BusTime("11:11", 1)]);
     });
   });
