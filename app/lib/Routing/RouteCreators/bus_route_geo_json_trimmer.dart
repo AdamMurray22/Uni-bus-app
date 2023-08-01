@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:app/Sorts/heap_sort.dart';
 import 'package:app/Sorts/comparator.dart';
-import 'package:flutter/material.dart';
 import '../../MapData/bus_stop.dart';
 import '../../MapData/bus_time.dart';
 import '../../Wrapper/date_time_wrapper.dart';
@@ -55,7 +54,7 @@ class BusRouteGeoJsonTrimmer
           GeoJsonGeometry.setColour(jsonEncode(_addLocationToFront(from, _busGeoJson)),
               _busGeoJson.getColour());
     }
-    return _createWalkingRoute(geoJson, _finalLeg);
+    return _createWalkingRoute(from, geoJson, _finalLeg);
   }
 
   /// Returns true if from is within 10 meters of the bus stop.
@@ -145,15 +144,22 @@ class BusRouteGeoJsonTrimmer
     return GeoJsonGeometry(jsonEncode(lastLegJson));
   }
 
+  // Returns the route with the location attached to the coordinates.
+  GeoJsonGeometry _stitchLocationToRoute(Location from, GeoJsonGeometry route) {
+    Map<String, dynamic> routeJson = route.getGeometry();
+    routeJson["geometry"]["coordinates"].insert(0, [from.getLongitude(), from.getLatitude()]);
+    return GeoJsonGeometry.setColour(jsonEncode(routeJson), route.getColour());
+  }
+
   // Creates the completed WalkingRoute.
-  WalkingRoute _createWalkingRoute(GeoJsonGeometry geoJson, WalkingRoute? finalLeg)
+  WalkingRoute _createWalkingRoute(Location from, GeoJsonGeometry geoJson, WalkingRoute? finalLeg)
   {
     double? totalDistance = finalLeg?.getTotalDistance();
     totalDistance ??= 0;
     double? totalSeconds = finalLeg?.getTotalSeconds();
     totalSeconds ??= 0;
     totalSeconds += (_arriveBusTime.getTimeAsDateTimeGivenDateTime(_dateTime).millisecondsSinceEpoch - _dateTime.now().millisecondsSinceEpoch) / 1000;
-    List<GeoJsonGeometry> geometries = [geoJson];
+    List<GeoJsonGeometry> geometries = [_stitchLocationToRoute(from, geoJson)];
     if (finalLeg != null)
     {
       GeoJsonGeometry finalLegGeoJson = finalLeg.getGeometries().first;
