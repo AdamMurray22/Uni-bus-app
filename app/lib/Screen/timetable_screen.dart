@@ -1,4 +1,5 @@
 import 'package:app/MapData/bus_stop.dart';
+import 'package:app/Screen/dropdown_button_bus_stop.dart';
 import 'package:app/Sorts/comparator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,26 +18,12 @@ class TimetableScreen extends StatefulWidget {
 }
 
 class _TimetableScreenState extends State<TimetableScreen> {
-  List<DropdownButton<String>> dropDownButtons = [];
+  List<DropdownButtonBusStop<String>> _dropDownButtons = [];
 
-  // Comparator for the drop down buttons to sort by when the first bus gets to each bus stop.
-  Comparator Function(DropdownButton<String> item1, DropdownButton<String> item2) _dropDownButtonsComparator() {
-    return ((DropdownButton<String> item1, DropdownButton<String> item2) {
-      List<DropdownMenuItem<String>> times1 =
-      item1.items as List<DropdownMenuItem<String>>;
-      int hour1 = int.parse(times1[1].value!.substring(0, 2));
-      hour1 == 0 ? hour1 = 24 : hour1;
-      int minute1 = int.parse(times1[1].value!.substring(3, 5));
-      int firstTime1 = minute1 + (hour1 * 60);
-
-      List<DropdownMenuItem<String>> times2 =
-      item2.items as List<DropdownMenuItem<String>>;
-      int hour2 = int.parse(times2[1].value!.substring(0, 2));
-      hour2 == 0 ? hour2 = 24 : hour2;
-      int minute2 = int.parse(times2[1].value!.substring(3, 5));
-      int firstTime2 = minute2 + (hour2 * 60);
-
-      if (firstTime1 <= firstTime2) {
+  // Comparator for the drop down buttons to sort by the order of the bus stops.
+  Comparator Function(DropdownButtonBusStop<String> item1, DropdownButtonBusStop<String> item2) _dropDownButtonsComparator() {
+    return ((DropdownButtonBusStop<String> item1, DropdownButtonBusStop<String> item2) {
+      if (item1.routeOrder <= item2.routeOrder) {
         return Comparator.before;
       }
       return Comparator.after;
@@ -52,19 +39,19 @@ class _TimetableScreenState extends State<TimetableScreen> {
         for (BusStop busStop in mapData.getAllBusStops()) {
           if (busStop.getHasSeparateArrDepTimes()) {
             _addBusStop(
-                "${busStop.name} (Arrivals)", busStop.getArrivalTimes());
+                "${busStop.name} (Arrivals)", busStop.getArrivalTimes(), busStop);
             _addBusStop(
-                "${busStop.name} (Departures)", busStop.getDepartureTimes());
+                "${busStop.name} (Departures)", busStop.getDepartureTimes(), busStop);
           } else {
-            _addBusStop(busStop.name, busStop.getDepartureTimes());
+            _addBusStop(busStop.name, busStop.getDepartureTimes(), busStop);
           }
         }
 
         // Sorts the bus stops so that the stops that the bus gets too first
         // appear at the top of the screen.
-        HeapSort<DropdownButton<String>> sort =
-            HeapSort<DropdownButton<String>>(_dropDownButtonsComparator());
-        dropDownButtons = sort.sort(dropDownButtons);
+        HeapSort<DropdownButtonBusStop<String>> sort =
+            HeapSort<DropdownButtonBusStop<String>>(_dropDownButtonsComparator());
+        _dropDownButtons = sort.sort(_dropDownButtons);
       });
     });
     super.initState();
@@ -87,7 +74,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   "The bus takes a one-way circular route, stopping at: ",
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 )),
-            ...dropDownButtons,
+            ..._dropDownButtons,
             RichText(
               key: const Key("Timetable footer"),
               text: TextSpan(
@@ -125,7 +112,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   }
 
   // Adds a bus stop to the timetable.
-  _addBusStop(String busStopName, Iterable<BusTime> busTimes) {
+  _addBusStop(String busStopName, Iterable<BusTime> busTimes, BusStop busStop) {
     List<DropdownMenuItem<String>> times = [];
     times.add(DropdownMenuItem(
       value: busStopName,
@@ -137,14 +124,15 @@ class _TimetableScreenState extends State<TimetableScreen> {
         child: Text(time.toDisplayString()),
       ));
     }
-    dropDownButtons.add(DropdownButton(
+    _dropDownButtons.add(DropdownButtonBusStop(
+      routeOrder: busStop.getBusStopOrder(),
       value: busStopName,
       items: times,
       menuMaxHeight: 500,
       onChanged: (value) {},
       elevation: 8,
       isExpanded: true,
-      underline: Container(),
+      underline: Container()
     ));
   }
 }
