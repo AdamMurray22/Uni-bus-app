@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/Routing/RouteCreators/bus_route_geo_json_maker.dart';
 import 'package:app/Routing/RouteCreators/bus_route_estimator.dart';
+import 'package:app/Routing/RouteCreators/bus_route_geo_json_trimmer.dart';
 import 'package:app/Routing/RouteCreators/route_creator.dart';
 import 'package:app/Routing/walking_route.dart';
 import 'package:app/Wrapper/date_time_wrapper.dart';
@@ -15,10 +16,12 @@ import '../geo_json_geometry.dart';
 import '../location.dart';
 
 /// Creates the indented route using the bus timetable.
-class AdvancedRouteCreator extends RouteCreator {
+class AdvancedRouteCreator extends RouteCreator
+{
   DateTimeWrapper _dateTime = DateTimeWrapper();
   late BusRouteEstimator busRouteEstimator;
   late BusRouteGeoJsonMaker busRouteGeoJsonMaker;
+  BusRouteGeoJsonTrimmer? _busRouteGeoJsonTrimmer;
 
   /// Assigns default Server.
   AdvancedRouteCreator(Set<BusStop> busStops) : super() {
@@ -41,10 +44,24 @@ class AdvancedRouteCreator extends RouteCreator {
   /// include taking the bus.
   @override
   Future<WalkingRoute> createRoute(Location from, Location to) async {
+    if (_busRouteGeoJsonTrimmer != null)
+    {
+      WalkingRoute? route = await _busRouteGeoJsonTrimmer?.continueBusRoute(from);
+      if (route != null)
+      {
+        return route;
+      }
+      _busRouteGeoJsonTrimmer = null;
+    }
+    return await _generateRoute(from, to);
+  }
+
+  // Generates a new route.
+  Future<WalkingRoute> _generateRoute(Location from, Location to) async {
     WalkingRoute basicRoute = await _getWalkingRoute(from, to);
 
     Tuple3<double, BusStop, BusStop>? busRouteEstimate =
-        busRouteEstimator.getEntireEstimate(from, to);
+    busRouteEstimator.getEntireEstimate(from, to);
     if (busRouteEstimate == null) {
       return basicRoute;
     }
@@ -53,13 +70,16 @@ class AdvancedRouteCreator extends RouteCreator {
       return basicRoute;
     }
 
-    WalkingRoute? busRoute = await _getBusRoute(from, to, busRouteEstimate);
-    if (busRoute == null) {
+    Tuple2<WalkingRoute, BusRouteGeoJsonTrimmer?>? busRouteWithTrimmer = await _getBusRoute(from, to, busRouteEstimate);
+    if (busRouteWithTrimmer == null) {
       return basicRoute;
     }
+    WalkingRoute busRoute = busRouteWithTrimmer.item1;
     if (busRoute.getTotalSeconds() > basicRoute.getTotalSeconds()) {
       return basicRoute;
     }
+
+    _busRouteGeoJsonTrimmer = busRouteWithTrimmer.item2;
     return busRoute;
   }
 
@@ -71,7 +91,7 @@ class AdvancedRouteCreator extends RouteCreator {
   }
 
   // Returns the complete route including the bus leg.
-  Future<WalkingRoute?> _getBusRoute(Location journeyStart, Location journeyEnd,
+  Future<Tuple2<WalkingRoute, BusRouteGeoJsonTrimmer?>?> _getBusRoute(Location journeyStart, Location journeyEnd,
       Tuple3<double, BusStop, BusStop> estimateRoute) async {
     BusStop deppBusStop = estimateRoute.item2;
     WalkingRoute firstLeg = await _getWalkingRoute(
@@ -122,7 +142,13 @@ class AdvancedRouteCreator extends RouteCreator {
         firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
         firstLeg.getDistanceTillNextTurn(),
         firstLeg.getNextTurn());
-    return completeRoute;
+
+    BusRouteGeoJsonTrimmer? busRouteGeoJsonTrimmer;
+    if (BusRouteGeoJsonTrimmer.atBusStop(journeyStart, deppBusStop))
+    {
+      busRouteGeoJsonTrimmer = BusRouteGeoJsonTrimmer(busLegGeoJsonGeometry, deppBusStop, arrBusStop, secondLeg);
+    }
+    return Tuple2(completeRoute, busRouteGeoJsonTrimmer);
   }
 
   // Returns a bus route json with the ends overlapping the ends of the other 2 jsons.

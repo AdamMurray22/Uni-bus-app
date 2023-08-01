@@ -8,6 +8,7 @@ import '../../MapData/bus_stop.dart';
 import '../estimate_straight_line_distance.dart';
 import '../location.dart';
 
+/// Generates the geo json for the bus leg of a route.
 class BusRouteGeoJsonMaker {
   BusRouteGeoJsonLoader _busRouteGeoJsonLoader =
       BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader();
