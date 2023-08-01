@@ -105,7 +105,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   }
 
   // Displays the route on the map.
-  _setRouteGeoJson(Set<GeoJsonGeometry> routeGeometries) {
+  _setRouteGeoJson(List<GeoJsonGeometry> routeGeometries) {
     webViewController.runJavascript("removeRoute()");
     for (GeoJsonGeometry routeGeometry in routeGeometries)
     {

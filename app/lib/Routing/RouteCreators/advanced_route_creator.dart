@@ -61,7 +61,7 @@ class AdvancedRouteCreator extends RouteCreator
     WalkingRoute basicRoute = await _getWalkingRoute(from, to);
 
     Tuple3<double, BusStop, BusStop>? busRouteEstimate =
-    busRouteEstimator.getEntireEstimate(from, to);
+      busRouteEstimator.getEntireEstimate(from, to);
     if (busRouteEstimate == null) {
       return basicRoute;
     }
@@ -118,13 +118,14 @@ class AdvancedRouteCreator extends RouteCreator
 
     WalkingRoute secondLeg = await _getWalkingRoute(
         Location(arrBusStop.long, arrBusStop.lat), journeyEnd);
-    busLegGeoJson = _stitchRoutesTogether(
+    Tuple2<String, String> stitchedRoutes = _stitchRoutesTogether(
         busLegGeoJson,
         firstLeg.getGeometries().first,
         secondLeg.getGeometries().first,
         busLegGeoJsonWithStartingAndEndingLegNumbers.item2);
     GeoJsonGeometry busLegGeoJsonGeometry =
-        GeoJsonGeometry.setColour(busLegGeoJson, "purple");
+        GeoJsonGeometry.setColour(stitchedRoutes.item1, "purple");
+    secondLeg.getGeometries().removeAt(0);
 
     double currentTimeInSecondsSinceEpoch =
         _dateTime.now().millisecondsSinceEpoch / 1000;
@@ -133,11 +134,12 @@ class AdvancedRouteCreator extends RouteCreator
                 .millisecondsSinceEpoch /
             1000) -
         currentTimeInSecondsSinceEpoch;
-    WalkingRoute completeRoute = WalkingRoute({
+    WalkingRoute completeRoute = WalkingRoute([
       ...firstLeg.getGeometries(),
-      ...secondLeg.getGeometries(),
-      busLegGeoJsonGeometry
-    },
+      busLegGeoJsonGeometry,
+      GeoJsonGeometry(stitchedRoutes.item2),
+      ...secondLeg.getGeometries()
+    ],
         timeTillBusDeparts + secondLeg.getTotalSeconds() + busLegTimeSeconds,
         firstLeg.getTotalDistance() + secondLeg.getTotalDistance(),
         firstLeg.getDistanceTillNextTurn(),
@@ -146,29 +148,31 @@ class AdvancedRouteCreator extends RouteCreator
     BusRouteGeoJsonTrimmer? busRouteGeoJsonTrimmer;
     if (BusRouteGeoJsonTrimmer.atBusStop(journeyStart, deppBusStop))
     {
-      busRouteGeoJsonTrimmer = BusRouteGeoJsonTrimmer(busLegGeoJsonGeometry, deppBusStop, arrBusStop, secondLeg);
+      busRouteGeoJsonTrimmer =
+          BusRouteGeoJsonTrimmer(
+              GeoJsonGeometry.setColour(busLegGeoJsonWithStartingAndEndingLegNumbers.item1, "purple"),
+              deppBusStop, arrBusStop, secondLeg, busArrival, _dateTime);
     }
     return Tuple2(completeRoute, busRouteGeoJsonTrimmer);
   }
 
   // Returns a bus route json with the ends overlapping the ends of the other 2 jsons.
-  String _stitchRoutesTogether(String busLegStr, GeoJsonGeometry firstLeg,
+  Tuple2<String, String> _stitchRoutesTogether(String busLegStr, GeoJsonGeometry firstLeg,
       GeoJsonGeometry lastLeg, Tuple2<int, int> legs) {
     Map<String, dynamic> firstLegJson = firstLeg.getGeometry();
     Map<String, dynamic> lastLegJson = lastLeg.getGeometry();
     Map<String, dynamic> busLeg = jsonDecode(busLegStr);
     List<dynamic> busLegFeatures = busLeg["features"];
-    for (Map<String, dynamic> element in busLegFeatures) {
-      if (element["leg"] == legs.item1) {
-        element["geometry"]["coordinates"][0] =
+    for (Map<String, dynamic> busRoute in busLegFeatures) {
+      if (busRoute["leg"] == legs.item1) {
+        busRoute["geometry"]["coordinates"][0] =
             firstLegJson["coordinates"][firstLegJson["coordinates"].length - 1];
       }
-      if (element["leg"] == legs.item2) {
-        element["geometry"]["coordinates"]
-                [element["geometry"]["coordinates"].length - 1] =
-            lastLegJson["coordinates"][0];
+      if (busRoute["leg"] == legs.item2) {
+        lastLegJson["coordinates"][0] = busRoute["geometry"]["coordinates"]
+                [busRoute["geometry"]["coordinates"].length - 1];
       }
     }
-    return jsonEncode(busLeg);
+    return Tuple2(jsonEncode(busLeg), jsonEncode(lastLegJson));
   }
 }

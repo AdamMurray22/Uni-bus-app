@@ -2,10 +2,10 @@ import 'package:app/Routing/geo_json_geometry.dart';
 
 class WalkingRoute
 {
-  final Set<GeoJsonGeometry> _geometries;
+  final List<GeoJsonGeometry> _geometries;
   final double _totalSeconds;
   final double _totalDistance;
-  final double _distanceTillNextTurn;
+  final double? _distanceTillNextTurn;
   late final String? _nextTurn;
 
   /// Constructor removes "" or '' from the first and last positions of nextTurn.
@@ -13,7 +13,7 @@ class WalkingRoute
   {
     if (nextTurn == null || nextTurn == 'null')
     {
-      _nextTurn = nextTurn;
+      _nextTurn = null;
       return;
     }
     if (nextTurn.length > 1) {
@@ -29,7 +29,7 @@ class WalkingRoute
   }
 
   /// Returns a geojson of the route geometry.
-  Set<GeoJsonGeometry> getGeometries()
+  List<GeoJsonGeometry> getGeometries()
   {
     return _geometries;
   }
@@ -47,7 +47,7 @@ class WalkingRoute
   }
 
   /// Returns the distance till the next turn in meters.
-  double getDistanceTillNextTurn()
+  double? getDistanceTillNextTurn()
   {
     return _distanceTillNextTurn;
   }
@@ -84,7 +84,7 @@ class WalkingRoute
   /// E.g. 1532.5 metres becomes 1.532km
   String getTotalDisplayDistance()
   {
-    return _formatDistance(_totalDistance);
+    return _formatDistance(_totalDistance)!;
   }
 
   /// Returns the distance till the next turn rounded down to the metre
@@ -92,14 +92,18 @@ class WalkingRoute
   /// else its in km with a km after it.
   /// E.g. 100.4 metres becomes 100m
   /// E.g. 1532.5 metres becomes 1.532km
-  String getDisplayDistanceTillNextTurn()
+  String? getDisplayDistanceTillNextTurn()
   {
     return _formatDistance(_distanceTillNextTurn);
   }
 
   // Formats the distance given.
-  String _formatDistance(double distance)
+  String? _formatDistance(double? distance)
   {
+    if (distance == null)
+    {
+      return null;
+    }
     String distanceStr = "";
     if (distance >= 1000)
     {
