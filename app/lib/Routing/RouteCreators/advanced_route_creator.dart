@@ -126,6 +126,7 @@ class AdvancedRouteCreator extends RouteCreator
     GeoJsonGeometry busLegGeoJsonGeometry =
         GeoJsonGeometry.setColour(stitchedRoutes.item1, "purple");
     secondLeg.getGeometries().removeAt(0);
+    secondLeg.getGeometries().insert(0, GeoJsonGeometry(stitchedRoutes.item2));
 
     double currentTimeInSecondsSinceEpoch =
         _dateTime.now().millisecondsSinceEpoch / 1000;
@@ -137,7 +138,6 @@ class AdvancedRouteCreator extends RouteCreator
     WalkingRoute completeRoute = WalkingRoute([
       ...firstLeg.getGeometries(),
       busLegGeoJsonGeometry,
-      GeoJsonGeometry(stitchedRoutes.item2),
       ...secondLeg.getGeometries()
     ],
         timeTillBusDeparts + secondLeg.getTotalSeconds() + busLegTimeSeconds,

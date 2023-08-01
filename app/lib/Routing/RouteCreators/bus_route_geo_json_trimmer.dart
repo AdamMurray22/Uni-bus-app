@@ -156,7 +156,8 @@ class BusRouteGeoJsonTrimmer
     List<GeoJsonGeometry> geometries = [geoJson];
     if (finalLeg != null)
     {
-      geometries.add(_stitchRoutesTogether(geoJson, finalLeg.getGeometries().first));
+      GeoJsonGeometry finalLegGeoJson = finalLeg.getGeometries().first;
+      geometries.add(_stitchRoutesTogether(geoJson, finalLegGeoJson));
       List<GeoJsonGeometry> finalLegGeometry = finalLeg.getGeometries().sublist(1);
       geometries.addAll(finalLegGeometry);
     }
