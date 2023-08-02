@@ -1,3 +1,4 @@
+import 'package:app/Map/map_widget.dart';
 import 'package:app/Screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,6 @@ void main() {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -21,51 +21,18 @@ class MyApp extends StatefulWidget {
 }
 
 /// The entire application is started from this class.
-class _MyAppState extends State<MyApp>
-{
-  final MaterialApp _mainScreen = const MaterialApp(home: MainScreen());
-  bool _mainScreenLoaded = false;
-  bool _mapDataLoaded = false;
-
-  _loadingUpdated()
-  {
-    if (_mapDataLoaded)
-    {
-      setState(() {
-      _mainScreenLoaded = true;
-      });
-    }
-  }
+class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
     super.initState();
     MapDataLoader.getDataLoader().load();
     LocationHandler.getHandler().requestLocationPermission();
-    MapDataLoader.getDataLoader().onDataLoadingCompleted((loadedSuccessfully) {
-      if (loadedSuccessfully)
-      {
-        _mapDataLoaded = true;
-        _loadingUpdated();
-      }
-      else
-      {
-
-      }
-    });
   }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    if (_mainScreenLoaded)
-    {
-      return _mainScreen;
-    }
-    else {
-      return const MaterialApp(
-          home: LoadingScreen()
-      );
-    }
+    return const MaterialApp(home: LoadingScreen());
   }
 }
