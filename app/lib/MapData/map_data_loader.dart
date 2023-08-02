@@ -16,6 +16,7 @@ class MapDataLoader
   bool _loadingFinished = false;
 
   final List<Function(MapData)> _dataLoadedFunctions = [];
+  Function(bool)? _dataLoadingCompleted;
 
   MapDataLoader._();
 
@@ -50,6 +51,10 @@ class MapDataLoader
     {
       dataLoadedFunction(_data);
     }
+    if (_dataLoadingCompleted != null)
+    {
+      _dataLoadingCompleted!(true);
+    }
   }
 
   /// Sets the function to be called once the information has finished being
@@ -60,6 +65,16 @@ class MapDataLoader
     if (_loadingFinished)
     {
       dataLoaded(_data);
+    }
+  }
+
+  /// Sets a function to be called when the data is loaded successfully or fails to be loaded.
+  onDataLoadingCompleted(Function(bool) loadingSuccessful)
+  {
+    _dataLoadingCompleted = loadingSuccessful;
+    if (_loadingFinished)
+    {
+      _dataLoadingCompleted!(true);
     }
   }
 
