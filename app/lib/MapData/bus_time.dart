@@ -79,13 +79,15 @@ class BusTime
   /// Returns the time of this BusTime as a DateTime of the given DateTime.
   DateTime getTimeAsDateTimeGivenDateTime(DateTimeWrapper dateTime)
   {
+    int dayOverflow = 0;
     int hour = _hour;
     if (_hour == 24)
     {
       hour = 0;
+      dayOverflow = 1;
     }
     DateTime now = dateTime.now();
-    return DateTime(now.year, now.month, now.day, hour, _minute);
+    return DateTime(now.year, now.month, now.day + dayOverflow, hour, _minute);
   }
 
   /// Sets whether the buses are running on that day.
