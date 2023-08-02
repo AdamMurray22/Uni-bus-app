@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
@@ -11,6 +13,18 @@ abstract class MapWidget extends StatefulWidget {
 
 /// The route screen state.
 abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
+
+  static Function(bool)? _mapLoadedFunction;
+  static bool _asMapLoaded = false;
+
+  static mapLoaded(Function(bool) mapLoaded)
+  {
+    _mapLoadedFunction = mapLoaded;
+    if (_asMapLoaded)
+    {
+      _mapLoadedFunction!(true);
+    }
+  }
 
   @protected
   String mapPath = "";
@@ -40,6 +54,11 @@ abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
       {
         assignLayerIds();
         onPageFinished!(url);
+        _asMapLoaded = true;
+        if (_mapLoadedFunction != null)
+        {
+          _mapLoadedFunction!(true);
+        }
       },
       javascriptMode: JavascriptMode.unrestricted,
     );

@@ -44,23 +44,8 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
 
   /// Removes the route.
   endRoute(String? fromId, String? toId) async {
-    webViewController.runJavascript("removeRoute()");
+    webViewController.runJavascript("endRoute()");
     _currentRoute = null;
-    if (fromId != null)
-    {
-      String jsObjectFrom =
-          "{layerId: '${MapDataId
-          .destination
-          .idPrefix}', id: '${MapDataId.destination.idPrefix}s'}";
-      webViewController.runJavascript("removeMarker($jsObjectFrom)");
-    }
-    if (toId != null) {
-      String jsObjectTo =
-          "{layerId: '${MapDataId
-          .destination
-          .idPrefix}', id: '${MapDataId.destination.idPrefix}'}";
-      webViewController.runJavascript("removeMarker($jsObjectTo)");
-    }
   }
 
   /// Adds the destination marker.
@@ -72,7 +57,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   /// Adds the start marker.
   addStartMarker(Location location)
   {
-    updateMarker(MapDataId.destination, "${MapDataId.destination.idPrefix}s", location.getLongitude(), location.getLatitude());
+    updateMarker(MapDataId.routeStart, "${MapDataId.routeStart.idPrefix}s", location.getLongitude(), location.getLatitude());
   }
 
   /// Sets the RouteCreator.
@@ -99,8 +84,9 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
     String userLocation = MapDataId.userLocation.idPrefix;
     String route = MapDataId.route.idPrefix;
     String destination = MapDataId.destination.idPrefix;
+    String routeStart = MapDataId.routeStart.idPrefix;
     String jsObject =
-        "{UserLocation: '$userLocation', Route: '$route', Destination: '$destination'}";
+        "{UserLocation: '$userLocation', Route: '$route', Destination: '$destination', RouteStart: '$routeStart'}";
     webViewController.runJavascript("mapIdsToLayers($jsObject)");
   }
 
