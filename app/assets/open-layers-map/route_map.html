@@ -22,6 +22,7 @@
     let IDLayersMap;
     let RouteLayer;
     let DestinationLayer;
+    let RouteStartLayer;
 
     /*
     Map
@@ -65,6 +66,18 @@
     });
     DestinationLayer.isClickableMarkerLayer = false;
 
+    RouteStartLayer = new ol.layer.Vector({
+        source: new ol.source.Vector(),
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                scale: [0.10, 0.10],
+                src: "RouteStartIcon.png",
+            }),
+        }),
+    });
+    RouteStartLayer.isClickableMarkerLayer = false;
+
     // Enum to identify the type of layer
     layerEnum = {
         markerLayer: 'markerLayer',
@@ -100,14 +113,17 @@
         const RouteMap = new Map();
         const UserLocationMap = new Map();
         const DestinationMap = new Map();
+        const RouteStartMap = new Map();
 
         RouteMap.set(layerEnum.geoJsonLayer, RouteLayer);
         UserLocationMap.set(layerEnum.markerLayer, UserLocationLayer);
         DestinationMap.set(layerEnum.markerLayer, DestinationLayer);
+        RouteStartMap.set(layerEnum.markerLayer, RouteStartLayer);
 
         IDLayersMap.set(layerIds.UserLocation, UserLocationMap);
         IDLayersMap.set(layerIds.Route, RouteMap);
         IDLayersMap.set(layerIds.Destination, DestinationMap);
+        IDLayersMap.set(layerIds.RouteStart, RouteStartMap);
     }
 
     // Adds the markers
@@ -157,6 +173,13 @@
         RouteLayer.getSource().clear();
     }
 
+    function endRoute()
+    {
+        removeRoute();
+        DestinationLayer.getSource().clear();
+        RouteStartLayer.getSource().clear();
+    }
+
     // Add the given GeoJson to the map
     function drawRouteLines(geoJson) {
         RouteLayer.getSource().addFeatures((new ol.format.GeoJSON({
@@ -187,6 +210,7 @@
         map.addLayer(RouteLayer);
         map.addLayer(UserLocationLayer);
         map.addLayer(DestinationLayer);
+        map.addLayer(RouteStartLayer);
     }
 </script>
 </body>
