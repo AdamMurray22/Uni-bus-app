@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../Map/map_widget.dart';
 import '../MapData/map_data_loader.dart';
@@ -48,7 +47,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
-                exit(0);
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
               },
             ),
           ],
