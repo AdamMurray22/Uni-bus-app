@@ -16,10 +16,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   int _index = 0;
   late IndexedStack stack;
   bool _mapDataLoaded = false;
-  bool _mapLoaded = false;
 
   _loadingUpdated() {
-    if (_mapDataLoaded && _mapLoaded)
+    if (_mapDataLoaded)
         {
       setState(() {
         _index = 1;
@@ -62,16 +61,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
     MapDataLoader.getDataLoader().onDataLoadingCompleted((loadedSuccessfully) {
       if (loadedSuccessfully) {
         _mapDataLoaded = true;
-        _loadingUpdated();
-      }
-      else
-      {
-        _showAlert();
-      }
-    });
-    MapWidgetState.mapLoaded((mapLoaded) {
-      if (mapLoaded) {
-        _mapLoaded = true;
         _loadingUpdated();
       }
       else
