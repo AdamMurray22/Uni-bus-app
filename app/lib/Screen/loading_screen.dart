@@ -77,7 +77,7 @@ class _LoadingScreenState extends State<LoadingScreen>
     _mainScreen = MainScreen(
       pingMainMapServerFunction: (url)
         async {
-          PingData result = await Ping('url', count: 1).stream.first;
+          PingData result = await Ping(url, count: 1).stream.first;
           print("");
           print(result.summary);
           print(result.error?.message);
@@ -93,7 +93,7 @@ class _LoadingScreenState extends State<LoadingScreen>
         },
       pingRouteMapServerFunction: (url)
         async {
-          PingData result = await Ping('url', count: 1).stream.first;
+          PingData result = await Ping(url, count: 1).stream.first;
           print("");
           print(result.summary);
           print(result.error?.message);
