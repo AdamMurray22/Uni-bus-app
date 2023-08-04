@@ -18,7 +18,9 @@ import '../Routing/location.dart' as location;
 
 /// This holds the route screen.
 class RouteScreen extends StatefulWidget {
-  const RouteScreen({super.key});
+  const RouteScreen({super.key , this.pingMapFunction});
+
+  final Function(String)? pingMapFunction;
 
   @override
   State<RouteScreen> createState() => _RouteScreenState();
@@ -96,6 +98,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
     _mapWidget = RouteMapWidget(
       key: _mapStateKey,
+      pingTileServerFunction: widget.pingMapFunction,
       routeScreenUpdateFunction: (route)
       {
         setState(() {

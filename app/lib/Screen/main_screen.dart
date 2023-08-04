@@ -1,11 +1,14 @@
-import 'package:app/Screen/map_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
-import 'navigation_bar_item.dart';
+import 'navigation_bar_items.dart';
 
 /// This holds the screen for the application.
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, this.pingMainMapServerFunction, this.pingRouteMapServerFunction});
+
+  final Function(String)? pingMainMapServerFunction;
+  final Function(String)? pingRouteMapServerFunction;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -14,15 +17,20 @@ class MainScreen extends StatefulWidget {
 // This class contains the GUI structure for the app.
 class _MainScreenState extends State<MainScreen> {
 
+  late final NavigationBarItems _navigationBarItems;
+
   /// Creates the screens accessed through the nav bar.
   @override
   initState() {
-    super.initState();
-    MapScreen.onShowTimeTableButtonPressed = () {
+    timeTableFunction() {
       setState(() {
-        NavigationBarItem.setSelectedIndex(NavigationBarItem.timetableScreen.position);
+        _navigationBarItems.setSelectedIndex(_navigationBarItems.timetableScreen.item1.position);
       });
-    };
+    }
+    _navigationBarItems = NavigationBarItems(timeTableFunction,
+        widget.pingMainMapServerFunction,
+        widget.pingRouteMapServerFunction);
+    super.initState();
   }
 
   /// Builds the GUI and places the map inside.
@@ -61,16 +69,16 @@ class _MainScreenState extends State<MainScreen> {
           border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
         ),
         child: IndexedStack(
-            index: NavigationBarItem.getSelectedIndex(), children: NavigationBarItem.getScreensInOrder()),
+            index: _navigationBarItems.getSelectedIndex(), children: _navigationBarItems.getScreensInOrder()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: _addItemsToBottomNavigationBar(),
-        currentIndex: NavigationBarItem.getSelectedIndex(),
+        currentIndex: _navigationBarItems.getSelectedIndex(),
         selectedItemColor: Colors.amber[800],
         onTap: (index) {
           setState(() {
-            NavigationBarItem.setSelectedIndex(index);
+            _navigationBarItems.setSelectedIndex(index);
           });
         },
       ),
@@ -80,10 +88,10 @@ class _MainScreenState extends State<MainScreen> {
   // Returns the navigation bar items in order.
   List<BottomNavigationBarItem> _addItemsToBottomNavigationBar() {
     List<BottomNavigationBarItem> navBarItems = [];
-    for (NavigationBarItem item in NavigationBarItem.getValuesInOrder()) {
+    for (Tuple2<NavigationBarItemEnum, StatefulWidget> item in _navigationBarItems.getValuesInOrder()) {
       navBarItems.add(BottomNavigationBarItem(
-        icon: item.icon,
-        label: item.label,
+        icon: item.item1.icon,
+        label: item.item1.label,
       ));
     }
     return navBarItems;

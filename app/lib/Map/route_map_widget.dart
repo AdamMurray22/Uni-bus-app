@@ -10,7 +10,7 @@ import 'map_widget.dart';
 import '../Routing/location.dart';
 
 class RouteMapWidget extends MapWidget {
-  const RouteMapWidget({required this.routeScreenUpdateFunction, super.key});
+  const RouteMapWidget({required this.routeScreenUpdateFunction, super.pingTileServerFunction, super.key});
 
   // The function to be run whenever a route is updated.
   final Function(WalkingRoute) routeScreenUpdateFunction;

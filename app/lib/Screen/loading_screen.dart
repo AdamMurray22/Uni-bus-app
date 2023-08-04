@@ -1,7 +1,7 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../Map/map_widget.dart';
 import '../MapData/map_data_loader.dart';
 import 'main_screen.dart';
 
@@ -12,13 +12,20 @@ class LoadingScreen extends StatefulWidget {
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> {
+class _LoadingScreenState extends State<LoadingScreen>
+{
   int _index = 0;
   late IndexedStack stack;
+
+  late MainScreen _mainScreen;
+
+  bool _alertShown = false;
   bool _mapDataLoaded = false;
+  bool _mainMapLoaded = false;
+  bool _routeMapLoaded = false;
 
   _loadingUpdated() {
-    if (_mapDataLoaded)
+    if (!_alertShown && _mapDataLoaded && _mainMapLoaded && _routeMapLoaded)
         {
       setState(() {
         _index = 1;
@@ -28,6 +35,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
 
   Future<void> _showAlert() async {
+    _alertShown = true;
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -59,15 +67,47 @@ class _LoadingScreenState extends State<LoadingScreen> {
   initState() {
     super.initState();
     MapDataLoader.getDataLoader().onDataLoadingCompleted((loadedSuccessfully) {
-      if (loadedSuccessfully) {
-        _mapDataLoaded = true;
-        _loadingUpdated();
-      }
-      else
-      {
+      if (!loadedSuccessfully) {
         _showAlert();
+        return;
       }
+      _mapDataLoaded = true;
+      _loadingUpdated();
     });
+    _mainScreen = MainScreen(
+      pingMainMapServerFunction: (url)
+        async {
+          PingData result = await Ping('url', count: 1).stream.first;
+          print("");
+          print(result.summary);
+          print(result.error?.message);
+          print(result.response);
+          print("");
+          if (result.error != null)
+          {
+            _showAlert();
+            return;
+          }
+          _mainMapLoaded = true;
+          _loadingUpdated();
+        },
+      pingRouteMapServerFunction: (url)
+        async {
+          PingData result = await Ping('url', count: 1).stream.first;
+          print("");
+          print(result.summary);
+          print(result.error?.message);
+          print(result.response);
+          print("");
+          if (result.error != null)
+          {
+            _showAlert();
+            return;
+          }
+          _routeMapLoaded = true;
+          _loadingUpdated();
+        },
+    );
   }
 
   @override
@@ -119,7 +159,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           ],
         ),
       ),
-      const MaterialApp(home: MainScreen()),
+      MaterialApp(home: _mainScreen),
     ]);
     return Scaffold(
       resizeToAvoidBottomInset: false,

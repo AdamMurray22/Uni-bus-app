@@ -1,3 +1,4 @@
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter/material.dart';
 import 'MapData/map_data_loader.dart';
 import 'Location/location_handler.dart';
@@ -5,6 +6,7 @@ import 'Screen/loading_screen.dart';
 
 /// Target for start of application.
 void main() {
+  DartPingIOS.register();
   runApp(const MyApp());
 }
 

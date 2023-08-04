@@ -1,10 +1,3 @@
-import 'dart:developer';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:path/path.dart';
-import 'package:webview_flutter_plus/webview_flutter_plus.dart';
-
 import 'bus_route_geojson_loader.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
@@ -14,7 +7,7 @@ import '../MapData/map_data_loader.dart';
 import 'map_widget.dart';
 
 class MainMapWidget extends MapWidget {
-  const MainMapWidget({super.markerClickedFunction, super.key});
+  const MainMapWidget({super.markerClickedFunction, super.pingTileServerFunction, super.key});
 
   @override
   MapWidgetState<MainMapWidget> createState() => MainMapWidgetState();

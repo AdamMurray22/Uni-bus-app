@@ -13,10 +13,10 @@ import '../Map/main_map_widget.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({super.key, required this.onShowTimeTableButtonPressed, this.pingMapFunction});
 
-  static late Function() onShowTimeTableButtonPressed;
-
+  final Function() onShowTimeTableButtonPressed;
+  final Function(String)? pingMapFunction;
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
@@ -83,7 +83,8 @@ class _MapScreenState extends State<MapScreen> {
               _showMapFeatureInfoPanel(markerId);
             });
           },
-          key: _mapStateKey,
+        pingTileServerFunction: widget.pingMapFunction,
+        key: _mapStateKey,
     );
 
     _dropDownController = SingleValueDropDownController();
@@ -98,7 +99,7 @@ class _MapScreenState extends State<MapScreen> {
     });
     _seeFullTimeTableButton = MaterialButton(
       onPressed: () {
-        MapScreen.onShowTimeTableButtonPressed();
+        widget.onShowTimeTableButtonPressed();
       },
       color: const Color(0xffffffff),
       elevation: 0,
