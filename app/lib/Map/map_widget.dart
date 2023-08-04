@@ -70,7 +70,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   {
     String jsObject = "{url: '${_tileServer.url}', attribution: '${_tileServer.attribution}'}";
     _webViewController.runJavascript("addOSMTileServer($jsObject)");
-    widget.pingTileServerFunction?.call(_tileServer.url);
+    widget.pingTileServerFunction?.call(_tileServer.getUrlDomains());
   }
 
   /// Centres and zooms the map around the given lat, long and zoom.
