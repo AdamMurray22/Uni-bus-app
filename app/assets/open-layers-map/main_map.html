@@ -16,6 +16,7 @@
 <body>
 <div id="map" class="map"></div>
 <script>
+    let tileServer;
     let map;
     let U1BusStopMarkersLayer;
     let UniBuildingMarkersLayer;
@@ -29,15 +30,17 @@
     Map
     */
 
+    tileServer = new ol.layer.Tile({
+        source: new ol.source.OSM(),
+    });
+
     map = new ol.Map({
         view: new ol.View({
             center: new ol.proj.fromLonLat([1, 1]),
             zoom: 1,
         }),
         layers: [
-            new ol.layer.Tile({
-                source: new ol.source.OSM(),
-            }),
+            tileServer,
         ],
         target: 'map',
     });
