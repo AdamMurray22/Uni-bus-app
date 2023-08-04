@@ -1,7 +1,7 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../Map/map_widget.dart';
 import '../MapData/map_data_loader.dart';
 import 'main_screen.dart';
 
@@ -15,20 +15,29 @@ class LoadingScreen extends StatefulWidget {
 class _LoadingScreenState extends State<LoadingScreen> {
   int _index = 0;
   late IndexedStack stack;
+
+  late MainScreen _mainScreen;
+
+  bool _alertShown = false;
   bool _mapDataLoaded = false;
-  bool _mapLoaded = false;
+  bool _mainMapLoaded = false;
+  bool _routeMapLoaded = false;
+  bool _routingServerLoaded = false;
 
   _loadingUpdated() {
-    if (_mapDataLoaded && _mapLoaded)
-        {
+    if (!_alertShown &&
+        _mapDataLoaded &&
+        _mainMapLoaded &&
+        _routeMapLoaded &&
+        _routingServerLoaded) {
       setState(() {
         _index = 1;
       });
     }
   }
 
-
   Future<void> _showAlert() async {
+    _alertShown = true;
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -60,32 +69,47 @@ class _LoadingScreenState extends State<LoadingScreen> {
   initState() {
     super.initState();
     MapDataLoader.getDataLoader().onDataLoadingCompleted((loadedSuccessfully) {
-      if (loadedSuccessfully) {
-        _mapDataLoaded = true;
-        _loadingUpdated();
-      }
-      else
-      {
+      if (!loadedSuccessfully) {
         _showAlert();
+        return;
       }
+      _mapDataLoaded = true;
+      _loadingUpdated();
     });
-    MapWidgetState.mapLoaded((mapLoaded) {
-      if (mapLoaded) {
-        _mapLoaded = true;
+    _mainScreen = MainScreen(
+      pingMainMapServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _mainMapLoaded = true;
         _loadingUpdated();
-      }
-      else
-      {
-        _showAlert();
-      }
-    });
+      },
+      pingRouteMapServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _routeMapLoaded = true;
+        _loadingUpdated();
+      },
+      pingRoutingServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _routingServerLoaded = true;
+        _loadingUpdated();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    IndexedStack stack = IndexedStack(
-        index: _index,
-        children: [
+    IndexedStack stack = IndexedStack(index: _index, children: [
       Container(
         margin: const EdgeInsets.all(0),
         padding: const EdgeInsets.all(0),
@@ -130,7 +154,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           ],
         ),
       ),
-      const MaterialApp(home: MainScreen()),
+      MaterialApp(home: _mainScreen),
     ]);
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -1,8 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:path/path.dart';
-import 'package:webview_flutter_plus/webview_flutter_plus.dart';
-
 import 'bus_route_geojson_loader.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
@@ -12,13 +7,10 @@ import '../MapData/map_data_loader.dart';
 import 'map_widget.dart';
 
 class MainMapWidget extends MapWidget {
-  const MainMapWidget({this.markerClickedFunction, super.key});
-
-  // The function to be run whenever a marker is clicked.
-  final Function(String)? markerClickedFunction;
+  const MainMapWidget({super.markerClickedFunction, super.pingTileServerFunction, super.key});
 
   @override
-  State<MainMapWidget> createState() => MainMapWidgetState();
+  MapWidgetState<MainMapWidget> createState() => MainMapWidgetState();
 }
 
 /// The main map screen state.
@@ -27,7 +19,6 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
   /// Sets the values for the map set up.
   @override
   void initState() {
-    mapPath = 'assets/open-layers-map/main_map.html';
     onPageFinished = (url) async {
       setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
           MapCentreEnum.initZoom.value);
@@ -38,18 +29,7 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
       addUserLocationIcon();
       _loadBusRouteGeoJson();
     };
-    javascriptChannels.add(JavascriptChannel(
-        name: 'MarkerClickedDart',
-        onMessageReceived: (JavascriptMessage markerIdMessage) {
-          _markerClicked(markerIdMessage.message);
-        }));
     super.initState();
-  }
-
-  /// Toggles the visibility of the U1 bus stop markers on the map.
-  toggleMarkers(MapDataId layerId, bool visible) {
-    String jsObject = "{layerId: '${layerId.idPrefix}', visible: $visible}";
-    webViewController.runJavascript("toggleShowLayers($jsObject)");
   }
 
   /// Centres and zooms the map around the given marker.
@@ -60,35 +40,24 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
 
   // Assigns an id to each layer used by this map to be referenced later.
   @override
-  assignLayerIds() {
-    String u1 = MapDataId.u1.idPrefix;
-    String uniBuilding = MapDataId.uniBuilding.idPrefix;
-    String landmark = MapDataId.landmark.idPrefix;
-    String userLocation = MapDataId.userLocation.idPrefix;
-    String jsObject =
-        "{U1: '$u1', UniBuilding: '$uniBuilding', Landmark: '$landmark', UserLocation: '$userLocation'}";
-    webViewController.runJavascript("mapIdsToLayers($jsObject)");
+  createLayers() {
+    createGeoJsonLayer(MapDataId.u1Route.idPrefix, "blue", 8);
+    createMakerLayer(MapDataId.u1.idPrefix, "U1BusStopMarker.png", 0.1, true);
+    createMakerLayer(MapDataId.uniBuilding.idPrefix, "UniBuildingMarker.png", 0.1, true);
+    createMakerLayer(MapDataId.landmark.idPrefix, "LandmarkMarker.png", 0.1, true);
+    createMakerLayer(MapDataId.userLocation.idPrefix, "UserIcon.png", 0.1, false);
   }
 
   // Adds the markers to the map.
   _addMarkers(MapData mapData) {
     for (Feature feature in mapData.getAllFeatures()) {
-      addMarker(feature.typeId, feature.id, feature.long, feature.lat);
+      addMarker(feature.typeId.idPrefix, feature.id, feature.long, feature.lat);
     }
-  }
-
-  // This is called when a marker on the map gets clicked.
-  _markerClicked(String markerId) {
-    if (widget.markerClickedFunction == null) {
-      return;
-    }
-    widget.markerClickedFunction!(markerId);
   }
 
   // Displays the bus route on the map.
   _loadBusRouteGeoJson() async {
     String busRouteJson = await BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader().getBusRouteGeoJsonAsString();
-    String jsObject = "{busRoute: `$busRouteJson`}";
-    webViewController.runJavascript("drawBusRouteLines($jsObject)");
+    await addGeoJson(MapDataId.u1Route.idPrefix, busRouteJson);
   }
 }

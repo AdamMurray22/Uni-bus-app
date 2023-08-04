@@ -41,7 +41,8 @@ dependencies:
   dropdown_textfield: ^1.0.8
   intl: ^0.18.0
   http: ^0.13.5
-
+  dart_ping: ^8.0.1
+  dart_ping_ios: ^3.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
