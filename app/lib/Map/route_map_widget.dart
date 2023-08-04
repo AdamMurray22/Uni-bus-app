@@ -84,9 +84,8 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
 
   /// Adds the start marker.
   addStartMarker(Location location)
-  async {
-    await updateMarker(MapDataId.destination.idPrefix,
-        "${MapDataId.destination.idPrefix}s", location.getLongitude(), location.getLatitude());
+  {
+    updateMarker(MapDataId.routeStart.idPrefix, MapDataId.routeStart.idPrefix, location.getLongitude(), location.getLatitude());
   }
 
   /// Sets the RouteCreator.
