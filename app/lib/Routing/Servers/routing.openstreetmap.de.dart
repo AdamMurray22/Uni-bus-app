@@ -4,8 +4,12 @@ import 'package:http/http.dart' as http;
 
 /// The routing server at the address https://routing.openstreetmap.de/.
 /// This is the server run by foggis.
-class RoutingOpenstreetmapDe implements RoutingServer
+class RoutingOpenstreetmapDe extends RoutingServer
 {
+  final String _uriDomains = 'routing.openstreetmap.de';
+
+  RoutingOpenstreetmapDe({super.pingRoutingServerFunction});
+
   @override
   Future<String> getResponseBody(Location startLocation, Location endLocation)
   async {
@@ -22,5 +26,11 @@ class RoutingOpenstreetmapDe implements RoutingServer
     String link = '$linkPrefix$linkLocationData$linkSuffix';
     Uri uri = Uri.parse(link);
     return uri;
+  }
+
+  @override
+  String getUriDomains()
+  {
+    return _uriDomains;
   }
 }

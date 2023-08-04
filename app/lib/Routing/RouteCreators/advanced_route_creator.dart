@@ -24,7 +24,7 @@ class AdvancedRouteCreator extends RouteCreator
   BusRouteGeoJsonTrimmer? _busRouteGeoJsonTrimmer;
 
   /// Assigns default Server.
-  AdvancedRouteCreator(Set<BusStop> busStops) : super() {
+  AdvancedRouteCreator(Set<BusStop> busStops, {super.pingRoutingServerFunction}) : super() {
     busRouteEstimator = BusRouteEstimator(busStops);
     busRouteGeoJsonMaker = BusRouteGeoJsonMaker();
   }
@@ -33,7 +33,7 @@ class AdvancedRouteCreator extends RouteCreator
   /// Used for testing purposes only.
   @protected
   AdvancedRouteCreator.setServer(Set<BusStop> busStops, RoutingServer server,
-      BusRouteGeoJsonLoader busRouteGeoJsonLoader, this._dateTime)
+      BusRouteGeoJsonLoader busRouteGeoJsonLoader, this._dateTime, {super.pingRoutingServerFunction})
       : super.setServer(server) {
     busRouteEstimator = BusRouteEstimator.setDateTime(busStops, _dateTime);
     busRouteGeoJsonMaker =

@@ -15,16 +15,18 @@ class NavigationBarItems
   late final Tuple2<NavigationBarItemEnum, TimetableScreen> timetableScreen;
   late final Tuple2<NavigationBarItemEnum, AboutScreen> aboutScreen;
 
-  NavigationBarItems(Function() mapScreenFunction,
+  NavigationBarItems({required Function() mapScreenFunction,
       Function(String)? pingMainMapServerFunction,
-      Function(String)? pingRouteMapServerFunction)
+      Function(String)? pingRouteMapServerFunction,
+      Function(String)? pingRoutingServerFunction})
   {
     mapScreen = Tuple2(NavigationBarItemEnum.mapScreen, MapScreen(
       onShowTimeTableButtonPressed: mapScreenFunction,
       pingMapFunction: pingMainMapServerFunction,
     ));
     routeScreen = Tuple2(NavigationBarItemEnum.routeScreen, RouteScreen(
-      pingMapFunction: pingRouteMapServerFunction
+      pingMapFunction: pingRouteMapServerFunction,
+      pingRoutingFunction: pingRoutingServerFunction,
     ));
     timetableScreen = const Tuple2(NavigationBarItemEnum.timetableScreen, TimetableScreen());
     aboutScreen = const Tuple2(NavigationBarItemEnum.aboutScreen, AboutScreen());

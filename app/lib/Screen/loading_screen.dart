@@ -12,8 +12,7 @@ class LoadingScreen extends StatefulWidget {
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen>
-{
+class _LoadingScreenState extends State<LoadingScreen> {
   int _index = 0;
   late IndexedStack stack;
 
@@ -23,16 +22,19 @@ class _LoadingScreenState extends State<LoadingScreen>
   bool _mapDataLoaded = false;
   bool _mainMapLoaded = false;
   bool _routeMapLoaded = false;
+  bool _routingServerLoaded = false;
 
   _loadingUpdated() {
-    if (!_alertShown && _mapDataLoaded && _mainMapLoaded && _routeMapLoaded)
-        {
+    if (!_alertShown &&
+        _mapDataLoaded &&
+        _mainMapLoaded &&
+        _routeMapLoaded &&
+        _routingServerLoaded) {
       setState(() {
         _index = 1;
       });
     }
   }
-
 
   Future<void> _showAlert() async {
     _alertShown = true;
@@ -75,36 +77,39 @@ class _LoadingScreenState extends State<LoadingScreen>
       _loadingUpdated();
     });
     _mainScreen = MainScreen(
-      pingMainMapServerFunction: (url)
-        async {
-          PingData result = await Ping(url, count: 1).stream.first;
-          if (result.error != null)
-          {
-            _showAlert();
-            return;
-          }
-          _mainMapLoaded = true;
-          _loadingUpdated();
-        },
-      pingRouteMapServerFunction: (url)
-        async {
-          PingData result = await Ping(url, count: 1).stream.first;
-          if (result.error != null)
-          {
-            _showAlert();
-            return;
-          }
-          _routeMapLoaded = true;
-          _loadingUpdated();
-        },
+      pingMainMapServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _mainMapLoaded = true;
+        _loadingUpdated();
+      },
+      pingRouteMapServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _routeMapLoaded = true;
+        _loadingUpdated();
+      },
+      pingRoutingServerFunction: (url) async {
+        PingData result = await Ping(url, count: 1).stream.first;
+        if (result.error != null) {
+          _showAlert();
+          return;
+        }
+        _routingServerLoaded = true;
+        _loadingUpdated();
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    IndexedStack stack = IndexedStack(
-        index: _index,
-        children: [
+    IndexedStack stack = IndexedStack(index: _index, children: [
       Container(
         margin: const EdgeInsets.all(0),
         padding: const EdgeInsets.all(0),

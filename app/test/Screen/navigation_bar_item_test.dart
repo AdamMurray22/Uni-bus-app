@@ -5,18 +5,18 @@ void main() {
   group('Navigation Bar Item Tests', () {
 
     test('.getSelectedIndex() default value', () {
-      NavigationBarItems navigationBarItems = NavigationBarItems(() {}, (string) {}, (string) {});
+      NavigationBarItems navigationBarItems = NavigationBarItems(mapScreenFunction: () {});
       expect(navigationBarItems.getSelectedIndex(), 0);
     });
 
     test('.getSelectedIndex() value changed', () {
-      NavigationBarItems navigationBarItems = NavigationBarItems(() {}, (string) {}, (string) {});
+      NavigationBarItems navigationBarItems = NavigationBarItems(mapScreenFunction: () {});
       navigationBarItems.setSelectedIndex(3);
       expect(navigationBarItems.getSelectedIndex(), 3);
     });
 
     test('.getValuesInOrder() default nav bar items', () {
-      NavigationBarItems navigationBarItems = NavigationBarItems(() {}, (string) {}, (string) {});
+      NavigationBarItems navigationBarItems = NavigationBarItems(mapScreenFunction: () {});
       expect(navigationBarItems.getValuesInOrder(), [
         navigationBarItems.mapScreen,
         navigationBarItems.routeScreen,
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('.getValuesInOrder() default nav bar items', () {
-      NavigationBarItems navigationBarItems = NavigationBarItems(() {}, (string) {}, (string) {});
+      NavigationBarItems navigationBarItems = NavigationBarItems(mapScreenFunction: () {});
       expect(navigationBarItems.getScreensInOrder(), [
         navigationBarItems.mapScreen.item2,
         navigationBarItems.routeScreen.item2,

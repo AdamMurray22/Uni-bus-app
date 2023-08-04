@@ -10,10 +10,11 @@ import 'map_widget.dart';
 import '../Routing/location.dart';
 
 class RouteMapWidget extends MapWidget {
-  const RouteMapWidget({required this.routeScreenUpdateFunction, super.pingTileServerFunction, super.key});
+  const RouteMapWidget({required this.routeScreenUpdateFunction, this.pingRoutingServerFunction, super.pingTileServerFunction, super.key});
 
   // The function to be run whenever a route is updated.
   final Function(WalkingRoute) routeScreenUpdateFunction;
+  final Function(String)? pingRoutingServerFunction;
 
   @override
   MapWidgetState<RouteMapWidget> createState() => RouteMapWidgetState();
@@ -21,12 +22,13 @@ class RouteMapWidget extends MapWidget {
 
 /// The route screen state.
 class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
-  RouteCreator _routeCreator = BasicRouteCreator();
+  late RouteCreator _routeCreator;
   Tuple2<String, String>? _currentRoute;
 
   /// Sets the values for the map set up.
   @override
   void initState() {
+    _routeCreator = BasicRouteCreator(pingRoutingServerFunction: widget.pingRoutingServerFunction);
     onPageFinished = (url) async {
       await setMapCentreZoom(MapCentreEnum.lat.value, MapCentreEnum.long.value,
           MapCentreEnum.initZoom.value);
