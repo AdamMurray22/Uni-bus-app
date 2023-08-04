@@ -57,7 +57,7 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   /// Adds the start marker.
   addStartMarker(Location location)
   {
-    updateMarker(MapDataId.routeStart, "${MapDataId.routeStart.idPrefix}s", location.getLongitude(), location.getLatitude());
+    updateMarker(MapDataId.routeStart, MapDataId.routeStart.idPrefix, location.getLongitude(), location.getLatitude());
   }
 
   /// Sets the RouteCreator.
