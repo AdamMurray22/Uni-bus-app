@@ -1,3 +1,4 @@
+import 'package:app/Map/tile_server.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'package:webview_flutter_plus/webview_flutter_plus.dart';
@@ -25,6 +26,8 @@ abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
   @protected
   final Set<JavascriptChannel> javascriptChannels = {};
 
+  TileServer tileServer = TileServer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", "");
+
   /// Creates the webview with the map.
   @override
   void initState() {
@@ -38,7 +41,6 @@ abstract class MapWidgetState<E extends StatefulWidget> extends State<E> {
       },
       onPageFinished: (url)
       {
-        webViewController.runJavascript("getTileServerUrls()");
         assignLayerIds();
         onPageFinished?.call(url);
       },
