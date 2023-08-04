@@ -403,7 +403,7 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       valueCheckMap[id]?.setValue(value);
     });
-    _mapStateKey.currentState?.toggleMarkers(id, value);
+    _mapStateKey.currentState?.toggleMarkers(id.idPrefix, value);
   }
 
   // Returns the MapData

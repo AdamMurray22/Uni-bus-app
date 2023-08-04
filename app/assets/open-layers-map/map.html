@@ -51,14 +51,14 @@
     // adds a tile layer with the given tile server.
     function addOSMTileServer(server)
     {
-        tileLayer = new ol.layer.TileLayer({
-            source: new OSM({
+        tileLayer = new ol.layer.Tile({
+            source: new ol.source.OSM({
                 attributions: [
               server.attribution,
               ol.source.OSM.ATTRIBUTION,
             ],
             url:
-              'server.url',
+              server.url,
           }),
         });
         map.addLayer(tileLayer);
@@ -75,6 +75,10 @@
     // Creates a marker layer
     function createMakerLayer(layer)
     {
+        if (IDLayersMap.get(layer.layerId) != null)
+        {
+            return;
+        }
         var markerLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
             style: new ol.style.Style({
@@ -87,34 +91,38 @@
         });
         markerLayer.isClickableMarkerLayer = layer.markersClickable;
         map.addLayer(markerLayer);
-        if (IDLayersMap.get(layer.groupId) == null)
+        if (IDLayersMap.get(layer.layerId) == null)
         {
-            createLayerGroup(layer.groupId);
+            createLayerGroup(layer.layerId);
         }
-        var layerGroup = IDLayersMap.get(layer.groupId);
+        var layerGroup = IDLayersMap.get(layer.layerId);
         layerGroup.set(layerEnum.markerLayer, markerLayer);
     }
 
     // Creates a geo json layer
-    function createMakerLayer(layer)
+    function createGeoJsonLayer(layer)
     {
+        if (IDLayersMap.get(layer.layerId) != null)
+        {
+            return;
+        }
         var geoJsonLayer = new ol.layer.VectorImage({
             source: new ol.source.Vector({
                 format: new ol.format.GeoJSON(),
             }),
             style: new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: [layer.red, layer.green, layer.blue, 0.75],
+                    color: layer.colour,
                     width: 8,
                 }),
             }),
         });
         map.addLayer(geoJsonLayer);
-        if (IDLayersMap.get(layer.groupId) == null)
+        if (IDLayersMap.get(layer.layerId) == null)
         {
-            createLayerGroup(layer.groupId);
+            createLayerGroup(layer.layerId);
         }
-        var layerGroup = IDLayersMap.get(layer.groupId);
+        var layerGroup = IDLayersMap.get(layer.layerId);
         layerGroup.set(layerEnum.geoJsonLayer, geoJsonLayer);
     }
 
@@ -161,38 +169,38 @@
     }
 
     // Adds a route default colour
-    function addRoute(geoJsonFeature) {
+    function addGeoJson(geoJsonFeature) {
         const layer = IDLayersMap.get(geoJsonFeature.layerId).get(layerEnum.geoJsonLayer);
-        drawRouteLines(geoJsonFeature.geoJson, layer);
+        drawGeoJsonLines(geoJsonFeature, layer);
     }
 
     // Adds a route with given colour
-    function addRouteWithColour(geoJsonFeature) {
+    function addGeoJsonWithColour(geoJsonFeature) {
         const layer = IDLayersMap.get(geoJsonFeature.layerId).get(layerEnum.geoJsonLayer);
-        drawRouteLinesWithColour(geoJsonFeature.geoJson, layer);
+        drawGeoJsonLinesWithColour(geoJsonFeature, layer);
     }
 
     // Removes a route
-    function removeRoute(layerId)
+    function clearGeoJsonLayer(layerId)
     {
         const layer = IDLayersMap.get(layerId.layerId).get(layerEnum.geoJsonLayer);
         layer.getSource().clear();
     }
 
     // Add the given GeoJson to the map
-    function drawRouteLines(geoJson, layer) {
+    function drawGeoJsonLines(geoJson, layer) {
         layer.getSource().addFeatures((new ol.format.GeoJSON({
             featureProjection: 'EPSG:3857',
             dataProjection: 'EPSG:4326'
-        })).readFeatures(geoJson.route));
+        })).readFeatures(geoJson.geoJson));
     }
 
     // Add the given GeoJson to the map
-    function drawRouteLinesWithColour(geoJson, layer) {
+    function drawGeoJsonLinesWithColour(geoJson, layer) {
         var features = (new ol.format.GeoJSON({
             featureProjection: 'EPSG:3857',
             dataProjection: 'EPSG:4326'
-        })).readFeatures(geoJson.route);
+        })).readFeatures(geoJson.geoJson);
         features.forEach(function (feature) {
             feature.setStyle(new ol.style.Style({
                 stroke: new ol.style.Stroke({
