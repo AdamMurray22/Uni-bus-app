@@ -75,10 +75,6 @@
     // Creates a marker layer
     function createMakerLayer(layer)
     {
-        if (IDLayersMap.get(layer.layerId) != null)
-        {
-            return;
-        }
         var markerLayer = new ol.layer.Vector({
             source: new ol.source.Vector(),
             style: new ol.style.Style({
@@ -102,10 +98,6 @@
     // Creates a geo json layer
     function createGeoJsonLayer(layer)
     {
-        if (IDLayersMap.get(layer.layerId) != null)
-        {
-            return;
-        }
         var geoJsonLayer = new ol.layer.VectorImage({
             source: new ol.source.Vector({
                 format: new ol.format.GeoJSON(),

@@ -41,7 +41,7 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
   // Assigns an id to each layer used by this map to be referenced later.
   @override
   createLayers() {
-    createGeoJsonLayer(MapDataId.u1Route.idPrefix, "blue", 8);
+    createGeoJsonLayer(MapDataId.u1.idPrefix, "blue", 8);
     createMakerLayer(MapDataId.u1.idPrefix, "U1BusStopMarker.png", 0.2, true);
     createMakerLayer(MapDataId.uniBuilding.idPrefix, "UniBuildingMarker.png", 0.2, true);
     createMakerLayer(MapDataId.landmark.idPrefix, "LandmarkMarker.png", 0.2, true);
@@ -58,6 +58,6 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
   // Displays the bus route on the map.
   _loadBusRouteGeoJson() async {
     String busRouteJson = await BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader().getBusRouteGeoJsonAsString();
-    await addGeoJson(MapDataId.u1Route.idPrefix, busRouteJson);
+    await addGeoJson(MapDataId.u1.idPrefix, busRouteJson);
   }
 }

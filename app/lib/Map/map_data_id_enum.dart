@@ -7,7 +7,6 @@ enum MapDataId
   uniBuilding("UB-"),
   landmark("LM-"),
   userLocation("UL-"),
-  u1Route("U1RT-"),
   route("RT-"),
   destination("DN-"),
   routeStart("RS-");
