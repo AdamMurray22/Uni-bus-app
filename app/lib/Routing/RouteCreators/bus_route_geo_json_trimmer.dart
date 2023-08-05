@@ -79,6 +79,10 @@ class BusRouteGeoJsonTrimmer
           Location(coordinates[i + 1][0], coordinates[i + 1][1]));
       if (distanceFromLocation < distanceFromLastCoordinate)
       {
+        print("");
+        print(distanceFromLocation);
+        print(distanceFromLastCoordinate);
+        print("");
         for (int n = i; n >= 0; n--) {
           coordinates.removeAt(n);
           i--;
