@@ -39,11 +39,11 @@ class _RouteScreenState extends State<RouteScreen> {
   final List<DropDownValueModel> _fromDropDownList = [];
   List<DropDownValueModel> _toDropDownList = [];
 
-  String nextTurn = "";
-  String totalDistance = "";
-  String totalTime = "";
+  String _nextTurn = "";
+  String _totalDistance = "";
+  String _totalTime = "";
 
-  RoutingStatus currentlyRouting = RoutingStatus.notRouting;
+  RoutingStatus _currentlyRouting = RoutingStatus.notRouting;
 
   @override
   void initState() {
@@ -106,14 +106,14 @@ class _RouteScreenState extends State<RouteScreen> {
         setState(() {
           if (route.getNextTurn() != null)
           {
-            nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
+            _nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
           }
           else
           {
-            nextTurn = "";
+            _nextTurn = "";
           }
-          totalDistance = "${route.getTotalDisplayDistance()} total";
-          totalTime = route.getTotalDisplayTime();
+          _totalDistance = "${route.getTotalDisplayDistance()} total";
+          _totalTime = route.getTotalDisplayTime();
         });
       },
     );
@@ -128,7 +128,7 @@ class _RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     Widget routeInfoScreen;
-    if (currentlyRouting == RoutingStatus.notRouting)
+    if (_currentlyRouting == RoutingStatus.notRouting)
     {
         routeInfoScreen = Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +161,7 @@ class _RouteScreenState extends State<RouteScreen> {
           ],
         );
     }
-    else if (currentlyRouting == RoutingStatus.userLocationRouting)
+    else if (_currentlyRouting == RoutingStatus.userLocationRouting)
     {
       routeInfoScreen = Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -172,14 +172,14 @@ class _RouteScreenState extends State<RouteScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text(nextTurn),
+              Text(_nextTurn),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(totalTime),
+                  Text(_totalTime),
                   const SizedBox(width: 3),
-                  Text(totalDistance),
+                  Text(_totalDistance),
                 ]),
             ],
           ),
@@ -221,9 +221,9 @@ class _RouteScreenState extends State<RouteScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(totalTime),
+                Text(_totalTime),
                 const SizedBox(width: 3),
-                Text(totalDistance),
+                Text(_totalDistance),
               ]),
           const SizedBox(width: 5),
           MaterialButton(
@@ -346,17 +346,15 @@ class _RouteScreenState extends State<RouteScreen> {
     _mapStateKey.currentState?.setCurrentRoute(fromId, toId);
     await _mapStateKey.currentState
         ?.createRoute(fromLocation, toLocation, fromId, toId);
-    _mapStateKey.currentState?.addDestinationMarker(toLocation);
     if (isUserLocation) {
       String currentFromId = fromId;
       String currentToId = toId;
       await locationHandler.onRouteLocationChanged((locationData) async {
         await _updateRoute(currentFromId, currentToId);
       });
-      currentlyRouting = RoutingStatus.userLocationRouting;
+      _currentlyRouting = RoutingStatus.userLocationRouting;
     } else {
-      _mapStateKey.currentState?.addStartMarker(fromLocation);
-      currentlyRouting = RoutingStatus.nonUserLocationRouting;
+      _currentlyRouting = RoutingStatus.nonUserLocationRouting;
     }
     setState(() {
     });
@@ -406,15 +404,10 @@ class _RouteScreenState extends State<RouteScreen> {
 
   // Ends the route.
   _endRoute() async {
-    String? fromId = _fromRouteDropDownController.dropDownValue?.value;
-    String? toId = _toRouteDropDownController.dropDownValue?.value;
-    if (fromId == MapDataId.userLocation.idPrefix) {
-      fromId = null;
-    }
-    await _mapStateKey.currentState?.endRoute(fromId, toId);
+    await _mapStateKey.currentState?.endRoute();
     LocationHandler.getHandler().removeOnRouteLocationChanged();
     setState(() {
-      currentlyRouting = RoutingStatus.notRouting;
+      _currentlyRouting = RoutingStatus.notRouting;
     });
   }
 }

@@ -41,9 +41,9 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   @override
   createLayers() async {
     await createGeoJsonLayer(MapDataId.route.idPrefix, "blue", 8);
-    await createMakerLayer(MapDataId.destination.idPrefix, "DestinationIcon.png", 0.2, false);
-    await createMakerLayer(MapDataId.routeStart.idPrefix, "RouteStartIcon.png", 0.2, false);
-    await createMakerLayer(MapDataId.userLocation.idPrefix, "UserIcon.png", 0.1, false);
+    await createMakerLayer(MapDataId.destination.idPrefix, "DestinationIcon.png", 0.2, 0.5, 1, false);
+    await createMakerLayer(MapDataId.routeStart.idPrefix, "RouteStartIcon.png", 0.2, 0.5, 1, false);
+    await createMakerLayer(MapDataId.userLocation.idPrefix, "UserIcon.png", 0.1, 0.5, 0.5, false);
   }
 
   /// Sets the current route.
@@ -59,34 +59,44 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
       return;
     }
     WalkingRoute route = await _routeCreator.createRoute(from, to);
+    if (fromId != MapDataId.userLocation.idPrefix)
+    {
+      addMarker(MapDataId.routeStart.idPrefix, MapDataId.routeStart.idPrefix, from.getLongitude(), from.getLatitude());
+    }
+    if (toId != MapDataId.userLocation.idPrefix)
+    {
+      addMarker(MapDataId.destination.idPrefix, MapDataId.destination.idPrefix, to.getLongitude(), to.getLatitude());
+    }
     await _setRouteGeoJson(route.getGeometries());
     widget.routeScreenUpdateFunction(route);
   }
 
   /// Removes the route.
-  endRoute(String? fromId, String? toId) async {
+  endRoute() async {
     clearGeoJsonLayer(MapDataId.route.idPrefix);
-    _currentRoute = null;
-    if (fromId != null)
+    if (_currentRoute?.item1 != MapDataId.userLocation.idPrefix)
     {
-      removeMarker(MapDataId.destination.idPrefix, '${MapDataId.destination.idPrefix}s');
-    }
-    if (toId != null) {
       removeMarker(MapDataId.routeStart.idPrefix, MapDataId.routeStart.idPrefix);
     }
+    if (_currentRoute?.item2 != MapDataId.userLocation.idPrefix)
+    {
+      removeMarker(MapDataId.destination.idPrefix, MapDataId.destination.idPrefix);
+    }
+    _currentRoute = null;
   }
 
   /// Adds the destination marker.
   addDestinationMarker(Location location)
   async {
-    await updateMarker(MapDataId.destination.idPrefix,
-        MapDataId.destination.idPrefix, location.getLongitude(), location.getLatitude());
+    await updateMarker(MapDataId.destination.idPrefix, MapDataId.destination.idPrefix,
+        location.getLongitude(), location.getLatitude());
   }
 
   /// Adds the start marker.
   addStartMarker(Location location)
   {
-    updateMarker(MapDataId.routeStart.idPrefix, MapDataId.routeStart.idPrefix, location.getLongitude(), location.getLatitude());
+    updateMarker(MapDataId.routeStart.idPrefix, MapDataId.routeStart.idPrefix,
+        location.getLongitude(), location.getLatitude());
   }
 
   /// Sets the RouteCreator.
