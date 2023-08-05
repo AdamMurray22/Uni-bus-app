@@ -79,7 +79,9 @@
             source: new ol.source.Vector(),
             style: new ol.style.Style({
                 image: new ol.style.Icon({
-                    anchor: [0.5, 0.5],
+                    anchor: [layer.anchorX, layer.anchorY],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'fraction',
                     scale: [layer.markerSize, layer.markerSize],
                     src: layer.image,
                 }),

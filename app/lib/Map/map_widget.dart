@@ -82,10 +82,10 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
 
   /// Adds the markers.
   @protected
-  createMakerLayer(String layerId, String image, double size, bool markersClickable)
+  createMakerLayer(String layerId, String image, double size, double anchorX, double anchorY, bool markersClickable)
   {
     String jsObject =
-        "{layerId: '$layerId', image: '$image', markerSize: '$size', markersClickable: $markersClickable}";
+        "{layerId: '$layerId', image: '$image', markerSize: '$size', anchorX: $anchorX, anchorY: $anchorY, markersClickable: $markersClickable}";
     _webViewController.runJavascript("createMakerLayer($jsObject)");
   }
 
