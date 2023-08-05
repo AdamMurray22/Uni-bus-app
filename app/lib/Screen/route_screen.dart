@@ -346,7 +346,6 @@ class _RouteScreenState extends State<RouteScreen> {
     _mapStateKey.currentState?.setCurrentRoute(fromId, toId);
     await _mapStateKey.currentState
         ?.createRoute(fromLocation, toLocation, fromId, toId);
-    _mapStateKey.currentState?.addDestinationMarker(toLocation);
     if (isUserLocation) {
       String currentFromId = fromId;
       String currentToId = toId;
@@ -355,7 +354,6 @@ class _RouteScreenState extends State<RouteScreen> {
       });
       currentlyRouting = RoutingStatus.userLocationRouting;
     } else {
-      _mapStateKey.currentState?.addStartMarker(fromLocation);
       currentlyRouting = RoutingStatus.nonUserLocationRouting;
     }
     setState(() {
@@ -406,12 +404,7 @@ class _RouteScreenState extends State<RouteScreen> {
 
   // Ends the route.
   _endRoute() async {
-    String? fromId = _fromRouteDropDownController.dropDownValue?.value;
-    String? toId = _toRouteDropDownController.dropDownValue?.value;
-    if (fromId == MapDataId.userLocation.idPrefix) {
-      fromId = null;
-    }
-    await _mapStateKey.currentState?.endRoute(fromId, toId);
+    await _mapStateKey.currentState?.endRoute();
     LocationHandler.getHandler().removeOnRouteLocationChanged();
     setState(() {
       currentlyRouting = RoutingStatus.notRouting;
