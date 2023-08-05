@@ -12,17 +12,17 @@ import '../location.dart';
 abstract class RouteCreator
 {
   @protected
-  late RoutingServer routingServer;
+  late RoutingServer _routingServer;
   final Function(String)? pingRoutingServerFunction;
 
   /// Assigns default Server.
   RouteCreator({this.pingRoutingServerFunction})
   {
-    routingServer = RoutingOpenstreetmapDe(pingRoutingServerFunction: pingRoutingServerFunction);
+    _routingServer = RoutingOpenstreetmapDe(pingRoutingServerFunction: pingRoutingServerFunction);
   }
 
   /// Allows for non default server.
-  RouteCreator.setServer(this.routingServer, {this.pingRoutingServerFunction});
+  RouteCreator.setServer(this._routingServer, {this.pingRoutingServerFunction});
 
   /// This creates a route from the start to the end locations.
   Future<WalkingRoute> createRoute(Location from, Location to);
@@ -49,6 +49,6 @@ abstract class RouteCreator
 
   // Retrieves the Route information from the server.
   Future<String> _fetchORSMRouteInformation(Location startLocation, Location endLocation) async {
-    return await routingServer.getResponseBody(startLocation, endLocation);
+    return await _routingServer.getResponseBody(startLocation, endLocation);
   }
 }
