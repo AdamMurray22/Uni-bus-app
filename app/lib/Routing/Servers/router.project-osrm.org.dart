@@ -4,8 +4,12 @@ import 'package:http/http.dart' as http;
 
 /// The routing server at the address http://router.project-osrm.org/.
 /// This is only a driving server.
-class RouterProjectOSRM implements RoutingServer
+class RouterProjectOSRM extends RoutingServer
 {
+  final String _uriDomains = 'router.project-osrm.org';
+
+  RouterProjectOSRM({super.pingRoutingServerFunction});
+
   @override
   Future<String> getResponseBody(Location startLocation, Location endLocation)
   async {
@@ -22,5 +26,11 @@ class RouterProjectOSRM implements RoutingServer
     String link = '$linkPrefix$linkLocationData$linkSuffix';
     Uri uri = Uri.parse(link);
     return uri;
+  }
+
+  @override
+  String getUriDomains()
+  {
+    return _uriDomains;
   }
 }

@@ -10,10 +10,10 @@ class BasicRouteCreator extends RouteCreator
 {
 
   /// Assigns default Server.
-  BasicRouteCreator() : super();
+  BasicRouteCreator({super.pingRoutingServerFunction}) : super();
 
   /// Allows for non default server.
-  BasicRouteCreator.setServer(RoutingServer server) : super.setServer(server);
+  BasicRouteCreator.setServer(RoutingServer server, {super.pingRoutingServerFunction}) : super.setServer(server);
 
   /// This creates the fastest walking route from the start to the end locations.
   @override

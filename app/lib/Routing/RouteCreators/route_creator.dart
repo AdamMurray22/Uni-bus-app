@@ -12,16 +12,17 @@ import '../location.dart';
 abstract class RouteCreator
 {
   @protected
-  RoutingServer routingServer = RoutingOpenstreetmapDe();
+  late RoutingServer routingServer;
+  final Function(String)? pingRoutingServerFunction;
 
   /// Assigns default Server.
-  RouteCreator()
+  RouteCreator({this.pingRoutingServerFunction})
   {
-    routingServer = RoutingOpenstreetmapDe();
+    routingServer = RoutingOpenstreetmapDe(pingRoutingServerFunction: pingRoutingServerFunction);
   }
 
   /// Allows for non default server.
-  RouteCreator.setServer(this.routingServer);
+  RouteCreator.setServer(this.routingServer, {this.pingRoutingServerFunction});
 
   /// This creates a route from the start to the end locations.
   Future<WalkingRoute> createRoute(Location from, Location to);
