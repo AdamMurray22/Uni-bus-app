@@ -1,7 +1,7 @@
 import 'package:app/Map/tile_server.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
-import 'package:webview_flutter_plus/webview_flutter_plus.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Location/location_handler.dart';
 import 'map_data_id_enum.dart';
@@ -19,39 +19,43 @@ abstract class MapWidget extends StatefulWidget {
 abstract class MapWidgetState<E extends MapWidget> extends State<E> {
 
   final String _mapPath = "assets/open-layers-map/map.html";
-  late final WebViewPlus _webView;
-  late final WebViewPlusController _controllerPlus;
+  late final WebViewWidget _webView;
   late final WebViewController _webViewController;
   @protected
   late final Function(String)? onPageFinished;
-  final Set<JavascriptChannel> _javascriptChannels = {};
 
   final TileServer _tileServer = TileServer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", "");
 
   /// Creates the webview with the map.
   @override
   void initState() {
-    _javascriptChannels.add(JavascriptChannel(
-        name: 'MarkerClickedDart',
-        onMessageReceived: (JavascriptMessage markerIdMessage) {
-          _markerClicked(markerIdMessage.message);
-        }));
-    _webView = WebViewPlus(
-      serverPort: 5353,
-      initialUrl: _mapPath,
-      javascriptChannels: _javascriptChannels,
-      onWebViewCreated: (controller) async {
-        _controllerPlus = controller;
-        _webViewController = _controllerPlus.webViewController;
-      },
-      onPageFinished: (url)
-      async {
-        await _addTileServer();
-        await createLayers();
-        onPageFinished?.call(url);
-      },
-      javascriptMode: JavascriptMode.unrestricted,
-    );
+    _webViewController = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url)
+          async {
+            await _addTileServer();
+            await createLayers();
+            onPageFinished?.call(url);
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..addJavaScriptChannel('MarkerClickedDart',
+          onMessageReceived: (JavaScriptMessage markerIdMessage) {
+        _markerClicked(markerIdMessage.message);
+      })
+      ..loadFlutterAsset(_mapPath);
+      _webView = WebViewWidget(controller: _webViewController);
     super.initState();
   }
 
@@ -69,7 +73,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   _addTileServer()
   {
     String jsObject = "{url: '${_tileServer.url}', attribution: '${_tileServer.attribution}'}";
-    _webViewController.runJavascript("addOSMTileServer($jsObject)");
+    _webViewController.runJavaScript("addOSMTileServer($jsObject)");
     widget.pingTileServerFunction?.call(_tileServer.getUrlDomains());
   }
 
@@ -77,7 +81,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   @protected
   setMapCentreZoom(double lat, double long, double zoom) {
     String jsObject = "{lat: $lat, long: $long, zoom: $zoom}";
-    _webViewController.runJavascript("setCentreZoom($jsObject)");
+    _webViewController.runJavaScript("setCentreZoom($jsObject)");
   }
 
   /// Adds the markers.
@@ -86,7 +90,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   {
     String jsObject =
         "{layerId: '$layerId', image: '$image', markerSize: '$size', anchorX: $anchorX, anchorY: $anchorY, markersClickable: $markersClickable}";
-    _webViewController.runJavascript("createMakerLayer($jsObject)");
+    _webViewController.runJavaScript("createMakerLayer($jsObject)");
   }
 
   /// Adds the markers.
@@ -95,7 +99,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   {
     String jsObject =
         "{layerId: '$layerId', colour: '$colour', width: $width}";
-    _webViewController.runJavascript("createGeoJsonLayer($jsObject)");
+    _webViewController.runJavaScript("createGeoJsonLayer($jsObject)");
   }
 
   /// Adds a marker.
@@ -104,7 +108,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   {
     String jsObject =
         "{layerId: '$layerId', id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavascript("addMarker($jsObject)");
+    _webViewController.runJavaScript("addMarker($jsObject)");
   }
 
   /// Adds a marker.
@@ -113,7 +117,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   {
     String jsObject =
         "{layerId: '$layerId', id: '$id'}";
-    _webViewController.runJavascript("removeMarker($jsObject)");
+    _webViewController.runJavaScript("removeMarker($jsObject)");
   }
 
   /// Updates the position of the marker.
@@ -121,13 +125,13 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   updateMarker(String layerId, String id, double long, double lat) async {
     String jsObject =
         "{layerId: '$layerId', id: '$id', longitude: $long, latitude: $lat}";
-    _webViewController.runJavascript("updateMarker($jsObject)");
+    _webViewController.runJavaScript("updateMarker($jsObject)");
   }
 
   /// Toggles the visibility of the U1 bus stop markers on the map.
   toggleMarkers(String layerId, bool visible) async {
     String jsObject = "{layerId: '$layerId', visible: $visible}";
-    _webViewController.runJavascript("toggleShowLayers($jsObject)");
+    _webViewController.runJavaScript("toggleShowLayers($jsObject)");
   }
 
   /// Adds the users location to the map as a marker and sets for it be updated
@@ -147,7 +151,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   addGeoJson(String layerId, String geoJson)
   {
     String jsObject = "{layerId: '$layerId', geoJson: '$geoJson'}";
-    _webViewController.runJavascript("addGeoJson($jsObject)");
+    _webViewController.runJavaScript("addGeoJson($jsObject)");
   }
 
   /// Adds the geo json with given colour.
@@ -155,7 +159,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   addGeoJsonWithColour(String layerId, String geoJson, String colour)
   {
     String jsObject = "{layerId: '$layerId', geoJson: '$geoJson', colour: '$colour'}";
-    _webViewController.runJavascript("addGeoJsonWithColour($jsObject)");
+    _webViewController.runJavaScript("addGeoJsonWithColour($jsObject)");
   }
 
   /// Clears the geoJson layer.
@@ -163,7 +167,7 @@ abstract class MapWidgetState<E extends MapWidget> extends State<E> {
   clearGeoJsonLayer(String layerId)
   {
     String jsObject = "{layerId: '$layerId'}";
-    _webViewController.runJavascript("clearGeoJsonLayer($jsObject)");
+    _webViewController.runJavaScript("clearGeoJsonLayer($jsObject)");
   }
 
   // This is called when a marker on the map gets clicked.
