@@ -8,8 +8,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
    <application
         android:usesCleartextTraffic="true"
-        android:label="app"
+        android:label="University Bus Portsmouth"
         android:name="${applicationName}"
+        android:roundIcon="@mipmap/round_launcher"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.university_bus_portsmouth.app.MainActivity"
