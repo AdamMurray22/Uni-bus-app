@@ -127,7 +127,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           children: [
             SizedBox(height: MediaQuery.of(context).size.height * 0.4),
             const Text(
-              "Uni bus",
+              "University bus",
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.w400,

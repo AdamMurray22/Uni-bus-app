@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           borderRadius: BorderRadius.zero,
         ),
         title: const Text(
-          "Uni Bus Portsmouth",
+          "University Bus Portsmouth",
           style: TextStyle(
             fontWeight: FontWeight.w400,
             fontStyle: FontStyle.normal,
