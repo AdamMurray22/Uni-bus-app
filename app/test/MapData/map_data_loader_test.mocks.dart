@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:app/Database/database_loader.dart' as _i3;
+import 'package:app/MapData/Loaders/database_loader.dart' as _i3;
 import 'package:app/MapData/bus_running_dates.dart' as _i7;
 import 'package:app/MapData/bus_time.dart' as _i6;
 import 'package:app/MapData/feature.dart' as _i5;
@@ -87,7 +87,7 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           Map<String, int>,
           Map<String, List<_i6.BusTime>>,
           Map<String, List<_i6.BusTime>>,
-          _i7.BusRunningDates>> loadDatabase(_i8.Database? db) =>
+          _i7.BusRunningDates>> loadData(_i8.Database? db) =>
       (super.noSuchMethod(
         Invocation.method(
           #loadDatabase,

@@ -8,10 +8,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tuple/tuple.dart';
 
-import '../MapData/bus_running_dates.dart';
-import '../MapData/term_dates.dart';
+import '../bus_running_dates.dart';
+import '../term_dates.dart';
+import 'data_loader.dart';
 
-class DatabaseLoader {
+/// Loader that loads the map data from a local database.
+class DatabaseLoader implements DataLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
   Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
@@ -25,12 +27,12 @@ class DatabaseLoader {
     return _databaseLoader!;
   }
 
-  /// Loads the database and returns a List of Features. Saves the result to be
-  /// given for future calls.
+  /// Loads the database and saves the result to be given for future calls.
+  @override
   Future<
       Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
           Map<String, List<BusTime>>, BusRunningDates>> load() async {
-    _data ??= await loadDatabase(await _getDatabase());
+    _data ??= await loadData(await _getDatabase());
     return _data!;
   }
 
@@ -41,7 +43,7 @@ class DatabaseLoader {
           Map<String, int>,
           Map<String, List<BusTime>>,
           Map<String, List<BusTime>>,
-          BusRunningDates>> loadDatabase(Database db) async {
+          BusRunningDates>> loadData(Database db) async {
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =
         await db.rawQuery('SELECT * FROM Feature');
@@ -129,7 +131,7 @@ class DatabaseLoader {
     // If it has not yet been written from the assets folder to the more
     // efficient location to find at getDatabasesPath().
     if (!exists) {
-      _writesDatabase(path);
+      await _writesDatabase(path);
     }
 
     // Used to reload the database from assets when its updated manually

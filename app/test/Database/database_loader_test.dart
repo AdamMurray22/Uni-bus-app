@@ -1,4 +1,4 @@
-import 'package:app/Database/database_loader.dart';
+import 'package:app/MapData/Loaders/database_loader.dart';
 import 'package:app/MapData/bus_running_dates.dart';
 import 'package:app/MapData/bus_time.dart';
 import 'package:app/MapData/feature.dart';
@@ -104,7 +104,7 @@ void main() {
         }
       ]);
 
-      expect(await (loader.loadDatabase(db)), isA<Tuple5<
+      expect(await (loader.loadData(db)), isA<Tuple5<
           Set<Feature>,
           Map<String, int>,
           Map<String, List<BusTime>>,
