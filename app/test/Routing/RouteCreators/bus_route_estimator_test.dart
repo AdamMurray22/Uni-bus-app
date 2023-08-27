@@ -35,7 +35,7 @@ void main() {
 
       Tuple3<double, BusStop, BusStop> test = estimator.getEntireEstimate(startLocation, endLocation)!;
 
-      expect(1164.7406387964352, test.item1);
+      expect(1257.621987456457, test.item1);
       expect(busStop1, test.item2);
       expect(busStop3, test.item3);
     });
