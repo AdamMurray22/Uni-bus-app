@@ -12,6 +12,7 @@ import 'map_data.dart';
 /// access it.
 class MapDataLoader {
   static MapDataLoader? _mapDataLoader;
+  final DataLoader _dataLoader = DatabaseLoader.getDataBaseLoader();
   late MapData _data;
   bool? _loadingCompletedSuccessfully;
   final List<Function(MapData)> _dataLoadedFunctions = [];
@@ -29,7 +30,7 @@ class MapDataLoader {
   /// onDataLoaded() has been called it runs the
   /// function given to onDataLoaded().
   load() async {
-    loadFromLoader(DatabaseLoader.getDataBaseLoader());
+    loadFromLoader(_dataLoader);
   }
 
   /// This loads the information and if
