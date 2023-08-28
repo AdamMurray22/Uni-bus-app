@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:app/MapData/bus_time.dart';
@@ -65,6 +67,18 @@ class DatabaseLoader implements DataLoader {
         await db.rawQuery('SELECT * FROM National_Holidays');
 
     await db.close();
+
+    log("");
+    log(json.encode(featuresList));
+    log("");
+    log(json.encode(busStopOrderList));
+    log("");
+    log(json.encode(busTimesList));
+    log("");
+    log(json.encode(busRunningDatesList));
+    log("");
+    log(json.encode(nationalHolidaysList));
+    log("");
 
     // Copy's the Feature's table into a set of Features objects.
     Set<Feature> features = {};

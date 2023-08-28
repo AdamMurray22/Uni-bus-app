@@ -2,8 +2,14 @@ https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-lambda-tutorial.html
 
 example sqs message:
 {
-    "CustID": 1054,
-    "Name": "Richard Roe"
+    "University": [],
+    "Features": [],
+    "BusTimes": [],
+    "BusStopOrder": [],
+    "NationalHoliday": [],
+    "TermDates": []
 }
+
+https://jsoneditoronline.org
 
 to check message go to CloudWatch
