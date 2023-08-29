@@ -54,50 +54,50 @@ def lambda_handler(event, context):
         for university in UniversityData:
             try:
                 cur.execute(university_sql_string.format(UniversityID = escape_sql_string(university['university_id']), UniversityName = escape_sql_string(university['university_name'])))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         for features in FeaturesData:
             try:
                 cur.execute(features_sql_string.format(UniversityID = escape_sql_string(features['university_id']), FeatureID = escape_sql_string(features['feature_id']), FeatureName = escape_sql_string(features['feature_name']), Longitude = features['longitude'], Latitude = features['latitude']))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         for busTimes in BusTimesData:
             try:
                 cur.execute(bus_times_sql_string.format(BusStopID = escape_sql_string(busTimes['bus_stop_id']), BusTimeID = escape_sql_string(busTimes['bus_time_id']), ArriveTime = escape_sql_string(busTimes['arrive_time']), DepartTime = escape_sql_string(busTimes['depart_time']), Route = busTimes['route']))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         for busStopOrder in BusStopOrderData:
             try:
                 cur.execute(bus_stop_order_sql_string.format(BusStopID = escape_sql_string(busStopOrder['bus_stop_id']), Order = busStopOrder['order']))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         for nationalHoliday in NationalHolidayData:
             try:
                 cur.execute(national_holidays_sql_string.format(Date = escape_sql_string(nationalHoliday['date'])))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         for termDates in TermDatesData:
             try:
                 cur.execute(term_dates_sql_string.format(UniversityID = escape_sql_string(termDates['university_id']), StartDate = escape_sql_string(termDates['start_date']), EndDate = escape_sql_string(termDates['end_date'])))
+                item_count += 1
             except pymysql.MySQLError as e:
                 logger.error(e)
             conn.commit()
-            item_count += 1
 
         conn.commit()
     conn.commit()

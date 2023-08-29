@@ -1,6 +1,7 @@
 import 'package:app/MapData/feature.dart';
 import 'package:tuple/tuple.dart';
 
+import 'Loaders/aws_data_loader.dart';
 import 'Loaders/data_loader.dart';
 import 'Loaders/database_loader.dart';
 import '../Exceptions/loading_not_finished_exception.dart';
@@ -12,7 +13,7 @@ import 'map_data.dart';
 /// access it.
 class MapDataLoader {
   static MapDataLoader? _mapDataLoader;
-  final DataLoader _dataLoader = DatabaseLoader.getDataBaseLoader();
+  final DataLoader _dataLoader = AWSDataLoader.getAWSDataLoader();
   late MapData _data;
   bool? _loadingCompletedSuccessfully;
   final List<Function(MapData)> _dataLoadedFunctions = [];

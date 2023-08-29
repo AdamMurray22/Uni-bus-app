@@ -21,7 +21,7 @@ class BusTime
         int.tryParse(time.substring(3, 5)) == null ||
         time[2] != ':')
     {
-      throw ArgumentError("That is not a valid time in the format HH:MM.");
+      throw ArgumentError("$time is not a valid time in the format HH:MM.");
     }
     _hour = int.parse(time.substring(0, 2));
     _hour == 0 ? _hour = 24 : _hour;

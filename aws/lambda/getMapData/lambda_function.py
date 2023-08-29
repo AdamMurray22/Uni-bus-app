@@ -24,7 +24,7 @@ except pymysql.MySQLError as e:
 
 def lambda_handler(event, context):
     uniID = event['uniID']
-    
+
     return_json = {}
 
     universityData = []
@@ -47,7 +47,7 @@ def lambda_handler(event, context):
             featureMap["FeatureID"] = row[1]
             featureMap["FeatureName"] = row[2]
             featureMap["Longitude"] = row[3]
-            featureMap["latitude"] = row[4]
+            featureMap["Latitude"] = row[4]
             featuresData.append(featureMap)
         cur.close()
     conn.commit()

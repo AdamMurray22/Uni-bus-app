@@ -68,18 +68,6 @@ class DatabaseLoader implements DataLoader {
 
     await db.close();
 
-    log("");
-    log(json.encode(featuresList));
-    log("");
-    log(json.encode(busStopOrderList));
-    log("");
-    log(json.encode(busTimesList));
-    log("");
-    log(json.encode(busRunningDatesList));
-    log("");
-    log(json.encode(nationalHolidaysList));
-    log("");
-
     // Copy's the Feature's table into a set of Features objects.
     Set<Feature> features = {};
     for (Map map in featuresList) {
