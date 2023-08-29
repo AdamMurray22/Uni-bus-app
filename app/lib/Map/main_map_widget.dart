@@ -42,9 +42,9 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
   @override
   createLayers() {
     createGeoJsonLayer(MapDataId.u1.idPrefix, "blue", 8);
-    createMakerLayer(MapDataId.u1.idPrefix, "U1BusStopMarker.png", 0.2, 0.5, 1, true);
-    createMakerLayer(MapDataId.uniBuilding.idPrefix, "UniBuildingMarker.png", 0.2, 0.5, 1, true);
-    createMakerLayer(MapDataId.landmark.idPrefix, "LandmarkMarker.png", 0.2, 0.5, 1, true);
+    createMakerLayer(MapDataId.u1.idPrefix, "U1BusStopMarker.png", 0.25, 0.5, 1, true);
+    createMakerLayer(MapDataId.uniBuilding.idPrefix, "UniBuildingMarker.png", 0.25, 0.5, 1, true);
+    createMakerLayer(MapDataId.landmark.idPrefix, "LandmarkMarker.png", 0.25, 0.5, 1, true);
     createMakerLayer(MapDataId.userLocation.idPrefix, "UserIcon.png", 0.1, 0.5, 0.5, false);
   }
 

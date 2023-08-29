@@ -41,8 +41,8 @@ class RouteMapWidgetState extends MapWidgetState<RouteMapWidget> {
   @override
   createLayers() async {
     await createGeoJsonLayer(MapDataId.route.idPrefix, "blue", 8);
-    await createMakerLayer(MapDataId.destination.idPrefix, "DestinationIcon.png", 0.2, 0.5, 1, false);
-    await createMakerLayer(MapDataId.routeStart.idPrefix, "RouteStartIcon.png", 0.2, 0.5, 1, false);
+    await createMakerLayer(MapDataId.destination.idPrefix, "DestinationIcon.png", 0.25, 0.5, 1, false);
+    await createMakerLayer(MapDataId.routeStart.idPrefix, "RouteStartIcon.png", 0.25, 0.5, 1, false);
     await createMakerLayer(MapDataId.userLocation.idPrefix, "UserIcon.png", 0.1, 0.5, 0.5, false);
   }
 
