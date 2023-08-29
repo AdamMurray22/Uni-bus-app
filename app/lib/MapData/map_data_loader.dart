@@ -1,7 +1,9 @@
 import 'package:app/MapData/feature.dart';
 import 'package:tuple/tuple.dart';
 
-import '../Database/database_loader.dart';
+import 'Loaders/aws_data_loader.dart';
+import 'Loaders/data_loader.dart';
+import 'Loaders/database_loader.dart';
 import '../Exceptions/loading_not_finished_exception.dart';
 import 'bus_running_dates.dart';
 import 'bus_time.dart';
@@ -11,6 +13,7 @@ import 'map_data.dart';
 /// access it.
 class MapDataLoader {
   static MapDataLoader? _mapDataLoader;
+  final DataLoader _dataLoader = AWSDataLoader.getAWSDataLoader();
   late MapData _data;
   bool? _loadingCompletedSuccessfully;
   final List<Function(MapData)> _dataLoadedFunctions = [];
@@ -28,13 +31,13 @@ class MapDataLoader {
   /// onDataLoaded() has been called it runs the
   /// function given to onDataLoaded().
   load() async {
-    loadFromLoader(DatabaseLoader.getDataBaseLoader());
+    loadFromLoader(_dataLoader);
   }
 
   /// This loads the information and if
   /// onDataLoaded() has been called it runs the
   /// function given to onDataLoaded().
-  loadFromLoader(DatabaseLoader loader) async {
+  loadFromLoader(DataLoader loader) async {
     Tuple5<
         Set<Feature>,
         Map<String, int>,

@@ -1,4 +1,4 @@
-import 'package:app/Database/database_loader.dart';
+import 'package:app/MapData/Loaders/database_loader.dart';
 import 'package:app/Exceptions/loading_not_finished_exception.dart';
 import 'package:app/MapData/bus_running_dates.dart';
 import 'package:app/MapData/bus_time.dart';
