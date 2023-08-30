@@ -261,7 +261,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 children: [
                   TextSpan(
                     text:
-                        "This app was developed by Adam Murray. I can be contacted through the following methods ",
+                        "This app was developed by Adam Murray. I can be contacted through the following methods:",
                     style: TextStyle(fontSize: fontSize, color: Colors.black),
                   ),
                 ],
