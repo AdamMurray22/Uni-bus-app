@@ -199,7 +199,7 @@ class _MapScreenState extends State<MapScreen> {
                     width: MediaQuery.of(context).size.width * 0.4,
                     height: mapScreenHeight,
                     decoration: BoxDecoration(
-                      color: const Color(0xff999999),
+                      color: const Color(0xffffffff),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
                       border:
