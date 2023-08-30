@@ -10,7 +10,6 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-
   @override
   Widget build(BuildContext context) {
     const double fontSize = 18;
@@ -47,7 +46,8 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'OpenLayers',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(
@@ -56,11 +56,13 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text: ' which is licenced under the ',
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'BSD 2-Clause License.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -71,10 +73,10 @@ class _AboutScreenState extends State<AboutScreen> {
                             },
                         ),
                         const TextSpan(
-                          text:
-                              " OpenLayers provides the Api to display and "
-                                  "manipulate the map in this application.",
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          text: " OpenLayers provides the Api to display and "
+                              "manipulate the map in this application.",
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
@@ -86,7 +88,8 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'OpenStreetMap',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -96,11 +99,13 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text: ' which is licenced under the ',
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'Open Data Commons Open Database License.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -112,8 +117,9 @@ class _AboutScreenState extends State<AboutScreen> {
                         const TextSpan(
                           text:
                               " Open Street Maps provides the data used for the "
-                                  "map in this application.",
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                              "map in this application.",
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
@@ -125,21 +131,23 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'Open Source Routing Machine',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
-                                  scheme: 'https',
-                                  host: 'project-osrm.org'));
+                                  scheme: 'https', host: 'project-osrm.org'));
                             },
                         ),
                         const TextSpan(
                           text: ' which is licenced under the ',
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'permissive 2-clause BSD license.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -150,8 +158,9 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text:
-                          " ORSM provides the routing engine used by this application.",
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                              " ORSM provides the routing engine used by this application.",
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
@@ -163,7 +172,8 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         TextSpan(
                           text: 'routing.openstreetmap.de.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
@@ -173,39 +183,44 @@ class _AboutScreenState extends State<AboutScreen> {
                         ),
                         const TextSpan(
                           text: ' This server is sponsored by ',
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'Fossgis.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              launchUrl(Uri(
-                                  scheme: 'https',
-                                  host: 'www.fossgis.de'));
+                              launchUrl(
+                                  Uri(scheme: 'https', host: 'www.fossgis.de'));
                             },
                         ),
                         const TextSpan(
                           text: ' The full licence can be viewed in german ',
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'on the fossgis website.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
                                   scheme: 'https',
                                   host: 'www.fossgis.de',
-                                  path: '/arbeitsgruppen/osm-server/nutzungsbedingungen/'));
+                                  path:
+                                      '/arbeitsgruppen/osm-server/nutzungsbedingungen/'));
                             },
                         ),
                         const TextSpan(
                           text:
-                          " routing.openstreetmap.de provides the server that is "
+                              " routing.openstreetmap.de provides the server that is "
                               "running ORSM and so is providing the service that "
                               "allows this application to providing routing data.",
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                       ],
                     ),
@@ -217,18 +232,106 @@ class _AboutScreenState extends State<AboutScreen> {
                       children: [
                         const TextSpan(
                           text:
-                          "If you find an error with the map please report it ",
-                          style: TextStyle(fontSize: fontSize, color: Colors.black),
+                              "If you find an error with the map please report it ",
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
                         ),
                         TextSpan(
                           text: 'here.',
-                          style: const TextStyle(fontSize: fontSize, color: Colors.blue),
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               launchUrl(Uri(
                                   scheme: 'https',
                                   host: 'www.openstreetmap.org',
                                   path: '/fixthemap'));
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            RichText(
+              key: const Key("My Credit"),
+              text: const TextSpan(
+                children: [
+                  TextSpan(
+                    text:
+                        "This app was developed by Adam Murray. I can be contacted through the following methods ",
+                    style: TextStyle(fontSize: fontSize, color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  const SizedBox(height: 3),
+                  RichText(
+                    key: const Key("My gmail"),
+                    text: const TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Email: adammurray1122@gmail.com',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  RichText(
+                    key: const Key("My LinkedIn"),
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'LinkedIn: ',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: 'https://www.linkedin.com/in/adam-murray-788625237',
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrl(Uri(
+                                  scheme: 'https',
+                                  host: 'www.linkedin.com',
+                                  path: '/in/adam-murray-788625237'));
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  RichText(
+                    key: const Key("My Github"),
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'Github: ',
+                          style: TextStyle(
+                              fontSize: fontSize, color: Colors.black),
+                        ),
+                        TextSpan(
+                          text: 'https://github.com/AdamMurray22',
+                          style: const TextStyle(
+                              fontSize: fontSize, color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              launchUrl(Uri(
+                                  scheme: 'https',
+                                  host: 'github.com',
+                                  path: '/AdamMurray22'));
                             },
                         ),
                       ],
