@@ -14,8 +14,8 @@ class AWSDataLoader implements DataLoader {
   static AWSDataLoader? _awsDataLoader;
   final String _serverURL =
       "https://ff42hn1swl.execute-api.eu-west-2.amazonaws.com/prod?uniID=UOP";
-  Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-      Map<String, List<BusTime>>, BusRunningDates>? _data;
+  Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+      Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>>? _data;
 
   AWSDataLoader._();
 
@@ -28,8 +28,8 @@ class AWSDataLoader implements DataLoader {
   /// Loads the data and saves the result to be given for future calls.
   @override
   Future<
-      Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-          Map<String, List<BusTime>>, BusRunningDates>> load() async {
+      Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+          Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>>> load() async {
     _data ??= await loadData();
     return _data!;
   }
@@ -56,6 +56,10 @@ class AWSDataLoader implements DataLoader {
     // Gets the national holidays table
     List<dynamic>? nationalHolidaysList = mapData["NationalHoliday"];
     nationalHolidaysList ??= [];
+
+    // Gets the national holidays table
+    List<dynamic>? busRouteGeoJsonList = mapData["BusRouteGeoJson"];
+    busRouteGeoJsonList ??= [];
 
     // Copy's the Feature's table into a set of Features objects.
     Set<Feature> features = {};
@@ -108,9 +112,16 @@ class AWSDataLoader implements DataLoader {
       nationalHolidays.add(NationalHoliday(map["Date"]));
     }
 
+    // Copy's the bus route geo json table into a set.
+    Set<Map<String, dynamic>> busRouteGeoJsons = {};
+    for (Map<String, dynamic> map in busRouteGeoJsonList) {
+      busRouteGeoJsons.add(map);
+    }
+
+
     BusRunningDates runningDates = BusRunningDates(termDates, nationalHolidays);
 
-    _data = Tuple5(features, busStopOrder, arrTimes, depTimes, runningDates);
+    _data = Tuple6(features, busStopOrder, arrTimes, depTimes, runningDates, busRouteGeoJsons);
     return _data!;
   }
 

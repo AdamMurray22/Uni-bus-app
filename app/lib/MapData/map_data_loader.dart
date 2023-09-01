@@ -38,12 +38,12 @@ class MapDataLoader {
   /// onDataLoaded() has been called it runs the
   /// function given to onDataLoaded().
   loadFromLoader(DataLoader loader) async {
-    Tuple5<
+    Tuple6<
         Set<Feature>,
         Map<String, int>,
         Map<String, List<BusTime>>,
         Map<String, List<BusTime>>,
-        BusRunningDates>? mapData;
+        BusRunningDates, Set<Map<String, dynamic>>>? mapData;
     try {
       mapData = await loader.load();
     } on Exception catch (_, e)

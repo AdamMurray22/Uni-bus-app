@@ -44,9 +44,9 @@ void main() {
             () async {
           final databaseLoader = MockDatabaseLoader();
 
-          Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-              Map<String, List<BusTime>>, BusRunningDates> mapData =
-          Tuple5({}, {}, {}, {}, BusRunningDates({}, {}));
+          Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+              Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>> mapData =
+          Tuple6({}, {}, {}, {}, BusRunningDates({}, {}), {});
           when(databaseLoader.load()).thenAnswer((realInvocation) async => mapData);
 
           MapDataLoader loader = MapDataLoader.getDataLoader();
@@ -60,9 +60,9 @@ void main() {
             () async {
           final databaseLoader = MockDatabaseLoader();
 
-          Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-              Map<String, List<BusTime>>, BusRunningDates> mapData =
-          Tuple5({}, {}, {}, {}, BusRunningDates({}, {}));
+          Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+              Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>> mapData =
+          Tuple6({}, {}, {}, {}, BusRunningDates({}, {}), {});
           when(databaseLoader.load()).thenAnswer((realInvocation) async => mapData);
 
           MapDataLoader loader = MapDataLoader.getDataLoader();

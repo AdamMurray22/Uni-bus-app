@@ -14,7 +14,7 @@ import 'bus_time_test.mocks.dart';
           isA<ArgumentError>().having(
                 (error) => error.message,
             'message',
-            'That is not a valid time in the format HH:MM.',
+            'time is not a valid time in the format HH:MM.',
           ),
         ),
       );

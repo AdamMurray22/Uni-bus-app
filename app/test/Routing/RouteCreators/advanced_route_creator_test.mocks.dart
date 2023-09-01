@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:app/Map/bus_route_geojson_loader.dart' as _i5;
+import 'package:app/MapData/Loaders/bus_route_geojson_loader.dart' as _i5;
 import 'package:app/Routing/location.dart' as _i4;
 import 'package:app/Routing/Servers/routing_server.dart' as _i2;
 import 'package:app/Wrapper/date_time_wrapper.dart' as _i6;
@@ -55,6 +55,14 @@ class MockRoutingServer extends _i1.Mock implements _i2.RoutingServer {
         ),
         returnValue: _i3.Future<String>.value(''),
       ) as _i3.Future<String>);
+  @override
+  String getUriDomains() => (super.noSuchMethod(
+        Invocation.method(
+          #getUriDomains,
+          [],
+        ),
+        returnValue: '',
+      ) as String);
 }
 
 /// A class which mocks [BusRouteGeoJsonLoader].

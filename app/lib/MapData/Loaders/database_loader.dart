@@ -12,14 +12,15 @@ import 'package:tuple/tuple.dart';
 
 import '../bus_running_dates.dart';
 import '../term_dates.dart';
+import 'bus_route_geojson_loader.dart';
 import 'data_loader.dart';
 
 /// Loader that loads the map data from a local database.
 class DatabaseLoader implements DataLoader {
   static DatabaseLoader? _databaseLoader;
   final String _relativePath = "database/map_info.db";
-  Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
-      BusRunningDates>? _data;
+  Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>,
+      BusRunningDates, Set<Map<String, dynamic>>>? _data;
 
   DatabaseLoader._();
 
@@ -32,20 +33,20 @@ class DatabaseLoader implements DataLoader {
   /// Loads the database and saves the result to be given for future calls.
   @override
   Future<
-      Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-          Map<String, List<BusTime>>, BusRunningDates>> load() async {
-    _data ??= await loadData(await _getDatabase());
+      Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+          Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>>> load() async {
+    _data ??= await loadData(await _getDatabase(), BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader());
     return _data!;
   }
 
   // Loads the database and returns a List of Features.
   Future<
-      Tuple5<
+      Tuple6<
           Set<Feature>,
           Map<String, int>,
           Map<String, List<BusTime>>,
           Map<String, List<BusTime>>,
-          BusRunningDates>> loadData(Database db) async {
+          BusRunningDates, Set<Map<String, dynamic>>>> loadData(Database db, BusRouteGeoJsonLoader busRouteGeoJsonLoader) async {
     // Gets the Features table.
     List<Map<String, Object?>> featuresList =
         await db.rawQuery('SELECT * FROM Feature');
@@ -119,7 +120,8 @@ class DatabaseLoader implements DataLoader {
 
     BusRunningDates runningDates = BusRunningDates(termDates, nationalHolidays);
 
-    _data = Tuple5(features, busStopOrder, arrTimes, depTimes, runningDates);
+    _data = Tuple6(features, busStopOrder, arrTimes, depTimes, runningDates,
+        {await busRouteGeoJsonLoader.getBusRouteGeoJson()});
     return _data!;
   }
 

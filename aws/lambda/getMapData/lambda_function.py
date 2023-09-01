@@ -3,6 +3,7 @@ import logging
 import getMapData.package.pymysql as pymysql
 import json
 import os
+import boto3
 
 # rds settings
 user_name = os.environ['USER_NAME']
@@ -21,6 +22,8 @@ except pymysql.MySQLError as e:
     logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
     logger.error(e)
     sys.exit()
+
+s3_client = boto3.client('s3')
 
 def lambda_handler(event, context):
     uniID = event['uniID']
@@ -105,4 +108,21 @@ def lambda_handler(event, context):
         conn.commit()
     return_json["BusStopOrder"] = busStopOrderData
 
+    return_json["BusRouteGeoJson"] = getGeoJsonFromS3Bucket(uniID=uniID)
+
     return return_json
+
+def getGeoJsonFromS3Bucket(uniID):
+    s3_Bucket_Name = "university-mapping-route-geo-json-bucket"
+    s3_File_Name = uniID + ".geojson"
+    
+    try:
+        object = s3_client.get_object(Bucket=s3_Bucket_Name, Key=s3_File_Name)
+        body = object['Body']
+        jsonString = body.read().decode('utf-8')
+        routeGeoJsons = []
+        routeGeoJsons.append(json.loads(jsonString))
+        return routeGeoJsons
+    except:
+        logger.error("Could not find bucket: " + uniID)
+    return []

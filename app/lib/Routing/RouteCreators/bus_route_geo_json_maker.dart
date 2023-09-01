@@ -1,35 +1,33 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../Map/bus_route_geojson_loader.dart';
+import '../../MapData/Loaders/bus_route_geojson_loader.dart';
 import '../../MapData/bus_stop.dart';
 import '../estimate_straight_line_distance.dart';
 import '../location.dart';
 
 /// Generates the geo json for the bus leg of a route.
 class BusRouteGeoJsonMaker {
-  BusRouteGeoJsonLoader _busRouteGeoJsonLoader =
-      BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader();
+  final Set<Map<String, dynamic>> _busRouteGeoJsons;
 
   /// Uses default geo json loader.
-  BusRouteGeoJsonMaker();
-
-  /// Used for testing purposes only.
-  @protected
-  BusRouteGeoJsonMaker.setGeoJsonLoader(this._busRouteGeoJsonLoader);
+  BusRouteGeoJsonMaker(this._busRouteGeoJsons);
 
   /// Returns all of the bus GeoJson for this route.
   Future<Tuple2<String, Tuple2<int, int>>> getBusLegGeoJson(
       BusStop departBusStop, BusStop arriveBusStop) async {
-    Map<String, dynamic> busRouteGeoJson =
-        await _busRouteGeoJsonLoader.getBusRouteGeoJson();
-    List<dynamic> busRouteFeaturesJson = busRouteGeoJson["features"];
+    Set<List<dynamic>> allBusRouteFeaturesJson = {};
+    for (Map<String, dynamic> busRouteGeoJson in _busRouteGeoJsons)
+    {
+      allBusRouteFeaturesJson.add(busRouteGeoJson["features"]);
+    }
     Tuple2<List<dynamic>, Tuple2<int, int>>
         busRouteJsonWithStartingAndEndingLegNumbers =
-        _getBusRouteLegs(departBusStop, arriveBusStop, busRouteFeaturesJson);
-    busRouteFeaturesJson = busRouteJsonWithStartingAndEndingLegNumbers.item1;
+        _getBusRouteLegs(departBusStop, arriveBusStop, allBusRouteFeaturesJson);
+    List<dynamic> busRouteFeaturesJson = busRouteJsonWithStartingAndEndingLegNumbers.item1;
     String busRouteFeaturesJsonString = json.encode(
         {"type": "FeatureCollection", "features": busRouteFeaturesJson});
     return Tuple2(busRouteFeaturesJsonString,
@@ -40,7 +38,9 @@ class BusRouteGeoJsonMaker {
   Tuple2<List<dynamic>, Tuple2<int, int>> _getBusRouteLegs(
       BusStop departBusStop,
       BusStop arriveBusStop,
-      List<dynamic> busRouteFeaturesJson) {
+      Set<List<dynamic>> allBusRouteFeaturesJson) {
+    List<dynamic> busRouteFeaturesJson =
+      _findBusRouteWithBusStops(departBusStop, arriveBusStop, allBusRouteFeaturesJson);
     int startingLeg = _departBusStopLeg(departBusStop, busRouteFeaturesJson);
     busRouteFeaturesJson = _removeBeforeLegs(startingLeg, busRouteFeaturesJson);
     int endingLeg = _arriveBusStopLeg(arriveBusStop, busRouteFeaturesJson);
@@ -86,14 +86,14 @@ class BusRouteGeoJsonMaker {
     double closestLegDistance = double.infinity;
     for (Tuple2<int, List<dynamic>> leg in legs) {
       Location legStartLocation = Location(leg.item2[0], leg.item2[1]);
-      Location departBusStopLocation =
+      Location arriveBusStopLocation =
           Location(arriveBusStop.long, arriveBusStop.lat);
-      double legStartDistanceToDepBusStop =
+      double legStartDistanceToArrBusStop =
           EstimateStraightLineDistance.estimateStraightLineDistance(
-              departBusStopLocation, legStartLocation);
-      if (legStartDistanceToDepBusStop < closestLegDistance) {
+              arriveBusStopLocation, legStartLocation);
+      if (legStartDistanceToArrBusStop < closestLegDistance) {
         closestLeg = leg.item1;
-        closestLegDistance = legStartDistanceToDepBusStop;
+        closestLegDistance = legStartDistanceToArrBusStop;
       }
     }
     if (closestLeg == null) {
@@ -114,5 +114,56 @@ class BusRouteGeoJsonMaker {
       int endLeg, List<dynamic> busRouteFeaturesJson) {
     busRouteFeaturesJson.removeWhere((element) => element["leg"] > endLeg);
     return busRouteFeaturesJson;
+  }
+
+  List<dynamic> _findBusRouteWithBusStops(
+      BusStop departBusStop,
+      BusStop arriveBusStop,
+      Set<List<dynamic>> allBusRouteFeaturesJson)
+  {
+    for (List<dynamic> busRouteFeaturesJson in allBusRouteFeaturesJson)
+    {
+      int departLeg = _departBusStopLeg(departBusStop, busRouteFeaturesJson);
+      int arriveLeg = _arriveBusStopLeg(arriveBusStop, busRouteFeaturesJson);
+      Iterable<Tuple2<int, Tuple2<List<dynamic>, List<dynamic>>>> legs =
+        busRouteFeaturesJson.map<Tuple2<int, Tuple2<List<dynamic>, List<dynamic>>>>(
+              (e) => Tuple2(e["leg"],
+                  Tuple2(e["geometry"]["coordinates"][0],
+                      e["geometry"]["coordinates"]
+                      [e["geometry"]["coordinates"].length - 1])));
+      bool hasDepart = false;
+      for (Tuple2<int, Tuple2<List<dynamic>, List<dynamic>>> leg in legs)
+      {
+        List<dynamic> depLeg = leg.item2.item1;
+        List<dynamic> arrLeg = leg.item2.item2;
+        if (!hasDepart) {
+          if (leg.item1 == departLeg) {
+            Location legStartLocation = Location(depLeg[0], depLeg[1]);
+            Location departBusStopLocation =
+            Location(departBusStop.long, departBusStop.lat);
+            double legStartDistanceToDepBusStop =
+            EstimateStraightLineDistance.estimateStraightLineDistance(
+                departBusStopLocation, legStartLocation);
+            if (legStartDistanceToDepBusStop < 10) {
+              hasDepart = true;
+            }
+          }
+        }
+        if (hasDepart) {
+          if (leg.item1 == arriveLeg) {
+            Location legStartLocation = Location(arrLeg[0], arrLeg[1]);
+            Location arriveBusStopLocation =
+              Location(arriveBusStop.long, arriveBusStop.lat);
+            double legStartDistanceToArrBusStop =
+              EstimateStraightLineDistance.estimateStraightLineDistance(
+                arriveBusStopLocation, legStartLocation);
+            if (legStartDistanceToArrBusStop < 10) {
+              return busRouteFeaturesJson;
+            }
+          }
+        }
+      }
+    }
+    return [];
   }
 }

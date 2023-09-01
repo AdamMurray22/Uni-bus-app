@@ -8,7 +8,7 @@ import 'package:app/Routing/walking_route.dart';
 import 'package:app/Wrapper/date_time_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:tuple/tuple.dart';
-import '../../Map/bus_route_geojson_loader.dart';
+import '../../MapData/Loaders/bus_route_geojson_loader.dart';
 import '../../MapData/bus_stop.dart';
 import '../../MapData/bus_time.dart';
 import '../Servers/routing_server.dart';
@@ -24,20 +24,18 @@ class AdvancedRouteCreator extends RouteCreator
   BusRouteGeoJsonTrimmer? _busRouteGeoJsonTrimmer;
 
   /// Assigns default Server.
-  AdvancedRouteCreator(Set<BusStop> busStops, {super.pingRoutingServerFunction}) : super() {
+  AdvancedRouteCreator(Set<BusStop> busStops, Set<Map<String, dynamic>> busRouteGeoJsons, {super.pingRoutingServerFunction}) : super() {
     busRouteEstimator = BusRouteEstimator(busStops);
-    busRouteGeoJsonMaker = BusRouteGeoJsonMaker();
+    busRouteGeoJsonMaker = BusRouteGeoJsonMaker(busRouteGeoJsons);
   }
 
   /// Allows for non default server and BusRouteGeoJsonLoader and DateTime.
   /// Used for testing purposes only.
   @protected
-  AdvancedRouteCreator.setServer(Set<BusStop> busStops, RoutingServer server,
-      BusRouteGeoJsonLoader busRouteGeoJsonLoader, this._dateTime, {super.pingRoutingServerFunction})
+  AdvancedRouteCreator.setServer(Set<BusStop> busStops, Set<Map<String, dynamic>> busRouteGeoJsons, RoutingServer server, this._dateTime, {super.pingRoutingServerFunction})
       : super.setServer(server) {
     busRouteEstimator = BusRouteEstimator.setDateTime(busStops, _dateTime);
-    busRouteGeoJsonMaker =
-        BusRouteGeoJsonMaker.setGeoJsonLoader(busRouteGeoJsonLoader);
+    busRouteGeoJsonMaker = BusRouteGeoJsonMaker(busRouteGeoJsons);
   }
 
   /// Creates the fastest route from the start to the end, this route may

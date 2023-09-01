@@ -20,7 +20,7 @@ void main() {
       "U1-2":1,
     };
     Map<String, Feature> allFeatures = {...busStops, ...features};
-    MapData data = MapData(Tuple5(allFeatures.values.toSet(), busStopsOrder, {}, {}, BusRunningDates({}, {})));
+    MapData data = MapData(Tuple6(allFeatures.values.toSet(), busStopsOrder, {}, {}, BusRunningDates({}, {}), {}));
 
     test('getAllBusStops()', () {
       expect(data.getAllBusStops(), busStops.values);
