@@ -8,6 +8,7 @@ import 'dart:async' as _i4;
 import 'package:app/MapData/bus_running_dates.dart' as _i7;
 import 'package:app/MapData/bus_time.dart' as _i6;
 import 'package:app/MapData/feature.dart' as _i5;
+import 'package:app/MapData/Loaders/bus_route_geojson_loader.dart' as _i9;
 import 'package:app/MapData/Loaders/database_loader.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:sqflite/sqflite.dart' as _i8;
@@ -92,11 +93,17 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           Map<String, List<_i6.BusTime>>,
           Map<String, List<_i6.BusTime>>,
           _i7.BusRunningDates,
-          Set<Map<String, dynamic>>>> loadData(_i8.Database? db) =>
+          Set<Map<String, dynamic>>>> loadData(
+    _i8.Database? db,
+    _i9.BusRouteGeoJsonLoader? busRouteGeoJsonLoader,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #loadData,
-          [db],
+          [
+            db,
+            busRouteGeoJsonLoader,
+          ],
         ),
         returnValue: _i4.Future<
             _i2.Tuple6<
@@ -115,7 +122,10 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           this,
           Invocation.method(
             #loadData,
-            [db],
+            [
+              db,
+              busRouteGeoJsonLoader,
+            ],
           ),
         )),
       ) as _i4.Future<

@@ -9,7 +9,6 @@ import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../Routing/RouteCreators/advanced_route_creator_test.mocks.dart';
 import 'database_loader_test.mocks.dart';
 
 @GenerateMocks([Database])
@@ -26,7 +25,7 @@ void main() {
 
     test('.loadDatabase(Database) returns the contents of the database if successful', () async {
       final db = MockDatabase();
-      final loader = MockBusRouteGeoJsonLoader();
+      final geoJsonLoader = MockBusRouteGeoJsonLoader();
 
       // Use Mockito to return a successful response when it calls the
       // provided database.
@@ -108,9 +107,9 @@ void main() {
         }
       ]);
 
-      when(loader.getBusRouteGeoJson()).thenAnswer((_) async => {{"hu": "ad"}});
+      when(geoJsonLoader.getBusRouteGeoJson()).thenAnswer((_) async => {"hu": "ad"});
 
-      expect(await (loader.loadData(db)), isA<Tuple6<
+      expect(await (loader.loadData(db, geoJsonLoader)), isA<Tuple6<
           Set<Feature>,
           Map<String, int>,
           Map<String, List<BusTime>>,
