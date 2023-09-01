@@ -9,6 +9,6 @@ abstract class DataLoader
 {
   /// Loads the data and saves the result to be given for future calls.
   Future<
-      Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
-          Map<String, List<BusTime>>, BusRunningDates>> load();
+      Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>,
+          Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>>> load();
 }

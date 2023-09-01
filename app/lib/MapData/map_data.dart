@@ -13,15 +13,17 @@ class MapData
 {
   late final Map<String, BusStop> _busStops;
   late final Map<String, Feature> _otherFeatures;
+  late final Set<Map<String, dynamic>> _busRouteGeoJsons;
 
   /// The constructor creating the Map of features.
-  MapData(Tuple5<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates> mapData)
+  MapData(Tuple6<Set<Feature>, Map<String, int>, Map<String, List<BusTime>>, Map<String, List<BusTime>>, BusRunningDates, Set<Map<String, dynamic>>> mapData)
   {
     Set<Feature> features = mapData.item1;
     Map<String, int> busStopOrder = mapData.item2;
     Map<String, List<BusTime>> busArrTimes = mapData.item3;
     Map<String, List<BusTime>> busDepTimes = mapData.item4;
     BusRunningDates busRunningDates = mapData.item5;
+    _busRouteGeoJsons = mapData.item6;
     _busStops = {};
     _otherFeatures = {};
     bool isBusRunning = busRunningDates.isBusRunning();
@@ -63,6 +65,12 @@ class MapData
   Map<String, BusStop> getBusStopsMap()
   {
     return _busStops;
+  }
+
+  /// Returns a map of all the features id to the features.
+  Set<Map<String, dynamic>> getBusRouteGeoJsons()
+  {
+    return _busRouteGeoJsons;
   }
 
   // Creates a bus stop.

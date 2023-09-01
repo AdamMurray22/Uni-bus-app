@@ -5,10 +5,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:app/MapData/Loaders/database_loader.dart' as _i3;
 import 'package:app/MapData/bus_running_dates.dart' as _i7;
 import 'package:app/MapData/bus_time.dart' as _i6;
 import 'package:app/MapData/feature.dart' as _i5;
+import 'package:app/MapData/Loaders/bus_route_geojson_loader.dart' as _i9;
+import 'package:app/MapData/Loaders/database_loader.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:sqflite/sqflite.dart' as _i8;
 import 'package:tuple/tuple.dart' as _i2;
@@ -24,9 +25,9 @@ import 'package:tuple/tuple.dart' as _i2;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeTuple5_0<T1, T2, T3, T4, T5> extends _i1.SmartFake
-    implements _i2.Tuple5<T1, T2, T3, T4, T5> {
-  _FakeTuple5_0(
+class _FakeTuple6_0<T1, T2, T3, T4, T5, T6> extends _i1.SmartFake
+    implements _i2.Tuple6<T1, T2, T3, T4, T5, T6> {
+  _FakeTuple6_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -45,28 +46,31 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
 
   @override
   _i4.Future<
-      _i2.Tuple5<
+      _i2.Tuple6<
           Set<_i5.Feature>,
           Map<String, int>,
           Map<String, List<_i6.BusTime>>,
           Map<String, List<_i6.BusTime>>,
-          _i7.BusRunningDates>> load() => (super.noSuchMethod(
+          _i7.BusRunningDates,
+          Set<Map<String, dynamic>>>> load() => (super.noSuchMethod(
         Invocation.method(
           #load,
           [],
         ),
         returnValue: _i4.Future<
-            _i2.Tuple5<
+            _i2.Tuple6<
                 Set<_i5.Feature>,
                 Map<String, int>,
                 Map<String, List<_i6.BusTime>>,
                 Map<String, List<_i6.BusTime>>,
-                _i7.BusRunningDates>>.value(_FakeTuple5_0<
+                _i7.BusRunningDates,
+                Set<Map<String, dynamic>>>>.value(_FakeTuple6_0<
             Set<_i5.Feature>,
             Map<String, int>,
             Map<String, List<_i6.BusTime>>,
             Map<String, List<_i6.BusTime>>,
-            _i7.BusRunningDates>(
+            _i7.BusRunningDates,
+            Set<Map<String, dynamic>>>(
           this,
           Invocation.method(
             #load,
@@ -74,48 +78,62 @@ class MockDatabaseLoader extends _i1.Mock implements _i3.DatabaseLoader {
           ),
         )),
       ) as _i4.Future<
-          _i2.Tuple5<
+          _i2.Tuple6<
               Set<_i5.Feature>,
               Map<String, int>,
               Map<String, List<_i6.BusTime>>,
               Map<String, List<_i6.BusTime>>,
-              _i7.BusRunningDates>>);
+              _i7.BusRunningDates,
+              Set<Map<String, dynamic>>>>);
   @override
   _i4.Future<
-      _i2.Tuple5<
+      _i2.Tuple6<
           Set<_i5.Feature>,
           Map<String, int>,
           Map<String, List<_i6.BusTime>>,
           Map<String, List<_i6.BusTime>>,
-          _i7.BusRunningDates>> loadData(_i8.Database? db) =>
+          _i7.BusRunningDates,
+          Set<Map<String, dynamic>>>> loadData(
+    _i8.Database? db,
+    _i9.BusRouteGeoJsonLoader? busRouteGeoJsonLoader,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
-          #loadDatabase,
-          [db],
+          #loadData,
+          [
+            db,
+            busRouteGeoJsonLoader,
+          ],
         ),
         returnValue: _i4.Future<
-            _i2.Tuple5<
+            _i2.Tuple6<
                 Set<_i5.Feature>,
                 Map<String, int>,
                 Map<String, List<_i6.BusTime>>,
                 Map<String, List<_i6.BusTime>>,
-                _i7.BusRunningDates>>.value(_FakeTuple5_0<
+                _i7.BusRunningDates,
+                Set<Map<String, dynamic>>>>.value(_FakeTuple6_0<
             Set<_i5.Feature>,
             Map<String, int>,
             Map<String, List<_i6.BusTime>>,
             Map<String, List<_i6.BusTime>>,
-            _i7.BusRunningDates>(
+            _i7.BusRunningDates,
+            Set<Map<String, dynamic>>>(
           this,
           Invocation.method(
-            #loadDatabase,
-            [db],
+            #loadData,
+            [
+              db,
+              busRouteGeoJsonLoader,
+            ],
           ),
         )),
       ) as _i4.Future<
-          _i2.Tuple5<
+          _i2.Tuple6<
               Set<_i5.Feature>,
               Map<String, int>,
               Map<String, List<_i6.BusTime>>,
               Map<String, List<_i6.BusTime>>,
-              _i7.BusRunningDates>>);
+              _i7.BusRunningDates,
+              Set<Map<String, dynamic>>>>);
 }

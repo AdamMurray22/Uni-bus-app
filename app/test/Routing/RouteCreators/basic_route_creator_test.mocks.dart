@@ -43,4 +43,12 @@ class MockRoutingServer extends _i1.Mock implements _i2.RoutingServer {
         ),
         returnValue: _i3.Future<String>.value(''),
       ) as _i3.Future<String>);
+  @override
+  String getUriDomains() => (super.noSuchMethod(
+        Invocation.method(
+          #getUriDomains,
+          [],
+        ),
+        returnValue: '',
+      ) as String);
 }

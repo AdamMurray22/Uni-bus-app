@@ -119,7 +119,7 @@ class _RouteScreenState extends State<RouteScreen> {
     );
     _dataLoader.onDataLoaded((mapData) async {
       setState(() {
-        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getAllBusStops()));
+        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getAllBusStops(), mapData.getBusRouteGeoJsons()));
       });
     });
     super.initState();

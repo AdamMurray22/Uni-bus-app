@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:app/Map/bus_route_geojson_loader.dart' as _i2;
+import 'package:app/MapData/Loaders/bus_route_geojson_loader.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

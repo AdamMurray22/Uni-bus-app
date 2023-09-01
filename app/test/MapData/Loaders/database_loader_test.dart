@@ -1,3 +1,4 @@
+import 'package:app/MapData/Loaders/bus_route_geojson_loader.dart';
 import 'package:app/MapData/Loaders/database_loader.dart';
 import 'package:app/MapData/bus_running_dates.dart';
 import 'package:app/MapData/bus_time.dart';
@@ -11,6 +12,7 @@ import 'package:tuple/tuple.dart';
 import 'database_loader_test.mocks.dart';
 
 @GenerateMocks([Database])
+@GenerateMocks([BusRouteGeoJsonLoader])
 void main() {
   group('Database Loader Tests', () {
     test('.getDataBaseLoader() Returns same handler', () {
@@ -23,6 +25,7 @@ void main() {
 
     test('.loadDatabase(Database) returns the contents of the database if successful', () async {
       final db = MockDatabase();
+      final geoJsonLoader = MockBusRouteGeoJsonLoader();
 
       // Use Mockito to return a successful response when it calls the
       // provided database.
@@ -104,12 +107,15 @@ void main() {
         }
       ]);
 
-      expect(await (loader.loadData(db)), isA<Tuple5<
+      when(geoJsonLoader.getBusRouteGeoJson()).thenAnswer((_) async => {"hu": "ad"});
+
+      expect(await (loader.loadData(db, geoJsonLoader)), isA<Tuple6<
           Set<Feature>,
           Map<String, int>,
           Map<String, List<BusTime>>,
           Map<String, List<BusTime>>,
-          BusRunningDates>>());
+          BusRunningDates,
+          Set<Map<String, dynamic>>>>());
     });
   });
 }

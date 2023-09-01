@@ -1,4 +1,6 @@
-import 'bus_route_geojson_loader.dart';
+import 'dart:convert';
+
+import '../MapData/Loaders/bus_route_geojson_loader.dart';
 import 'map_centre_enum.dart';
 import 'map_data_id_enum.dart';
 import '../MapData/feature.dart';
@@ -25,9 +27,9 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
       // When the page finishes loading it sets the data to be loaded into the map.
       MapDataLoader.getDataLoader().onDataLoaded((mapData) {
         _addMarkers(mapData);
+        _addBusRouteGeoJsons(mapData.getBusRouteGeoJsons());
       });
       addUserLocationIcon();
-      _loadBusRouteGeoJson();
     };
     super.initState();
   }
@@ -55,7 +57,18 @@ class MainMapWidgetState extends MapWidgetState<MainMapWidget> {
     }
   }
 
+  // Displays the bus routes on the map.
+  _addBusRouteGeoJsons(Set<Map<String, dynamic>> geoJsons) async
+  {
+    for (Map geoJson in geoJsons)
+    {
+      await addGeoJson(MapDataId.u1.idPrefix, jsonEncode(geoJson));
+    }
+  }
+
   // Displays the bus route on the map.
+  // Warning uses the old local file, do not use.
+  // Use _addBusRouteGeoJsons instead.
   _loadBusRouteGeoJson() async {
     String busRouteJson = await BusRouteGeoJsonLoader.getBusRouteGeoJsonLoader().getBusRouteGeoJsonAsString();
     await addGeoJson(MapDataId.u1.idPrefix, busRouteJson);
