@@ -18,7 +18,8 @@ import '../Routing/location.dart' as location;
 
 /// This holds the route screen.
 class RouteScreen extends StatefulWidget {
-  const RouteScreen({super.key , this.pingMapFunction, this.pingRoutingFunction});
+  const RouteScreen(
+      {super.key, this.pingMapFunction, this.pingRoutingFunction});
 
   final Function(String)? pingMapFunction;
   final Function(String)? pingRoutingFunction;
@@ -101,15 +102,12 @@ class _RouteScreenState extends State<RouteScreen> {
       key: _mapStateKey,
       pingTileServerFunction: widget.pingMapFunction,
       pingRoutingServerFunction: widget.pingRoutingFunction,
-      routeScreenUpdateFunction: (route)
-      {
+      routeScreenUpdateFunction: (route) {
         setState(() {
-          if (route.getNextTurn() != null)
-          {
-            _nextTurn = "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
-          }
-          else
-          {
+          if (route.getNextTurn() != null) {
+            _nextTurn =
+                "Turn ${route.getNextTurn()} in ${route.getDisplayDistanceTillNextTurn()}";
+          } else {
             _nextTurn = "";
           }
           _totalDistance = "${route.getTotalDisplayDistance()} total";
@@ -119,7 +117,8 @@ class _RouteScreenState extends State<RouteScreen> {
     );
     _dataLoader.onDataLoaded((mapData) async {
       setState(() {
-        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(mapData.getAllBusStops(), mapData.getBusRouteGeoJsons()));
+        _mapStateKey.currentState?.setRouteCreator(AdvancedRouteCreator(
+            mapData.getAllBusStops(), mapData.getBusRouteGeoJsons()));
       });
     });
     super.initState();
@@ -128,41 +127,37 @@ class _RouteScreenState extends State<RouteScreen> {
   @override
   Widget build(BuildContext context) {
     Widget routeInfoScreen;
-    if (_currentlyRouting == RoutingStatus.notRouting)
-    {
-        routeInfoScreen = Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MaterialButton(
-              onPressed: () {
-                _createRoute();
-              },
-              color: const Color(0xffffffff),
-              elevation: 0,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-                side: BorderSide(color: Color(0xff808080), width: 1),
-              ),
-              padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              textColor: const Color(0xff000000),
-              height: 40,
-              minWidth: 140,
-              child: const Text(
-                "Route",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                ),
+    if (_currentlyRouting == RoutingStatus.notRouting) {
+      routeInfoScreen = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          MaterialButton(
+            onPressed: () {
+              _createRoute();
+            },
+            color: const Color(0xffffffff),
+            elevation: 0,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero,
+              side: BorderSide(color: Color(0xff808080), width: 1),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            textColor: const Color(0xff000000),
+            height: 40,
+            minWidth: 140,
+            child: const Text(
+              "Route",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
               ),
             ),
-          ],
-        );
-    }
-    else if (_currentlyRouting == RoutingStatus.userLocationRouting)
-    {
+          ),
+        ],
+      );
+    } else if (_currentlyRouting == RoutingStatus.userLocationRouting) {
       routeInfoScreen = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -174,13 +169,13 @@ class _RouteScreenState extends State<RouteScreen> {
             children: [
               Text(_nextTurn),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(_totalTime),
-                  const SizedBox(width: 3),
-                  Text(_totalDistance),
-                ]),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(_totalTime),
+                    const SizedBox(width: 3),
+                    Text(_totalDistance),
+                  ]),
             ],
           ),
           const SizedBox(width: 5),
@@ -194,8 +189,7 @@ class _RouteScreenState extends State<RouteScreen> {
               borderRadius: BorderRadius.zero,
               side: BorderSide(color: Color(0xff808080), width: 1),
             ),
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             textColor: const Color(0xff000000),
             height: 40,
             minWidth: 140,
@@ -210,9 +204,7 @@ class _RouteScreenState extends State<RouteScreen> {
           ),
         ],
       );
-    }
-    else
-    {
+    } else {
       routeInfoScreen = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -236,8 +228,7 @@ class _RouteScreenState extends State<RouteScreen> {
               borderRadius: BorderRadius.zero,
               side: BorderSide(color: Color(0xff808080), width: 1),
             ),
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             textColor: const Color(0xff000000),
             height: 40,
             minWidth: 140,
@@ -311,20 +302,23 @@ class _RouteScreenState extends State<RouteScreen> {
                 },
               ),
             ),
+            Flexible(
+              child: Container(
+                  margin: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: const Color(0x1f000000),
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.zero,
+                    border:
+                        Border.all(color: const Color(0x4d9e9e9e), width: 1),
+                  ),
+                  child: _mapWidget),
+            ),
             Container(
-                margin: const EdgeInsets.all(0),
-                padding: const EdgeInsets.all(0),
-                width: MediaQuery.of(context).size.width,
-                height: (MediaQuery.of(context).size.height * 0.69694) - 48,
-                decoration: BoxDecoration(
-                  color: const Color(0x1f000000),
-                  shape: BoxShape.rectangle,
-                  borderRadius: BorderRadius.zero,
-                  border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
-                ),
-                child: _mapWidget),
-            Container(
-                child: routeInfoScreen),
+                child: routeInfoScreen
+            ),
           ]),
     );
   }
@@ -356,16 +350,18 @@ class _RouteScreenState extends State<RouteScreen> {
     } else {
       _currentlyRouting = RoutingStatus.nonUserLocationRouting;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   // Updates the route on the map.
   _updateRoute(String fromId, String toId) async {
     location.Location fromLocation = await _getFromLocation(fromId);
     location.Location toLocation = _getToLocation(toId);
-    double distanceToDestination = EstimateStraightLineDistance.estimateStraightLineDistance(fromLocation, toLocation);
-    if (distanceToDestination < 30) { // 30 metres.
+    double distanceToDestination =
+        EstimateStraightLineDistance.estimateStraightLineDistance(
+            fromLocation, toLocation);
+    if (distanceToDestination < 30) {
+      // 30 metres.
       _endRoute();
       return;
     }

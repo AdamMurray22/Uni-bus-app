@@ -13,10 +13,14 @@ import '../Map/main_map_widget.dart';
 
 /// The screen that displays the map.
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, required this.onShowTimeTableButtonPressed, this.pingMapFunction});
+  const MapScreen(
+      {super.key,
+      required this.onShowTimeTableButtonPressed,
+      this.pingMapFunction});
 
   final Function() onShowTimeTableButtonPressed;
   final Function(String)? pingMapFunction;
+
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
@@ -77,14 +81,13 @@ class _MapScreenState extends State<MapScreen> {
     valueCheckMap[MapDataId.uniBuilding] = _uniBuildingValueCheck;
     valueCheckMap[MapDataId.landmark] = _landmarkValueCheck;
     _mapWidget = MainMapWidget(
-        markerClickedFunction: (String markerId)
-          {
-            setState(() {
-              _showMapFeatureInfoPanel(markerId);
-            });
-          },
-        pingTileServerFunction: widget.pingMapFunction,
-        key: _mapStateKey,
+      markerClickedFunction: (String markerId) {
+        setState(() {
+          _showMapFeatureInfoPanel(markerId);
+        });
+      },
+      pingTileServerFunction: widget.pingMapFunction,
+      key: _mapStateKey,
     );
 
     _dropDownController = SingleValueDropDownController();
@@ -131,58 +134,57 @@ class _MapScreenState extends State<MapScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Stack(children: [
-        Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
-                child: DropDownTextField(
-                  key: const Key("Main Map Search box"),
-                  controller: _dropDownController,
-                  clearOption: true,
-                  enableSearch: true,
-                  textFieldDecoration:
-                      const InputDecoration(hintText: "Search"),
-                  searchDecoration:
-                      const InputDecoration(hintText: "Enter location here"),
-                  validator: (value) {
-                    if (value == null) {
-                      return "Required field";
-                    } else {
-                      return null;
-                    }
-                  },
-                  dropDownItemCount: 5,
-                  dropDownList: _dropDownList,
-                  onChanged: (value) {
-                    if (value == "") {
-                      setState(() {
-                        _featureInfoVisible = false;
-                      });
-                      return;
-                    }
-                    MapDataId valueId =
-                        MapDataId.getMapDataIdEnumFromId(value.value);
+      body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+              child: DropDownTextField(
+                key: const Key("Main Map Search box"),
+                controller: _dropDownController,
+                clearOption: true,
+                enableSearch: true,
+                textFieldDecoration: const InputDecoration(hintText: "Search"),
+                searchDecoration:
+                    const InputDecoration(hintText: "Enter location here"),
+                validator: (value) {
+                  if (value == null) {
+                    return "Required field";
+                  } else {
+                    return null;
+                  }
+                },
+                dropDownItemCount: 5,
+                dropDownList: _dropDownList,
+                onChanged: (value) {
+                  if (value == "") {
                     setState(() {
-                      _showMapFeatureInfoPanel(value.value);
-                      if (!valueCheckMap[valueId]!.getValue()) {
-                        _mapCheckBoxChange(valueId, true);
-                      }
+                      _featureInfoVisible = false;
                     });
-                    _mapStateKey.currentState?.setMapCentreAndZoom(
-                        _getMapData().getFeaturesMap()[value.value]!);
-                  },
-                ),
+                    return;
+                  }
+                  MapDataId valueId =
+                      MapDataId.getMapDataIdEnumFromId(value.value);
+                  setState(() {
+                    _showMapFeatureInfoPanel(value.value);
+                    if (!valueCheckMap[valueId]!.getValue()) {
+                      _mapCheckBoxChange(valueId, true);
+                    }
+                  });
+                  _mapStateKey.currentState?.setMapCentreAndZoom(
+                      _getMapData().getFeaturesMap()[value.value]!);
+                },
               ),
-              Stack(children: [
+            ),
+            Flexible(
+              child: Stack(children: [
                 Container(
                     margin: const EdgeInsets.all(0),
                     padding: const EdgeInsets.all(0),
                     width: MediaQuery.of(context).size.width,
-                    height: mapScreenHeight,
+                    //height: mapScreenHeight,
                     decoration: BoxDecoration(
                       color: const Color(0x1f000000),
                       shape: BoxShape.rectangle,
@@ -261,11 +263,8 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
               ]),
-            ]),
-        Positioned(
-          child: Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: SingleChildScrollView(
+            ),
+            SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -288,10 +287,10 @@ class _MapScreenState extends State<MapScreen> {
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.u1, value!);
                     },
-                    activeColor: Color(0xff3a57e8),
+                    activeColor: const Color(0xff3a57e8),
                     autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
+                    checkColor: const Color(0xffffffff),
+                    hoverColor: const Color(0x42000000),
                     splashRadius: 20,
                     value: _u1ValueCheck.getValue(),
                   ),
@@ -311,10 +310,10 @@ class _MapScreenState extends State<MapScreen> {
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.uniBuilding, value!);
                     },
-                    activeColor: Color(0xff3a57e8),
+                    activeColor: const Color(0xff3a57e8),
                     autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
+                    checkColor: const Color(0xffffffff),
+                    hoverColor: const Color(0x42000000),
                     splashRadius: 20,
                     value: _uniBuildingValueCheck.getValue(),
                   ),
@@ -334,19 +333,17 @@ class _MapScreenState extends State<MapScreen> {
                     onChanged: (value) {
                       _mapCheckBoxChange(MapDataId.landmark, value!);
                     },
-                    activeColor: Color(0xff3a57e8),
+                    activeColor: const Color(0xff3a57e8),
                     autofocus: false,
-                    checkColor: Color(0xffffffff),
-                    hoverColor: Color(0x42000000),
+                    checkColor: const Color(0xffffffff),
+                    hoverColor: const Color(0x42000000),
                     splashRadius: 20,
                     value: _landmarkValueCheck.getValue(),
                   ),
                 ],
               ),
             ),
-          ),
-        ),
-      ]),
+          ]),
     );
   }
 
