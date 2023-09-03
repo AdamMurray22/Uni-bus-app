@@ -15,7 +15,8 @@ class _AboutScreenState extends State<AboutScreen> {
     const double fontSize = 18;
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -343,6 +344,6 @@ class _AboutScreenState extends State<AboutScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

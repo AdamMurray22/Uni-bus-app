@@ -208,8 +208,8 @@ class _MapScreenState extends State<MapScreen> {
                           Border.all(color: const Color(0x4d9e9e9e), width: 1),
                     ),
                     child: Stack(
-                      children: [
-                        Column(
+                      children: [SingleChildScrollView(
+                        child:Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
@@ -251,7 +251,7 @@ class _MapScreenState extends State<MapScreen> {
                                           children: _featureInfoText),
                                     ]),
                               ),
-                            ]),
+                            ])),
                         Positioned(
                           child: Align(
                             alignment: FractionalOffset.bottomCenter,
