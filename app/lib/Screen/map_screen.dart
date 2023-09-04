@@ -208,8 +208,8 @@ class _MapScreenState extends State<MapScreen> {
                           Border.all(color: const Color(0x4d9e9e9e), width: 1),
                     ),
                     child: Stack(
-                      children: [SingleChildScrollView(
-                        child:Column(
+                      children: [
+                        Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
@@ -242,16 +242,17 @@ class _MapScreenState extends State<MapScreen> {
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: _featureTitleText),
+                                      SingleChildScrollView(child:
                                       Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
-                                          children: _featureInfoText),
+                                          children: _featureInfoText)),
                                     ]),
                               ),
-                            ])),
+                            ]),
                         Positioned(
                           child: Align(
                             alignment: FractionalOffset.bottomCenter,
