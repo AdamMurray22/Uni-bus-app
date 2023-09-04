@@ -1,0 +1,6 @@
+Helps you get to and from the University of Portsmouth using the University Bus.
+
+This app was developed by Adam Murray. I can be contacted through the following methods:
+Email: adammurray1122@gmail.com
+LinkedIn: https://www.linkedin.com/in/adam-murray-788625237
+Github: https://github.com/AdamMurray22
