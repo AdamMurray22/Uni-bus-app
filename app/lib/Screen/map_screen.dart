@@ -242,13 +242,14 @@ class _MapScreenState extends State<MapScreen> {
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: _featureTitleText),
+                                      SingleChildScrollView(child:
                                       Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.end,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
-                                          children: _featureInfoText),
+                                          children: _featureInfoText)),
                                     ]),
                               ),
                             ]),
