@@ -129,9 +129,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // The height of the containers in the space of the map and only the map.
-    double mapScreenHeight = MediaQuery.of(context).size.height * 0.70143;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(
@@ -184,7 +181,6 @@ class _MapScreenState extends State<MapScreen> {
                     margin: const EdgeInsets.all(0),
                     padding: const EdgeInsets.all(0),
                     width: MediaQuery.of(context).size.width,
-                    //height: mapScreenHeight,
                     decoration: BoxDecoration(
                       color: const Color(0x1f000000),
                       shape: BoxShape.rectangle,
@@ -199,7 +195,6 @@ class _MapScreenState extends State<MapScreen> {
                     margin: const EdgeInsets.all(0),
                     padding: const EdgeInsets.all(0),
                     width: MediaQuery.of(context).size.width * 0.4,
-                    height: mapScreenHeight,
                     decoration: BoxDecoration(
                       color: const Color(0xffffffff),
                       shape: BoxShape.rectangle,
