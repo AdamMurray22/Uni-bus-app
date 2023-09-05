@@ -202,13 +202,8 @@ class _MapScreenState extends State<MapScreen> {
                       border:
                           Border.all(color: const Color(0x4d9e9e9e), width: 1),
                     ),
-                    child: Stack(
+                    child: ListView(
                       children: [
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
                               ListTile(
                                 trailing: IconButton(
                                   icon: const Icon(Icons.close),
@@ -223,7 +218,7 @@ class _MapScreenState extends State<MapScreen> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                                padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -237,23 +232,15 @@ class _MapScreenState extends State<MapScreen> {
                                               CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.max,
                                           children: _featureTitleText),
-                                      SingleChildScrollView(child:
                                       Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: _featureInfoText)),
+                                          children: _featureInfoText),
+                                        Align(
+                                          alignment:
+                                              FractionalOffset.bottomCenter,
+                                          child: _seeFullTimeTableButtonHolder,
+                                        ),
                                     ]),
                               ),
-                            ]),
-                        Positioned(
-                          child: Align(
-                            alignment: FractionalOffset.bottomCenter,
-                            child: _seeFullTimeTableButtonHolder,
-                          ),
-                        )
                       ],
                     ),
                   ),
