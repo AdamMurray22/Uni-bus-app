@@ -141,7 +141,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           ],
         ),
       ),
-      MaterialApp(home: _mainScreen),
+      _mainScreen,
     ]);
     return Scaffold(
       resizeToAvoidBottomInset: false,
