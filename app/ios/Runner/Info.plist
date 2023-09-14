@@ -9,10 +9,6 @@
     <key>io.flutter.embedded_views_preview</key> <true/>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Turning on location allows us to display your location and create routes for you from your current location.</string>
-    <array>
-    	<string>fetch</string>
-    	<string>location</string>
-    </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
